@@ -1,7 +1,6 @@
 # Bithumb-Virspit-Server
 
-
-1. 커밋 규칙
+## Branch Convention
     ```
     types = {
           feat : 새로운 기능에 대한 커밋 ex) feat/loginService -> 이것만 하기!
@@ -15,3 +14,13 @@
           test : 테스트 코드 수정에 대한 커밋
         }
     ```
+    
+    
+
+---
+
+## Pull Request Convention
+1. Dev branch로 바로 push 하지 말고 기능 및 이슈마다 branch를 생성 후 pr을 등록 하세요.
+2. PR Template 에 맞게 작성해주세요.
+
+
