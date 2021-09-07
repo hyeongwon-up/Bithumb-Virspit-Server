@@ -21,6 +21,9 @@ repositories {
 dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway', version: '3.0.3'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.5.4'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.9.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-contract-stub-runner', version: '3.0.3'
+
     implementation 'org.springframework.boot:spring-boot-starter'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
