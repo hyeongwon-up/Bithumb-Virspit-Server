@@ -1,6 +1,6 @@
 # Bithumb-Virspit-Server
 
-## Branch Convention
+## Commit Convention
    
           feat : 새로운 기능에 대한 커밋 ex) feat/loginService -> 이것만 하기!
           fix : 버그 수정에 대한 커밋 ex) fix/loginService
