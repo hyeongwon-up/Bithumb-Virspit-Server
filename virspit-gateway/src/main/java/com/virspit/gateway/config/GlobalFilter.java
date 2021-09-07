@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+
     private static final Logger logger = LogManager.getLogger(GlobalFilter.class);
     public GlobalFilter() {
         super(Config.class);
