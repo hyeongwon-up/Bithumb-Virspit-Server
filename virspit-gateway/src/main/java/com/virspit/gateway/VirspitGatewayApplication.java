@@ -17,9 +17,9 @@ public class VirspitGatewayApplication {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         return builder.routes()
-                .route("path_route",  r-> r.path("/new")
+                .route("path_route",  r-> r.path("/test")
                         .filters(f -> f.addRequestHeader("Hello", "World")
-                                .rewritePath("/new", "/"))
+                                .rewritePath("/test", "/auth"))
                         .uri("http://localhost:8083/"))
                 .build();
     }
