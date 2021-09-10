@@ -1,6 +1,6 @@
 package com.virspit.gateway.filter;
 
-경import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
