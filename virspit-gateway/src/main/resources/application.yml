@@ -1,21 +1,21 @@
 
 server:
   port: 8080
----
-spring:
-  cloud:
-    gateway:
-      default-filters:
-        - name: GlobalFilter
-          args:
-            baseMessage: Spring Cloud Gateway GlobalFilter
-            preLogger: true
-            postLogger: true
+#---
+#spring:
+#  cloud:
+#    gateway:
+#      default-filters:
+#        - name:
+#          args:
+#            baseMessage: Spring Cloud Gateway GlobalFilter
+#            preLogger: true
+#            postLogger: true
 #      routes:
 #        - id: user-svc
-#          uri: http://localhost:8081/
+#          uri: http://localhost:8083/
 #          predicates:
-#            - Path=/user/**
+#            - Path=/auth/**
 #          filters:
 #            - name: UserFilter
 #              args:
@@ -32,3 +32,6 @@ spring:
 #                baseMessage: Spring Cloud Gateway AdminFilter
 #                preLogger: true
 #                postLogger: true
+
+jwt:
+  secret: temp
