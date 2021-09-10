@@ -1,11 +1,17 @@
 package com.virspit.virspitauth.domain.member.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.virspit.virspitauth.domain.member.entity.Gender;
 import lombok.Getter;
+import org.apache.tomcat.jni.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 public class MemberSignUpRequestDto {
@@ -23,7 +29,6 @@ public class MemberSignUpRequestDto {
     private Gender gender;
 
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate birthdayDate;
+    private String birthdayDate;
 
 }

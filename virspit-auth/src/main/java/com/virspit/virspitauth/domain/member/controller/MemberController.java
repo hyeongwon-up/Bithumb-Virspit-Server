@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
 
-    public ResponseEntity<String> signup(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto){
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto){
         log.info("################## 회원가입 controller Start ###########");
+        log.info("test:" + memberSignUpRequestDto.getBirthdayDate());
         memberService.signUp(memberSignUpRequestDto);
         return ResponseEntity.ok("회원가입 완료");
     }
@@ -32,4 +37,15 @@ public class MemberController {
         log.info("################## 로그인 controller Start ###########");
         return ResponseEntity.ok(memberService.singIn(memberSignInRequestDto));
     }
-}
+
+    @PostMapping("/register")
+    public Map<String, Object> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+        return memberService.addNewUser(memberSignUpRequestDto);
+    }
+
+    @PostMapping("/login")
+    public Map<String, Object> login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {
+       return memberService.login(memberSignInRequestDto);
+    }
+
+    }

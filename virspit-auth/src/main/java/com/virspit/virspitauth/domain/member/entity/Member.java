@@ -3,6 +3,7 @@ package com.virspit.virspitauth.domain.member.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
@@ -35,11 +36,13 @@ public class Member implements Serializable {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Column(nullable = false)
-    private LocalDate birthdayDate;
+    private String birthdayDate;
 
     private Date access_dt;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @CreationTimestamp
     private Date createdDate;
@@ -47,13 +50,9 @@ public class Member implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
 
-    private int grade;
-
-    private Role role;
-
 
     @Builder
-    public Member(String username, String email, String password, Gender gender, LocalDate birthdayDate) {
+    public Member(String username, String email, String password, Gender gender, String birthdayDate) {
         this.username = username;
         this.email = email;
         this.password = password;
