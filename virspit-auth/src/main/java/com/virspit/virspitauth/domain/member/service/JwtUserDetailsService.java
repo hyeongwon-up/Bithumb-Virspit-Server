@@ -2,6 +2,7 @@ package com.virspit.virspitauth.domain.member.service;
 
 
 import com.virspit.virspitauth.domain.member.entity.Member;
+import com.virspit.virspitauth.domain.member.entity.Role;
 import com.virspit.virspitauth.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,20 +22,18 @@ public class JwtUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = memberRepository.findByEmail(email);
 
         List<GrantedAuthority> roles = new ArrayList<>();
 
         if (member == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        if (member.getGrade() == 0) {
+        if (member.getRole()== Role.USER) {
+            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if(member.getRole() == Role.ADMIN) {
             roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else {
-            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
-            roles.add(new SimpleGrantedAuthority("ROLE_HI"));
         }
         return new User(member.getUsername(), member.getPassword(), roles);
     }
