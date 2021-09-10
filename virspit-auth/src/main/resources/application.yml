@@ -12,16 +12,16 @@ spring:
     hibernate:
       ddl-auto: create
 
-    properties:
-      hibernate:
-        #show_sql: true
-        format_sql: true
-
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/virspit_auth?allowMultiQueries=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8&passwordCharacterEncoding=UTF-8
     username: root
     password: password
+
+  redis:
+    port: 6379
+    host: 127.0.0.1
+
 
 logging:
   level:
@@ -31,3 +31,7 @@ logging:
     org.springframework.jdbc.core:
       JdbcTemplate: DEBUG
       StatementCreatorUtils: TRACE
+
+
+jwt:
+  secret: temp
