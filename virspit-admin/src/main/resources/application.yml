@@ -19,6 +19,10 @@ spring:
     username: root
     password: root
 
+  # 404 not found 예외 핸들링을 위해 넣은 두 옵션. add-mappings: false 시 static resource 불러오지 않는다고 함
+  web.resources.add-mappings: false
+  mvc.throw-exception-if-no-handler-found: true
+
 logging:
   level:
     org.hibernate:
