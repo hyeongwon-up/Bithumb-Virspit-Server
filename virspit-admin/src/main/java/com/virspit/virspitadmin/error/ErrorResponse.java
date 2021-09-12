@@ -36,7 +36,7 @@ public class ErrorResponse {
         return new ErrorResponse(code, FieldError.of(bindingResult));
     }
 
-    public static ErrorResponse of(final ErrorCode errorCode){
+    public static ErrorResponse of(final ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
     }
 
@@ -70,8 +70,7 @@ public class ErrorResponse {
         }
 
         private static List<FieldError> of(final BindingResult bindingResult) {
-            final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
-            return fieldErrors.stream()
+            return bindingResult.getFieldErrors().stream()
                     .map(error -> new FieldError(
                             error.getField(),
                             error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
