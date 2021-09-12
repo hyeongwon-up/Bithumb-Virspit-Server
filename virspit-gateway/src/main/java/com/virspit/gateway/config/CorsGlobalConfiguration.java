@@ -15,6 +15,7 @@ import java.util.HashMap;
 @Configuration
 @EnableWebFlux
 public class CorsGlobalConfiguration implements WebFluxConfigurer {
+
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
