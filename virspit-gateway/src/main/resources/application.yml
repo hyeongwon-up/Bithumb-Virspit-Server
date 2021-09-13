@@ -19,16 +19,16 @@ spring:
     gateway:
       routes:
         - id: virspit-user
-          uri: lb://USER-SERVICE
+          uri: lb://VIRSPIT-USER
           predicates:
             - Path=/user/**
           filters:
             - JwtRequestFilter
 
-        - id: virspit-admin
-          uri: lb://ORDER-SERVICE
+        - id: virspit-auth
+          uri: lb://VIRSPIT-AUTH
           predicates:
-            - Path=/order/**
+            - Path=/auth/**
 
 jwt:
   secret: temp

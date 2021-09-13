@@ -3,8 +3,26 @@ server:
   servlet:
     context-path: /auth
 
+---
+
+eureka:
+
+  instance:
+    instance-id: auth-microservice-instance
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+---
 
 spring:
+  application:
+    name: virspit-auth
+
 
   jpa:
     generate-ddl: true
