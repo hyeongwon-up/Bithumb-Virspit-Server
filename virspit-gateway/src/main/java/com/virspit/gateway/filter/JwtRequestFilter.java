@@ -93,7 +93,7 @@ public class JwtRequestFilter extends
             Map<String, Object> userInfo = jwtValidator.getUserParseInfo(token);
             logger.info("role of Request user : " + userInfo.get("role"));
             ArrayList<String> arr = (ArrayList<String>)userInfo.get("role");
-            logger.info("roelsdfsdf: " + userInfo.get("role") + userInfo.get("role").getClass());
+            logger.info("role: " + userInfo.get("role") + userInfo.get("role").getClass());
             if ( !arr.contains(config.getRole())) {
                 throw new IllegalArgumentException();
             }
