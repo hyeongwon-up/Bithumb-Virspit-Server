@@ -40,9 +40,11 @@ public class JwtRequestFilter extends
     public static class Config {
         private String role;
         public Config(String role) {
+            System.out.println("@@@@@@" + role);
             this.role = role;
         }
         public String getRole() {
+            System.out.println(role);
             return role;
         }
     }
@@ -87,10 +89,15 @@ public class JwtRequestFilter extends
    // public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     @Override
     public GatewayFilter apply(Config config) {
+        logger.info(config.role);
+        logger.info("GatewayFilter apply 동작합니다 ######");
+
         return (exchange, chain) -> {
+
             String token = exchange.getRequest().getHeaders().get("Authorization").get(0).substring(7);
             logger.info("token : " + token);
             Map<String, Object> userInfo = jwtValidator.getUserParseInfo(token);
+            logger.info("userInfo : " + userInfo);
             logger.info("role of Request user : " + userInfo.get("role"));
             ArrayList<String> arr = (ArrayList<String>)userInfo.get("role");
             logger.info("role: " + userInfo.get("role") + userInfo.get("role").getClass());
