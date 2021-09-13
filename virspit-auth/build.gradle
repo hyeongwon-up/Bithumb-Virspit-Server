@@ -18,6 +18,12 @@ repositories {
     mavenCentral()
 }
 
+
+ext {
+    set('springCloudVersion', "2020.0.3")
+}
+
+
 dependencies {
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.5.4'
@@ -42,7 +48,19 @@ dependencies {
     //swagger
     compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     compileOnly group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
+
+    //eureka
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+
 }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 
 test {
     useJUnitPlatform()
