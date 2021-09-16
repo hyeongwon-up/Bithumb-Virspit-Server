@@ -27,6 +27,14 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // webflux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // mongo
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb-reactive'
+    implementation group: 'org.mongodb', name: 'mongodb-driver-sync'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    // react
+    testImplementation 'io.projectreactor:reactor-test'
 }
 
 test {
