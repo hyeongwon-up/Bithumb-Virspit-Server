@@ -3,4 +3,5 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://mongodb:27017/product
+      uri: mongodb://localhost:27017/product # local
+#      uri: mongodb://mongo:27017/product # docker app
