@@ -22,3 +22,10 @@
 2. PR Template 에 맞게 작성해주세요.
 
 
+---
+
+## 서버 환경
+
+### spring eureka : 8761
+### spring cloud gateway : 8080
+### spring user : 8081
