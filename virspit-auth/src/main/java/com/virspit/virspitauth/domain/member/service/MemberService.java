@@ -2,10 +2,12 @@ package com.virspit.virspitauth.domain.member.service;
 
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspitauth.domain.member.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.domain.member.entity.Member;
 import com.virspit.virspitauth.domain.member.repository.MemberRepository;
 import com.virspit.virspitauth.exception.SecurityRuntimeException;
 import com.virspit.virspitauth.jwt.JwtGenerator;
+import io.jsonwebtoken.JwtParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,7 +64,7 @@ public class MemberService {
         }
     }
 
-    public MemberSignInRequestDto singIn(MemberSignInRequestDto memberSignInRequestDto) {
+    public MemberSignInResponseDto singIn(MemberSignInRequestDto memberSignInRequestDto) {
         try {
             final String email = memberSignInRequestDto.getEmail();
             Member member = memberRepository.findByEmail(email);
@@ -72,6 +75,7 @@ public class MemberService {
 
             member.setAccess_dt(new Date());
             memberRepository.save(member);
+
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, memberSignInRequestDto.getPassword()));
 
@@ -85,7 +89,8 @@ public class MemberService {
             log.info("generated access Token : " + accessToken);
             log.info("generated refresh Token : " + refreshToken);
 
-            return memberSignInRequestDto;
+
+            return new MemberSignInResponseDto(accessToken, refreshToken);
         } catch (Exception e) {
             throw new SecurityRuntimeException("유효하지 않은 아이디 / 비밀번호", HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -143,4 +148,8 @@ public class MemberService {
     }
 
 
+    public String token(String token) {
+        Date check = jwtGenerator.getExpirationDateFromToken(token);
+        return check.toString();
+    }
 }

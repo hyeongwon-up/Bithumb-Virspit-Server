@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserSignInResponseDto {
-    String token;
+public class MemberSignInResponseDto {
+    String accessToken;
+    String refreshToken;
 }
