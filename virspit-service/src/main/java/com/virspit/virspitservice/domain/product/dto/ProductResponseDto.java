@@ -1,10 +1,14 @@
 package com.virspit.virspitservice.domain.product.dto;
 
-import lombok.Getter;
-import lombok.ToString;
+import com.virspit.virspitservice.domain.product.entity.ProductDoc;
+import com.virspit.virspitservice.domain.product.entity.Type;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @ToString
 public class ProductResponseDto {
@@ -21,4 +25,19 @@ public class ProductResponseDto {
     private LocalDateTime startDate;
 
     private Boolean exhibition;
+
+    private Type type;
+
+    public static ProductResponseDto entityToDto(final ProductDoc productDoc) {
+        return ProductResponseDto.builder()
+                .id(productDoc.getId())
+                .name(productDoc.getName())
+                .price(productDoc.getPrice())
+                .count(productDoc.getCount())
+                .startDate(productDoc.getStartDate())
+                .exhibition(productDoc.getExhibition())
+                .type(productDoc.getType())
+                .build();
+    }
+
 }

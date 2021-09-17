@@ -1,7 +1,9 @@
 package com.virspit.virspitservice.domain.product.repository;
 
+import com.virspit.virspitservice.domain.product.dto.ProductResponseDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Range;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
@@ -24,4 +26,5 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
     @Query("{'name':{${regex: ?0}}")
     Flux<ProductDoc> findByNameLikePagingBy(String name, Pageable page);
 
+    Flux<ProductResponseDto> findByPriceBetween(Range<Integer> priceRange);
 }
