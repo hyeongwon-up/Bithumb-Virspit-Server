@@ -16,11 +16,12 @@ public class ProductService {
     private final ProductDocRepository productRepository;
 
     @Transactional
-    public Mono<ProductDto> insert(Mono<ProductDto> productDto) {
-        return productDto.map(ProductDoc::dtoToEntity)
-                .flatMap(productRepository::insert)
+    public Mono<ProductDto> insert(ProductDto productDto) {
+//        return productDto.map(ProductDoc::dtoToEntity)
+//                .flatMap(productRepository::insert)
+//                .map(ProductDto::entityToDto);
+        return productRepository.save(ProductDoc.dtoToEntity(productDto))
                 .map(ProductDto::entityToDto);
-//        return productRepository.save(ProductDoc.dtoToEntity(ProductDto));
     }
 
     public Flux<ProductDto> getAllProducts() {

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(of = "id")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
