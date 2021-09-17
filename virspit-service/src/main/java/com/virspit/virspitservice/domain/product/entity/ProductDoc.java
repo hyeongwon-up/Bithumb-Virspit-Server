@@ -53,5 +53,5 @@ public class ProductDoc {
     public void setId(final String id) {
         this.id = id;
     }
-//    private PlayerTeam playerTeam;
+
 }
