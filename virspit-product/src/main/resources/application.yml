@@ -2,6 +2,7 @@ server:
   port: 8082
   servlet:
     context-path: /product
+
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/virspit_product
@@ -13,3 +14,9 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 10MB
+
+file.dir: C:/Users/yongwoon/file/
