@@ -35,6 +35,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     // react
     testImplementation 'io.projectreactor:reactor-test'
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
 }
 
 test {
