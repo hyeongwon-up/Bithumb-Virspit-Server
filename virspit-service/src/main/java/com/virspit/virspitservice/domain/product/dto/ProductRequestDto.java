@@ -24,4 +24,8 @@ public class ProductRequestDto {
     private Boolean exhibition;
 
     private Type type;
+
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
 }

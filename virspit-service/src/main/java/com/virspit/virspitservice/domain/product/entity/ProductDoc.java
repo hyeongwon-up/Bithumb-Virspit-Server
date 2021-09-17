@@ -32,6 +32,10 @@ public class ProductDoc {
 
     private Type type;
 
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
+
     public static ProductDoc dtoToEntity(final ProductRequestDto productRequestDto) {
         return ProductDoc.builder()
                 .id(productRequestDto.getId())
@@ -41,6 +45,8 @@ public class ProductDoc {
                 .startDate(productRequestDto.getStartDate())
                 .exhibition(productRequestDto.getExhibition())
                 .type(productRequestDto.getType())
+                .createdDate(productRequestDto.getCreatedDate())
+                .updatedDate(productRequestDto.getUpdatedDate())
                 .build();
     }
 

@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono;
 public class ProductService {
     private final ProductDocRepository productRepository;
 
-    // 1. 삽입
     @Transactional
     public Mono<ProductResponseDto> insert(Mono<ProductRequestDto> productRequestDto) {
         return productRequestDto.map(ProductDoc::dtoToEntity)
@@ -25,7 +24,6 @@ public class ProductService {
 //        return productRepository.save(ProductDoc.dtoToEntity(productRequestDto));
     }
 
-    // 2. 전체 리스트
     public Flux<ProductResponseDto> getAllProducts() {
         return productRepository.findAll()
                 .map(ProductResponseDto::entityToDto);
@@ -37,13 +35,13 @@ public class ProductService {
     }
 
     public Flux<ProductResponseDto> getProductsInPriceRange(final int minPrice, final int maxPrice) {
-        return productRepository.findByPriceBetween(Range.closed(minPrice, maxPrice));
+        return productRepository.findByPriceBetween(Range.closed(minPrice, maxPrice))
+                .map(ProductResponseDto::entityToDto);
     }
 
-    // 3. product 검색 리스트
     public Flux<ProductResponseDto> getProductsBy(String search) {
-
-        return null;
+        return productRepository.findByNameLikeOrderByCreatedDateDesc(search)
+                .map(ProductResponseDto::entityToDto);
     }
 
     @Transactional

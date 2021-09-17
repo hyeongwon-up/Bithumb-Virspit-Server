@@ -28,6 +28,10 @@ public class ProductResponseDto {
 
     private Type type;
 
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
+
     public static ProductResponseDto entityToDto(final ProductDoc productDoc) {
         return ProductResponseDto.builder()
                 .id(productDoc.getId())
@@ -37,6 +41,8 @@ public class ProductResponseDto {
                 .startDate(productDoc.getStartDate())
                 .exhibition(productDoc.getExhibition())
                 .type(productDoc.getType())
+                .createdDate(productDoc.getCreatedDate())
+                .updatedDate(productDoc.getUpdatedDate())
                 .build();
     }
 
