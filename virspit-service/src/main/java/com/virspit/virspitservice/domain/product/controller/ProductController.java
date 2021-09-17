@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
-import com.virspit.virspitservice.domain.product.dto.ProductResponseDto;
+import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public Flux<ProductResponseDto> allProducts(){
+    public Flux<ProductDto> allProducts(){
         return productService.getAllProducts();
     }
 

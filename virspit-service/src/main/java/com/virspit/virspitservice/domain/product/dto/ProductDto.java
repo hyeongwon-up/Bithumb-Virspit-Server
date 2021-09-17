@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @ToString
-public class ProductResponseDto {
+public class ProductDto {
     private String id;
 
     private String name;
@@ -32,8 +32,8 @@ public class ProductResponseDto {
 
     private LocalDateTime updatedDate;
 
-    public static ProductResponseDto entityToDto(final ProductDoc productDoc) {
-        return ProductResponseDto.builder()
+    public static ProductDto entityToDto(final ProductDoc productDoc) {
+        return ProductDto.builder()
                 .id(productDoc.getId())
                 .name(productDoc.getName())
                 .price(productDoc.getPrice())

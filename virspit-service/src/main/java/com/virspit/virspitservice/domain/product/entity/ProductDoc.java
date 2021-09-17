@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.entity;
 
-import com.virspit.virspitservice.domain.product.dto.ProductRequestDto;
+import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -36,17 +36,17 @@ public class ProductDoc {
 
     private LocalDateTime updatedDate;
 
-    public static ProductDoc dtoToEntity(final ProductRequestDto productRequestDto) {
+    public static ProductDoc dtoToEntity(final ProductDto productDto) {
         return ProductDoc.builder()
-                .id(productRequestDto.getId())
-                .name(productRequestDto.getName())
-                .description(productRequestDto.getDescription())
-                .price(productRequestDto.getCount())
-                .startDate(productRequestDto.getStartDate())
-                .exhibition(productRequestDto.getExhibition())
-                .type(productRequestDto.getType())
-                .createdDate(productRequestDto.getCreatedDate())
-                .updatedDate(productRequestDto.getUpdatedDate())
+                .id(productDto.getId())
+                .name(productDto.getName())
+                .description(productDto.getDescription())
+                .price(productDto.getCount())
+                .startDate(productDto.getStartDate())
+                .exhibition(productDto.getExhibition())
+                .type(productDto.getType())
+                .createdDate(productDto.getCreatedDate())
+                .updatedDate(productDto.getUpdatedDate())
                 .build();
     }
 

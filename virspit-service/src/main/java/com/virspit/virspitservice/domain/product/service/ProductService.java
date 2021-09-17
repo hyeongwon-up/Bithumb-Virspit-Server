@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.service;
 
-import com.virspit.virspitservice.domain.product.dto.ProductRequestDto;
-import com.virspit.virspitservice.domain.product.dto.ProductResponseDto;
+import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,40 +16,40 @@ public class ProductService {
     private final ProductDocRepository productRepository;
 
     @Transactional
-    public Mono<ProductResponseDto> insert(Mono<ProductRequestDto> productRequestDto) {
-        return productRequestDto.map(ProductDoc::dtoToEntity)
+    public Mono<ProductDto> insert(Mono<ProductDto> productDto) {
+        return productDto.map(ProductDoc::dtoToEntity)
                 .flatMap(productRepository::insert)
-                .map(ProductResponseDto::entityToDto);
-//        return productRepository.save(ProductDoc.dtoToEntity(productRequestDto));
+                .map(ProductDto::entityToDto);
+//        return productRepository.save(ProductDoc.dtoToEntity(ProductDto));
     }
 
-    public Flux<ProductResponseDto> getAllProducts() {
+    public Flux<ProductDto> getAllProducts() {
         return productRepository.findAll()
-                .map(ProductResponseDto::entityToDto);
+                .map(ProductDto::entityToDto);
     }
 
-    public Mono<ProductResponseDto> getProduct(final String id) {
+    public Mono<ProductDto> getProduct(final String id) {
         return productRepository.findById(id)
-                .map(ProductResponseDto::entityToDto);
+                .map(ProductDto::entityToDto);
     }
 
-    public Flux<ProductResponseDto> getProductsInPriceRange(final int minPrice, final int maxPrice) {
+    public Flux<ProductDto> getProductsInPriceRange(final int minPrice, final int maxPrice) {
         return productRepository.findByPriceBetween(Range.closed(minPrice, maxPrice))
-                .map(ProductResponseDto::entityToDto);
+                .map(ProductDto::entityToDto);
     }
 
-    public Flux<ProductResponseDto> getProductsBy(String search) {
+    public Flux<ProductDto> getProductsBy(String search) {
         return productRepository.findByNameLikeOrderByCreatedDateDesc(search)
-                .map(ProductResponseDto::entityToDto);
+                .map(ProductDto::entityToDto);
     }
 
     @Transactional
-    public Mono<ProductResponseDto> updateProduct(Mono<ProductRequestDto> productRequestDto, String id) {
+    public Mono<ProductDto> updateProduct(Mono<ProductDto> productDto, String id) {
         return productRepository.findById(id)
-                .flatMap(p -> productRequestDto.map(ProductDoc::dtoToEntity))
+                .flatMap(p -> productDto.map(ProductDoc::dtoToEntity))
                 .doOnNext(e -> e.setId(id))
                 .flatMap(productRepository::save)
-                .map(ProductResponseDto::entityToDto);
+                .map(ProductDto::entityToDto);
     }
 
     @Transactional
