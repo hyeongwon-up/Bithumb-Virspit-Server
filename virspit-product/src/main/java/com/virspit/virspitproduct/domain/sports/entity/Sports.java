@@ -3,8 +3,11 @@ package com.virspit.virspitproduct.domain.sports.entity;
 import com.virspit.virspitproduct.domain.common.BaseEntity;
 import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayer;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +17,13 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Sports extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Length(max = 10)
     @Column(length = 10, unique = true)
     private String name;
     private String iconUrl;

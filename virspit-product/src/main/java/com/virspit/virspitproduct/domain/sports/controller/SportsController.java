@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,12 +32,12 @@ public class SportsController {
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public SportsResponseDto addSports(@ModelAttribute SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
+    public SportsResponseDto addSports(@Valid @ModelAttribute SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
         return sportsService.addSports(sportsCreateRequestDto);
     }
 
     @PutMapping("/{sportsId}")
-    public SportsResponseDto updateSports(@PathVariable Long sportsId, @ModelAttribute SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
+    public SportsResponseDto updateSports(@PathVariable Long sportsId, @Valid @ModelAttribute SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
         return sportsService.updateSports(sportsId, sportsCreateRequestDto);
     }
 
