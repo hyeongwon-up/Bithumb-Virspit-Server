@@ -2,9 +2,9 @@ package com.virspit.virspitservice.domain.product.entity;
 
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
