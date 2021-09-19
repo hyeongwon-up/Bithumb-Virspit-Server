@@ -40,6 +40,19 @@ spring:
     port: 6379
     host: 127.0.0.1
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: leehwdatabase@gmail.com
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 
 logging:
   level:
@@ -50,6 +63,20 @@ logging:
       JdbcTemplate: DEBUG
       StatementCreatorUtils: TRACE
 
-
+---
 jwt:
   secret: temp
+
+---
+my:
+  ip: localhost
+
+---
+
+### Email Send Configuration_SMTP
+#spring.mail.host=smtp.gmail.com
+#spring.mail.port=587
+#spring.mail.username= 유저 id
+#spring.mail.password= 유저 비밀번호
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true
