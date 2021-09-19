@@ -52,6 +52,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     //mail
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.5.4'
+    implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 
 
 }
