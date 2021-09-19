@@ -4,12 +4,14 @@ import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProductService {
@@ -17,11 +19,11 @@ public class ProductService {
 
     @Transactional
     public Mono<ProductDto> insert(ProductDto productDto) {
-//        return productDto.map(ProductDoc::dtoToEntity)
-//                .flatMap(productRepository::insert)
-//                .map(ProductDto::entityToDto);
-        return productRepository.save(ProductDoc.dtoToEntity(productDto))
+        log.info("mongo db insert :{}",productDto);
+        Mono<ProductDto> result =  productRepository.save(ProductDoc.dtoToEntity(productDto))
                 .map(ProductDto::entityToDto);
+        result.subscribe(p->log.info("result {}",p));
+        return result;
     }
 
     public Flux<ProductDto> getAllProducts() {
