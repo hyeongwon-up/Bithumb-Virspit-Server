@@ -1,0 +1,51 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /order
+
+---
+
+eureka:
+
+  instance:
+    instance-id: order-microservice-instance
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+---
+
+spring:
+  application:
+    name: virspit-order
+
+logging:
+  level:
+    org.hibernate:
+      SQL: DEBUG # to logger
+      type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.core:
+      JdbcTemplate: DEBUG
+      StatementCreatorUtils: TRACE
+
+---
+jwt:
+  secret: temp
+
+---
+my:
+  ip: localhost
+
+---
+
+### Email Send Configuration_SMTP
+#spring.mail.host=smtp.gmail.com
+#spring.mail.port=587
+#spring.mail.username= 유저 id
+#spring.mail.password= 유저 비밀번호
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true
