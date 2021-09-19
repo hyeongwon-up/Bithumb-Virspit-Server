@@ -10,16 +10,18 @@ spring:
     hibernate:
       ddl-auto: create
 
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+    properties.hibernate.format_sql: true
+    show-sql: true
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/virspit_admin?allowMultiQueries=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
-    username: root # FIXME: DB ??? ?? ? ??
+    url: jdbc:mysql://127.0.0.1:3306/virspit_admin
+    username: root
     password: root
+
+  # 404 not found 예외 핸들링을 위해 넣은 두 옵션. add-mappings: false 시 static resource 불러오지 않는다고 함
+  web.resources.add-mappings: false
+  mvc.throw-exception-if-no-handler-found: true
 
 logging:
   level:

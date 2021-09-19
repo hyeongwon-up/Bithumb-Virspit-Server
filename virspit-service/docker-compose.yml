@@ -1,0 +1,18 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo:3.2.4
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - ./data/db:/data/db
+    container_name: "mongodb"
+    ports:
+      - 27017:27017
+    command: --smallfiles
+  app:
+    image: product-app
+    ports:
+      - 8080:8080
+    links:
+      - mongodb

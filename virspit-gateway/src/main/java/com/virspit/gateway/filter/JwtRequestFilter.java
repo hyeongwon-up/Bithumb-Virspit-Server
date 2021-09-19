@@ -1,6 +1,6 @@
 package com.virspit.gateway.filter;
 
-경import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -39,15 +40,15 @@ public class JwtRequestFilter extends
 
     public static class Config {
         private String role;
+
         public Config(String role) {
             this.role = role;
         }
+
         public String getRole() {
-            return role;
+            return Role.USER.getCode();
         }
     }
-
-
 
     @Bean
     public ErrorWebExceptionHandler myExceptionHandler() {
@@ -56,7 +57,7 @@ public class JwtRequestFilter extends
 
     public class MyWebExceptionHandler implements ErrorWebExceptionHandler {
         private String errorCodeMaker(int errorCode) {
-            return "{\"errorCode\":" + errorCode +"}";
+            return "{\"errorCode\":" + errorCode + "}";
         }
 
         @Override
@@ -84,17 +85,15 @@ public class JwtRequestFilter extends
     public JwtRequestFilter() {
         super(Config.class);
     }
-   // public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+    // public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String token = exchange.getRequest().getHeaders().get("Authorization").get(0).substring(7);
-            logger.info("token : " + token);
             Map<String, Object> userInfo = jwtValidator.getUserParseInfo(token);
-            logger.info("role of Request user : " + userInfo.get("role"));
-            ArrayList<String> arr = (ArrayList<String>)userInfo.get("role");
-            logger.info("roelsdfsdf: " + userInfo.get("role") + userInfo.get("role").getClass());
-            if ( !arr.contains(config.getRole())) {
+            ArrayList<String> arr = (ArrayList<String>) userInfo.get("role");
+            if (!arr.contains(config.getRole())) {
                 throw new IllegalArgumentException();
             }
             return chain.filter(exchange);
