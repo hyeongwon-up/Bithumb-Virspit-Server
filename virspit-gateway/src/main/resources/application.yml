@@ -29,6 +29,11 @@ spring:
           uri: lb://VIRSPIT-AUTH
           predicates:
             - Path=/auth/**
+            -
+        - id: virspit-order
+            uri: lb://VIRSPIT-ORDER
+            predicates:
+              - Path=/order/**
 
 jwt:
   secret: temp
