@@ -25,6 +25,21 @@ class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository;
 
+    List<Orders> generate(){
+        List<Orders> orders = new ArrayList<>();
+        for (long i = 0; i < 10; i++) {
+            Orders order = Orders.builder()
+                    .id(i + 1)
+                    .memberId(i + 1)
+                    .productId(i + 1)
+                    .orderDate(LocalDateTime.now().minusMonths(i))
+                    .build();
+            orders.add(order);
+            orderRepository.save(order);
+        }
+        return orders;
+    }
+
     @DisplayName("주문 정보 저장")
     @Test
     void save() {
@@ -47,17 +62,7 @@ class OrderRepositoryTest {
     @Test
     void findAll() {
         // given
-        List<Orders> orders = new ArrayList<>();
-        for (long i = 0; i < 10; i++) {
-            Orders order = Orders.builder()
-                    .id(i + 1)
-                    .memberId(i + 1)
-                    .productId(i + 1)
-                    .orderDate(LocalDateTime.now().minusMonths(i))
-                    .build();
-            orders.add(order);
-            orderRepository.save(order);
-        }
+        List<Orders> orders = generate();
 
         //when
         final Page<Orders> result = orderRepository.findAll(PageRequest.of(0, 1, Sort.by("orderDate").descending()));
@@ -70,17 +75,7 @@ class OrderRepositoryTest {
     @Test
     void findByOrderDateBetween() {
         // given
-        List<Orders> orders = new ArrayList<>();
-        for (long i = 0; i < 10; i++) {
-            Orders order = Orders.builder()
-                    .id(i + 1)
-                    .memberId(i + 1)
-                    .productId(i + 1)
-                    .orderDate(LocalDateTime.now().minusMonths(i))
-                    .build();
-            orders.add(order);
-            orderRepository.save(order);
-        }
+        List<Orders> orders = generate();
 
         //when
         final Page<Orders> result = orderRepository.findByOrderDateBetween(
@@ -90,5 +85,39 @@ class OrderRepositoryTest {
 
         // then
         assertThat(result).contains(orders.get(0), orders.get(1));
+    }
+
+    @DisplayName("유저 아이디별로 전체기간의 구매목록을 가져온다.")
+    @Test
+    void findByMemberId(){
+        // given
+        List<Orders> orders = generate();
+
+        //when
+        final Page<Orders> result = orderRepository.findByMemberId(
+                1L,
+                PageRequest.of(0, 3, Sort.by("orderDate").descending()));
+
+        // then
+        assertThat(result).contains(orders.get(0));
+        assertThat(result.getContent().size()).isEqualTo(1);
+    }
+
+    @DisplayName("유저 아이디별로 구매목록을 가져온다.(날짜지정)")
+    @Test
+    void findByMemberIdAndOrderDateBetween(){
+        // given
+        List<Orders> orders = generate();
+
+        //when
+        final Page<Orders> result = orderRepository.findByMemberIdAndOrderDateBetween(
+                1L,
+                LocalDateTime.now().minusMonths(2),
+                LocalDateTime.now(),
+                PageRequest.of(0, 3, Sort.by("orderDate").descending()));
+
+        // then
+        assertThat(result).contains(orders.get(0));
+        assertThat(result.getContent().get(0).getId()).isEqualTo(1L);
     }
 }

@@ -1,13 +1,11 @@
 package com.virspit.virspitorder.dto.response;
 
 import com.virspit.virspitorder.entity.Orders;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode
 @Getter
 @Builder
 @AllArgsConstructor

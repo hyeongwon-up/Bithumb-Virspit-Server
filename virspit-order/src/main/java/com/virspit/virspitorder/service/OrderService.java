@@ -33,11 +33,11 @@ public class OrderService {
         LocalDateTime endDateTime = LocalDateTime.now();
 
         if (endDate != null) {
-            endDateTime = LocalDateTime.parse(endDate, StringUtils.formatter);
+            endDateTime = LocalDateTime.parse(endDate, StringUtils.FORMATTER);
         }
 
         return orderRepository.findByOrderDateBetween(
-                LocalDateTime.parse(startDate, StringUtils.formatter),
+                LocalDateTime.parse(startDate, StringUtils.FORMATTER),
                 endDateTime,
                 pageable)
                 .stream()
