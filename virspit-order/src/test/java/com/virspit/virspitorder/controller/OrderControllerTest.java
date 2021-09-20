@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -40,18 +43,22 @@ class OrderControllerTest {
                 .build();
         List<Orders> orders = List.of(order1);
 
-        String startDate = "2020-10-10";
-        String endDate = "2021-10-10";
+        String startDate = "2020-10-12 12:00:00";
+        String endDate = "2021-10-12 12:00:00";
 
-        given(ordersService.getAll(startDate, endDate)).willReturn(orders.stream()
-                .map(OrdersResponseDto::entityToDto)
-                .collect(Collectors.toList()));
+        Pageable page = PageRequest.of(0, 2, Sort.by("orderDate").descending());
+        given(ordersService.getAll(startDate, endDate, page))
+                .willReturn(orders.stream()
+                        .map(OrdersResponseDto::entityToDto)
+                        .collect(Collectors.toList()));
 
         mvc.perform(get("/orders")
                 .param("startDate", startDate)
                 .param("endDate", endDate)
+                .param("page", String.valueOf(1))
+                .param("size", String.valueOf(2))
         ).andExpect(status().isOk());
 
-        verify(ordersService).getAll(startDate, endDate);
+        verify(ordersService).getAll(startDate, endDate, page);
     }
 }

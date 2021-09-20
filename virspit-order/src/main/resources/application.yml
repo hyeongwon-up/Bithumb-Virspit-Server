@@ -6,6 +6,10 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이징 1번 부터 시작
