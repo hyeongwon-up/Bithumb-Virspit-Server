@@ -3,21 +3,12 @@ package com.virspit.virspitauth.domain.member.controller;
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.domain.member.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.domain.member.entity.Member;
 import com.virspit.virspitauth.domain.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -37,22 +28,32 @@ public class AuthController {
         return memberService.login(memberSignInRequestDto);
     }
 
-    @GetMapping("/verify")
-    @ApiOperation("회원가입시 가입한 이메일 인증")
-    public ResponseEntity<String> verifyEmail(@RequestParam("useremail") String userEmail, @RequestParam("key") String hash) {
-       return ResponseEntity.ok(memberService.verifyEmail(userEmail, hash));
+    @GetMapping("/verify/mail")
+    @ApiOperation("회원가입시 입력한 이메일 인증2")
+    public ResponseEntity<String> verifyEmail(@RequestParam("useremail") String userEmail) throws Exception {
+        return ResponseEntity.ok(memberService.verifyUserEmail(userEmail));
     }
 
-    @GetMapping("/findpwd")
-    @ApiOperation("비밀번호 찾기")
-    public ResponseEntity<String> findPassword(@RequestParam("useremail") String userEmail){
-        return ResponseEntity.ok(memberService.findPassword(userEmail));
+    @PostMapping("/verify/mail")
+    @ApiOperation("이메일에 전송된 인증번호 검증")
+    public ResponseEntity<Boolean> verifyNumber(@RequestParam("useremail") String userEmail, Integer number) throws Exception{
+        return ResponseEntity.ok(memberService.verifyNumber(userEmail, number));
     }
 
-    @GetMapping("/verify/pwd")
-    public ResponseEntity<String> changePassword(@RequestParam("useremail") String userEmail, @RequestParam("key") String hash) {
+    @PostMapping("/findpwd")
+    @ApiOperation("비밀번호 잃어버렸을 때 초기화 요청")
+    public ResponseEntity<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception{
+        return ResponseEntity.ok(memberService.findPasssword(userEmail));
+    }
+
+    @GetMapping("/findpwd/res")
+    @ApiOperation("비밀번호 초기화 요청 후 응답")
+    public ResponseEntity<Boolean> changePassword(
+            @RequestParam("useremail") String userEmail, @RequestParam("key") String hash) throws Exception{
+        log.info("pwd chage start");
         return ResponseEntity.ok(memberService.changePassword(userEmail, hash));
     }
+
 
 
 }
