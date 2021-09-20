@@ -1,6 +1,8 @@
 package com.virspit.virspitorder.service;
 
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
+import com.virspit.virspitorder.error.ErrorCode;
+import com.virspit.virspitorder.error.exception.BusinessException;
 import com.virspit.virspitorder.repository.OrderRepository;
 import com.virspit.virspitorder.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +54,25 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrdersResponseDto> getAllByUser(Long userId, String startDate, String endDate, Pageable pageable) {
+    public List<OrdersResponseDto> getAllByUser(Long memberId, String startDate, String endDate, Pageable pageable) {
+        StringUtils.validateInputDate(startDate, endDate);
 
-        return null;
+        if(startDate == null && endDate == null) {
+            return orderRepository.findByMemberId(memberId, pageable)
+                    .stream()
+                    .map(OrdersResponseDto::entityToDto)
+                    .collect(Collectors.toList());
+        }
+        if(startDate == null || endDate == null) {
+            throw new BusinessException("startDate, endDate 를 정확히 입력해주세요.", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        return orderRepository.findByMemberIdAndOrderDateBetween(
+                memberId,
+                LocalDateTime.parse(startDate, StringUtils.FORMATTER),
+                LocalDateTime.parse(endDate, StringUtils.FORMATTER),
+                pageable)
+                .stream()
+                .map(OrdersResponseDto::entityToDto)
+                .collect(Collectors.toList());
     }
 }
