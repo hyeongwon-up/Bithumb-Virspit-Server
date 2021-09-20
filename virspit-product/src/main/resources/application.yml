@@ -27,9 +27,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
+    properties.hibernate.format_sql: true
 
   servlet:
     multipart:
