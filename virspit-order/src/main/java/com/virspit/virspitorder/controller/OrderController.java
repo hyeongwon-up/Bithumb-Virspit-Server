@@ -20,9 +20,17 @@ public class OrderController {
 
     @ApiOperation(value = "전체 주문 목록")
     @GetMapping
-    public ResponseEntity<?> allListByDate(@RequestParam(value = "startDate", required = false) String startDate,
+    public ResponseEntity<?> allList(@RequestParam(value = "startDate", required = false) String startDate,
+                                     @RequestParam(value = "endDate", required = false) String endDate) {
+
+        return ResponseEntity.ok(orderService.getAll(startDate, endDate));
+    }
+
+    @ApiOperation(value = "유저의 주문 목록")
+    @GetMapping("/users")
+    public ResponseEntity<?> userOrderList(@RequestParam(value = "startDate", required = false) String startDate,
                                            @RequestParam(value = "endDate", required = false) String endDate) {
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(orderService.getAll(startDate, endDate));
     }
 }
