@@ -1,9 +1,8 @@
 package com.virspit.virspituser.domain.member.entity;
 
 import com.virspit.virspituser.global.code.Gender;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.virspit.virspituser.global.entity.BaseTimeEntity;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
@@ -16,8 +15,8 @@ import java.util.Date;
 @Data
 @Entity
 @NoArgsConstructor
-public class Member implements Serializable {
-    private static final long serialVersionUID = -7353484588260422449L;
+@ToString
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
