@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -114,62 +117,62 @@ public class MemberService {
 
     }
 
-//    public Boolean findPasssword(String userEmail) throws Exception {
-//        MimeMessage message = javaMailSender.createMimeMessage();
-//        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
-//        message.setSubject("[본인인증] VIRSPIT 비밀번호 초기화");
-//
-//        int rand = new Random().nextInt(999999);
-//        String formatted = String.format("%06d", rand);
-//        String hash = getSHA512Token(userEmail, formatted);
-//        String content =
-//                "VIRSPIT 비밀번호 초기화" +
-//                        "<br><br>" +
-//                        "초기화 비밀번호는 virspit!23$ 입니다." +
-//                        "<br>" +
-//                        "초기화를 원하시면 아래 링크를 눌러주세요." +
-//                        "<br>" +
-//                        "<a href='http://" + myIp + ":8083" + "/auth/findpwd/res?useremail="+userEmail+"&key="+hash+"'>" +
-//                        "비밀번호 변경하기</a></p>" +
-//                        "<br>" +
-//                        "반드시 로그인 후 비밀번호를 변경해주세요.!";
-//
-//        stringRedisTemplate.opsForValue().set("changepw-" + userEmail, hash);
-//        message.setText(content, "UTF-8", "html");
-//        javaMailSender.send(message);
-//
-//        return true;
-//    }
+    public Boolean findPasssword(String userEmail) throws Exception {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
+        message.setSubject("[본인인증] VIRSPIT 비밀번호 초기화");
 
-//    public String getSHA512Token(String passwordToHash, String salt){
-//        String generatedPassword = null;
-//        try {
-//            MessageDigest md = MessageDigest.getInstance("SHA-512");
-//            md.update(salt.getBytes(StandardCharsets.UTF_8));
-//            byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
-//            StringBuilder sb = new StringBuilder();
-//            for(int i=0; i< bytes.length ;i++){
-//                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-//            }
-//            generatedPassword = sb.toString();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        }
-//        return generatedPassword;
-//    }
+        int rand = new Random().nextInt(999999);
+        String formatted = String.format("%06d", rand);
+        String hash = getSHA512Token(userEmail, formatted);
+        String content =
+                "VIRSPIT 비밀번호 초기화" +
+                        "<br><br>" +
+                        "초기화 비밀번호는 virspit!23$ 입니다." +
+                        "<br>" +
+                        "초기화를 원하시면 아래 링크를 눌러주세요." +
+                        "<br>" +
+                        "<a href='http://" + myIp + ":8083" + "/auth/findpwd/res?useremail="+userEmail+"&key="+hash+"'>" +
+                        "비밀번호 변경하기</a></p>" +
+                        "<br>" +
+                        "반드시 로그인 후 비밀번호를 변경해주세요.!";
 
-//    public Boolean changePassword(String userEmail, String hash) throws Exception {
-//        log.info("changePassword 동작");
-//        if (stringRedisTemplate.opsForValue().get("changepw-" + userEmail).equals(hash)) {
-//            stringRedisTemplate.delete("changepw-" + userEmail);
-//
-//            Member member = memberRepository.findByEmail(userEmail);
-//            member.setPassword(passwordEncoder.encode("virspit!23$"));
-//            memberRepository.save(member);
-//
-//            return true;
-//        } else {
-//            throw new Exception("오류");
-//        }
-//    }
+        stringRedisTemplate.opsForValue().set("changepw-" + userEmail, hash);
+        message.setText(content, "UTF-8", "html");
+        javaMailSender.send(message);
+
+        return true;
+    }
+
+    public String getSHA512Token(String passwordToHash, String salt){
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(salt.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++){
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return generatedPassword;
+    }
+
+    public Boolean changePassword(String userEmail, String hash) throws Exception {
+        log.info("changePassword 동작");
+        if (stringRedisTemplate.opsForValue().get("changepw-" + userEmail).equals(hash)) {
+            stringRedisTemplate.delete("changepw-" + userEmail);
+
+            Member member = memberServiceFeignClient.findByEmail(userEmail);
+            member.setPassword(passwordEncoder.encode("virspit!23$"));
+            memberServiceFeignClient.changePwd(member);
+
+            return true;
+        } else {
+            throw new Exception("오류");
+        }
+    }
 }
