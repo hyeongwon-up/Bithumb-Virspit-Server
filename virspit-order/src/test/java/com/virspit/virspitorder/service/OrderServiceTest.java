@@ -42,8 +42,6 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository);
-
         orders = new ArrayList<>();
         for (long i = 0; i < 10; i++) {
             Orders order = Orders.builder()

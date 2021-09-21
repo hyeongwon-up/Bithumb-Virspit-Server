@@ -1,6 +1,6 @@
 package com.virspit.virspitorder.controller;
 
-import com.virspit.virspitorder.common.result.SuccessResponse;
+import com.virspit.virspitorder.response.result.SuccessResponse;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
 import com.virspit.virspitorder.service.OrderService;
 import io.swagger.annotations.Api;

@@ -1,7 +1,7 @@
-package com.virspit.virspitorder.common.error.exception;
+package com.virspit.virspitorder.response.error.exception;
 
 
-import com.virspit.virspitorder.common.error.ErrorCode;
+import com.virspit.virspitorder.response.error.ErrorCode;
 
 public class InvalidValueException extends BusinessException {
 
