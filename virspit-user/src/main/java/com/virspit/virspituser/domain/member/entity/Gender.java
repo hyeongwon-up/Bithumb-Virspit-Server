@@ -1,4 +1,4 @@
-package com.virspit.virspituser.global.code;
+package com.virspit.virspituser.domain.member.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum Gender {
     MALE(0),
-    FEMALE(1)
+    FEMALE(1),
+    ETC(2)
     ;
 
     private final int value;
