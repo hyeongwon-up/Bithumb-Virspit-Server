@@ -1,3 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:52000/virspit_order
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    show-sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이징 1번 부터 시작
+
+kas:
+  chain-id: 1
+  access-key-id: accessKeyId
+  secret-access-key: secretAccessKey
+
 server:
   port: 8084
   servlet:
