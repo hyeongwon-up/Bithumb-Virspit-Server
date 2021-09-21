@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -24,5 +25,9 @@ public class Member {
     private LocalDate birthdayDate;
 
     private Role role;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 }
