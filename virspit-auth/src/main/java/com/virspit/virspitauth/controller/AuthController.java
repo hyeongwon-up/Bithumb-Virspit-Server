@@ -1,5 +1,7 @@
 package com.virspit.virspitauth.controller;
 
+import com.virspit.virspitauth.dto.model.Member;
+import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
@@ -40,7 +42,7 @@ public class AuthController {
         return ResponseEntity.ok(memberService.verifyNumber(userEmail, number));
     }
 
-    @PostMapping("/findpwd")
+    @PostMapping("/initpwd")
     @ApiOperation("비밀번호 잃어버렸을 때 초기화 요청")
     public ResponseEntity<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception{
         return ResponseEntity.ok(memberService.findPasssword(userEmail));
@@ -48,10 +50,15 @@ public class AuthController {
 
     @GetMapping("/findpwd/res")
     @ApiOperation("비밀번호 초기화 요청 후 응답")
-    public ResponseEntity<Boolean> changePassword(
+    public ResponseEntity<Boolean> initPassword(
             @RequestParam("useremail") String userEmail, @RequestParam("key") String hash) throws Exception{
-        log.info("pwd chage start");
-        return ResponseEntity.ok(memberService.changePassword(userEmail, hash));
+        return ResponseEntity.ok(memberService.initPassword(userEmail, hash));
+    }
+
+    @PutMapping("/changepwd")
+    @ApiOperation("비밀번호 변경")
+    public Member changePassword(@RequestBody MemberChangePwdRequestDto memberChangePwdRequestDto) {
+        return memberService.changePassword(memberChangePwdRequestDto);
     }
 
 

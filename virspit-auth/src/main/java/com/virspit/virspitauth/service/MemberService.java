@@ -1,6 +1,7 @@
 package com.virspit.virspitauth.service;
 
 
+import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
@@ -160,18 +161,30 @@ public class MemberService {
         return generatedPassword;
     }
 
-    public Boolean changePassword(String userEmail, String hash) throws Exception {
+    public Boolean initPassword(String userEmail, String hash) throws Exception {
         log.info("changePassword 동작");
         if (stringRedisTemplate.opsForValue().get("changepw-" + userEmail).equals(hash)) {
             stringRedisTemplate.delete("changepw-" + userEmail);
 
             Member member = memberServiceFeignClient.findByEmail(userEmail);
             member.setPassword(passwordEncoder.encode("virspit!23$"));
-            memberServiceFeignClient.changePwd(member);
+            memberServiceFeignClient.edit(member);
 
             return true;
         } else {
             throw new Exception("오류");
         }
+    }
+
+    public Member changePassword(MemberChangePwdRequestDto memberChangePwdRequestDto) {
+        Member member = memberServiceFeignClient.findById(memberChangePwdRequestDto.getId());
+        String userEmail = member.getEmail();
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userEmail, memberChangePwdRequestDto.getBeforePwd()));
+
+        member.setPassword(passwordEncoder.encode(memberChangePwdRequestDto.getAfterPwd()));
+
+        return member;
     }
 }
