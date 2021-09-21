@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,5 +59,35 @@ class OrderControllerTest {
         ).andExpect(status().isOk());
 
         verify(ordersService).getAll(startDate, endDate, page);
+    }
+
+    @DisplayName("유저 전체 주문 목록 테스트")
+    @Test
+    void memberOrderList() throws Exception {
+        Orders order1 = Orders.builder()
+                .id(1l)
+                .memberId(1l)
+                .productId(1l)
+                .orderDate(LocalDateTime.now())
+                .build();
+        List<Orders> orders = List.of(order1);
+
+        String startDate = "2020-10-12 12:00:00";
+        String endDate = "2021-10-12 12:00:00";
+
+        Pageable page = PageRequest.of(0, 2, Sort.by("orderDate").descending());
+        given(ordersService.getAllByMember(1l, startDate, endDate, page))
+                .willReturn(orders.stream()
+                        .map(OrdersResponseDto::entityToDto)
+                        .collect(Collectors.toList()));
+
+        mvc.perform(get("/orders/members/{memberId}", 1)
+                .param("startDate", startDate)
+                .param("endDate", endDate)
+                .param("page", String.valueOf(1))
+                .param("size", String.valueOf(2))
+        ).andExpect(status().isOk());
+
+        verify(ordersService).getAllByMember(1l,startDate, endDate, page);
     }
 }

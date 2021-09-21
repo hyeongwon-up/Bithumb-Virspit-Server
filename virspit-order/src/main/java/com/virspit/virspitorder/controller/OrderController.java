@@ -28,12 +28,12 @@ public class OrderController {
     }
 
     @ApiOperation(value = "유저의 주문 목록")
-    @GetMapping("/users/{memberId}")
-    public ResponseEntity<?> userOrderList(@PageableDefault(sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable,
+    @GetMapping("/members/{memberId}")
+    public ResponseEntity<?> memberOrderList(@PageableDefault(sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable,
                                            @RequestParam(value = "startDate", required = false) String startDate,
                                            @RequestParam(value = "endDate", required = false) String endDate,
                                            @PathVariable("memberId") Long memberId) {
 
-        return ResponseEntity.ok(orderService.getAllByUser(memberId, startDate, endDate, pageable));
+        return ResponseEntity.ok(orderService.getAllByMember(memberId, startDate, endDate, pageable));
     }
 }

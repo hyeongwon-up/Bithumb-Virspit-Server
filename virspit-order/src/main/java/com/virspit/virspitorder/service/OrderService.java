@@ -54,7 +54,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrdersResponseDto> getAllByUser(Long memberId, String startDate, String endDate, Pageable pageable) {
+    public List<OrdersResponseDto> getAllByMember(Long memberId, String startDate, String endDate, Pageable pageable) {
         StringUtils.validateInputDate(startDate, endDate);
 
         if(startDate == null && endDate == null) {
