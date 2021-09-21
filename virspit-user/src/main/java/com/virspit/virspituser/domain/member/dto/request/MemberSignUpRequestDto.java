@@ -2,7 +2,7 @@ package com.virspit.virspituser.domain.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.spi.Toolable;
-import com.virspit.virspituser.domain.member.entity.Gender;
+import com.virspit.virspituser.global.code.Gender;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
