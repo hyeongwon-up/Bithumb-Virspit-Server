@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @ToString
 public class MemberSignUpRequestDto {
 
-    private String username;
+    private String memberName;
 
     private String email;
 
