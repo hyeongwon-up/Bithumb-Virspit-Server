@@ -1,8 +1,10 @@
 package com.virspit.virspituser.domain.member.service;
 
+import com.virspit.virspituser.domain.member.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspituser.domain.member.entity.Member;
+import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final AuthServiceFeignClient authServiceFeignClient;
+
 
     public String registry(MemberSignUpRequestDto memberSignUpRequestDto) {
 
@@ -39,7 +43,7 @@ public class MemberService {
         return memberRepository.findByEmail(memberEmail);
     }
 
-    public String changePwd(@RequestBody Member member) {
+    public String edit(@RequestBody Member member) {
         memberRepository.save(member);
         return "저장하였습니다.";
     }
@@ -52,4 +56,12 @@ public class MemberService {
         return "성공";
     }
 
+    public String changePwd(MemberChangePwdRequestDto memberChangePwdRequestDto) {
+        memberRepository.save(authServiceFeignClient.changePassword(memberChangePwdRequestDto));
+        return "ok";
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).get();
+    }
 }
