@@ -15,7 +15,7 @@ spring:
         one-indexed-parameters: true # 페이징 1번 부터 시작
 
 kas:
-  chain-id: 1
+  chain-id: 1001 #baobab
   access-key-id: accessKeyId
   secret-access-key: secretAccessKey
 

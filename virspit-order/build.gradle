@@ -18,6 +18,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 
@@ -42,7 +43,8 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	// validation
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.4'
-
+	// webclient - webflux
+	implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
 	//Eureka
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }
