@@ -3,10 +3,7 @@ package com.virspit.virspitauth.feign;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.model.Member;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient("virspit-user")
 public interface MemberServiceFeignClient {
@@ -18,8 +15,9 @@ public interface MemberServiceFeignClient {
     Member findByEmail(@RequestParam String memberEmail);
 
     @PostMapping(value = "/member/pwd", consumes = "application/json")
-    String changePwd(@RequestBody Member member);
+    String edit(@RequestBody Member member);
 
-
+    @GetMapping(value = "/member/{id}", consumes = "application/json")
+    Member findById(@PathVariable Long id);
 
 }
