@@ -36,7 +36,8 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	// validation
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.4'
-
+	// kas sdk
+	implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
 }
 
 test {

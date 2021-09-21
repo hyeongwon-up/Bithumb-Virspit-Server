@@ -28,4 +28,8 @@ public class Orders { // TODO order 불가; orders or purchase
 
     @NotNull
     private LocalDateTime orderDate;
+
+    private Long tokenId;
+
+    private String memberAddress; // 지갑 주소
 }

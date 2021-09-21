@@ -13,3 +13,8 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true # 페이징 1번 부터 시작
+
+kas:
+  chain-id: 1
+  access-key-id: accessKeyId
+  secret-access-key: secretAccessKey
