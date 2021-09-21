@@ -16,5 +16,9 @@ public interface MemberServiceFeignClient {
     @GetMapping(value = "/member", consumes = "application/json")
     Member findByEmail(@RequestParam String memberEmail);
 
+    @PostMapping(value = "/member/pwd", consumes = "application/json")
+    String changePwd(@RequestBody Member member);
+
+
 
 }
