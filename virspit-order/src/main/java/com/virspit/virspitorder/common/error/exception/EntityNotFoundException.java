@@ -1,7 +1,7 @@
-package com.virspit.virspitorder.error.exception;
+package com.virspit.virspitorder.common.error.exception;
 
 
-import com.virspit.virspitorder.error.ErrorCode;
+import com.virspit.virspitorder.common.error.ErrorCode;
 
 public class EntityNotFoundException extends BusinessException {
 

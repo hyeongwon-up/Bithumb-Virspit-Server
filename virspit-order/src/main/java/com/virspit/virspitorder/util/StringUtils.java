@@ -1,7 +1,7 @@
 package com.virspit.virspitorder.util;
 
-import com.virspit.virspitorder.error.ErrorCode;
-import com.virspit.virspitorder.error.exception.BusinessException;
+import com.virspit.virspitorder.common.error.ErrorCode;
+import com.virspit.virspitorder.common.error.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

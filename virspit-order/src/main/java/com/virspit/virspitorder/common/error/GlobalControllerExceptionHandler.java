@@ -1,6 +1,6 @@
-package com.virspit.virspitorder.error;
+package com.virspit.virspitorder.common.error;
 
-import com.virspit.virspitorder.error.exception.BusinessException;
+import com.virspit.virspitorder.common.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
