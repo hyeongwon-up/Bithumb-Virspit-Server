@@ -23,10 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +55,7 @@ public class MemberService {
         final String userEmail = memberSignInRequestDto.getEmail();
         Member member = memberServiceFeignClient.findByEmail(userEmail);
 
+        //블랙리스트 검증
         if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
             throw new Exception("잘못된 정보 임다");
         }
@@ -73,49 +70,50 @@ public class MemberService {
 
         //generate Token and save in redis
         stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
+        log.info("check");
         return new MemberSignInResponseDto(accessToken, refreshToken);
     }
 
-//    public String verifyUserEmail(String userEmail) throws Exception {
-//        log.info("verify email 동작");
-//        int rand = new Random().nextInt(999999);
-//        verifyRedisTemplate.opsForValue().set("verify-"+userEmail, rand);
-//
-//        MimeMessage message = javaMailSender.createMimeMessage();
-//        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
-//        message.setSubject("[본인인증] VIRSPIT 이메일 인증");
-//
-//        String content =
-//                "VIRSPIT을 방문해주셔서 감사합니다." +
-//                        "<br><br>" +
-//                        "인증 번호는 " + rand + "입니다." +
-//                        "<br>" +
-//                        "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
-//
-//        message.setText(content, "UTF-8", "html");
-//        javaMailSender.send(message);
-//
-//        verifyRedisTemplate.expire("verify-"+userEmail, 10*24*1000, TimeUnit.MILLISECONDS);
-//        // expire 하루
-//
-//        return "이메일 인증 요청 성공";
-//    }
-//
-//
-//    public Boolean verifyNumber(String userEmail, Integer number) throws Exception {
-//        if(verifyRedisTemplate.opsForValue().get("verify-"+userEmail) != null) {
-//            int verifiedNumber = verifyRedisTemplate.opsForValue().get("verify-"+userEmail);
-//            if(verifiedNumber != number) {
-//                throw new Exception("인증번호가 틀렸습니다.");
-//            }
-//            verifyRedisTemplate.delete("verify-"+userEmail);
-//            return true;
-//        } else {
-//            throw  new Exception("인증이 필요한 이메일이 아닙니다.");
-//        }
-//
-//    }
-//
+    public String verifyUserEmail(String userEmail) throws Exception {
+        log.info("verify email 동작");
+        int rand = new Random().nextInt(999999);
+        verifyRedisTemplate.opsForValue().set("verify-" + userEmail, rand);
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
+        message.setSubject("[본인인증] VIRSPIT 이메일 인증");
+
+        String content =
+                "VIRSPIT을 방문해주셔서 감사합니다." +
+                        "<br><br>" +
+                        "인증 번호는 " + rand + "입니다." +
+                        "<br>" +
+                        "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
+
+        message.setText(content, "UTF-8", "html");
+        javaMailSender.send(message);
+
+        verifyRedisTemplate.expire("verify-" + userEmail, 10 * 24 * 1000, TimeUnit.MILLISECONDS);
+        // expire 하루
+
+        return "이메일 인증 요청 성공";
+    }
+
+
+    public Boolean verifyNumber(String userEmail, Integer number) throws Exception {
+        if (verifyRedisTemplate.opsForValue().get("verify-" + userEmail) != null) {
+            int verifiedNumber = verifyRedisTemplate.opsForValue().get("verify-" + userEmail);
+            if (verifiedNumber != number) {
+                throw new Exception("인증번호가 틀렸습니다.");
+            }
+            verifyRedisTemplate.delete("verify-" + userEmail);
+            return true;
+        } else {
+            throw new Exception("인증이 필요한 이메일이 아닙니다.");
+        }
+
+    }
+
 //    public Boolean findPasssword(String userEmail) throws Exception {
 //        MimeMessage message = javaMailSender.createMimeMessage();
 //        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
