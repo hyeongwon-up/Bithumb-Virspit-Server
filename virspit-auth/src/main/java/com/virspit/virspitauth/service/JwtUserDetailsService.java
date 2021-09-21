@@ -35,7 +35,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         } else if(member.getRole() == Role.ADMIN) {
             roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
-        return new User(member.getUsername(), member.getPassword(), roles);
+        return new User(member.getMemberName(), member.getPassword(), roles);
     }
 
 }

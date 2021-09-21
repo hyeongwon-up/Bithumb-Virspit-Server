@@ -1,16 +1,12 @@
 package com.virspit.virspituser.domain.member.entity;
 
-import com.virspit.virspituser.global.code.Gender;
+import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.global.entity.BaseTimeEntity;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @Entity
@@ -23,7 +19,7 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable=false, unique=true, length=20)
-    private String username;
+    private String memberName;
 
     @Column(nullable=false, unique=true, length=50)
     private String email;
@@ -42,13 +38,19 @@ public class Member extends BaseTimeEntity {
 
 
     @Builder
-    public Member(String username, String email, String password, Gender gender, LocalDate birthdayDate) {
-        this.username = username;
+    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate) {
+        this.memberName = memberName;
         this.email = email;
         this.password = password;
         this.gender = gender;
         this.birthdayDate = birthdayDate;
         this.role = Role.USER;
+    }
+
+    public void editInfo(MemberEditInfoRequestDto memberEditInfoRequestDto) {
+        this.memberName = memberEditInfoRequestDto.getMemberName();
+        this.gender = memberEditInfoRequestDto.getGender();
+        this.birthdayDate = memberEditInfoRequestDto.getBirthdayDate();
     }
 }
 
