@@ -20,6 +20,12 @@ repositories {
 	mavenCentral()
 }
 
+
+ext {
+	set('springCloudVersion', "2020.0.3")
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
@@ -38,7 +44,16 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.4'
 	// kas sdk
 	implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
+	//Eureka
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
 
 test {
 	useJUnitPlatform()
