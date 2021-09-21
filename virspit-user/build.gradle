@@ -36,6 +36,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
 
+    //swagger
+    compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compileOnly group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
 
 }
 

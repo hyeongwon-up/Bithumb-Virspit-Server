@@ -1,9 +1,9 @@
 package com.virspit.virspitauth.domain.member.service;
 
 
-import com.virspit.virspitauth.domain.member.entity.Member;
 import com.virspit.virspitauth.domain.member.entity.Role;
-import com.virspit.virspitauth.domain.member.repository.MemberRepository;
+import com.virspit.virspitauth.domain.member.feign.Member;
+import com.virspit.virspitauth.domain.member.feign.MemberServiceFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,11 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
-    private final MemberRepository memberRepository;
+    private final MemberServiceFeignClient memberServiceFeignClient;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberServiceFeignClient.findByEmail(email);
 
         List<GrantedAuthority> roles = new ArrayList<>();
 

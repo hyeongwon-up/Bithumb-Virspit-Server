@@ -5,8 +5,8 @@ package com.virspit.virspitauth.domain.member.service;
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.domain.member.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.domain.member.entity.Member;
-import com.virspit.virspitauth.domain.member.repository.MemberRepository;
+import com.virspit.virspitauth.domain.member.feign.Member;
+import com.virspit.virspitauth.domain.member.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +26,6 @@ import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MemberService {
     private final JwtUserDetailsService jwtUserDetailsService;
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
@@ -45,54 +41,46 @@ public class MemberService {
     private final RedisTemplate<String, Integer> verifyRedisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final JavaMailSenderImpl javaMailSender;
+    private final MemberServiceFeignClient memberServiceFeignClient;
 
     @Value("${my.ip}")
     private String myIp;
 
     public String register(MemberSignUpRequestDto memberSignUpRequestDto) {
-
-        String email = memberSignUpRequestDto.getEmail();
-
-        System.out.println("회원가입요청 아이디: " + email + "비번: " + memberSignUpRequestDto.getPassword());
-
-        Member member = Member.builder()
-                        .username(memberSignUpRequestDto.getUsername())
-                        .email(memberSignUpRequestDto.getEmail())
-                        .password(passwordEncoder.encode(memberSignUpRequestDto.getPassword()))
-                        .gender(memberSignUpRequestDto.getGender())
-                        .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
-                        .build();
-
-        memberRepository.save(member);
-
+        String pwd = memberSignUpRequestDto.getPassword();
+        memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
+        memberServiceFeignClient.save(memberSignUpRequestDto);
         return "회원가입 성공";
     }
 
-    public MemberSignInResponseDto login(MemberSignInRequestDto memberSignInRequestDto) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        final String email = memberSignInRequestDto.getEmail();
-        Member member = memberRepository.findByEmail(email);
 
-        if (stringRedisTemplate.opsForValue().get("email-" + email) != null) {
+    public MemberSignInResponseDto login(MemberSignInRequestDto memberSignInRequestDto) throws Exception {
+        final String userEmail = memberSignInRequestDto.getEmail();
+        Member member = memberServiceFeignClient.findByEmail(userEmail);
+
+        //블랙리스트 검증
+        if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
             throw new Exception("잘못된 정보 임다");
         }
-        member.setAccess_dt(new Date());
-        memberRepository.save(member);
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, memberSignInRequestDto.getPassword()));
+        log.info("check1 :" + memberSignInRequestDto);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
 
-        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(email);
+        log.info("check2");
+
+        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
-        final String refreshToken = jwtGenerator.generateRefreshToken(email);
+        final String refreshToken = jwtGenerator.generateRefreshToken(userEmail);
 
         //generate Token and save in redis
-        stringRedisTemplate.opsForValue().set("refresh-" + email, refreshToken);
+        stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
+        log.info("check");
         return new MemberSignInResponseDto(accessToken, refreshToken);
     }
 
     public String verifyUserEmail(String userEmail) throws Exception {
         log.info("verify email 동작");
         int rand = new Random().nextInt(999999);
-        verifyRedisTemplate.opsForValue().set("verify-"+userEmail, rand);
+        verifyRedisTemplate.opsForValue().set("verify-" + userEmail, rand);
 
         MimeMessage message = javaMailSender.createMimeMessage();
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
@@ -108,7 +96,7 @@ public class MemberService {
         message.setText(content, "UTF-8", "html");
         javaMailSender.send(message);
 
-        verifyRedisTemplate.expire("verify-"+userEmail, 10*24*1000, TimeUnit.MILLISECONDS);
+        verifyRedisTemplate.expire("verify-" + userEmail, 10 * 24 * 1000, TimeUnit.MILLISECONDS);
         // expire 하루
 
         return "이메일 인증 요청 성공";
@@ -116,15 +104,15 @@ public class MemberService {
 
 
     public Boolean verifyNumber(String userEmail, Integer number) throws Exception {
-        if(verifyRedisTemplate.opsForValue().get("verify-"+userEmail) != null) {
-            int verifiedNumber = verifyRedisTemplate.opsForValue().get("verify-"+userEmail);
-            if(verifiedNumber != number) {
+        if (verifyRedisTemplate.opsForValue().get("verify-" + userEmail) != null) {
+            int verifiedNumber = verifyRedisTemplate.opsForValue().get("verify-" + userEmail);
+            if (verifiedNumber != number) {
                 throw new Exception("인증번호가 틀렸습니다.");
             }
-            verifyRedisTemplate.delete("verify-"+userEmail);
+            verifyRedisTemplate.delete("verify-" + userEmail);
             return true;
         } else {
-            throw  new Exception("인증이 필요한 이메일이 아닙니다.");
+            throw new Exception("인증이 필요한 이메일이 아닙니다.");
         }
 
     }
@@ -178,9 +166,9 @@ public class MemberService {
         if (stringRedisTemplate.opsForValue().get("changepw-" + userEmail).equals(hash)) {
             stringRedisTemplate.delete("changepw-" + userEmail);
 
-            Member member = memberRepository.findByEmail(userEmail);
+            Member member = memberServiceFeignClient.findByEmail(userEmail);
             member.setPassword(passwordEncoder.encode("virspit!23$"));
-            memberRepository.save(member);
+            memberServiceFeignClient.changePwd(member);
 
             return true;
         } else {

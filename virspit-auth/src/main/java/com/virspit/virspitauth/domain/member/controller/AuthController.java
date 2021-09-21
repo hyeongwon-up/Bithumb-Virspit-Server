@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @GetMapping("/verify/mail")
-    @ApiOperation("회원가입시 입력한 이메일 인증2")
+    @ApiOperation("회원가입시 입력한 이메일 인증")
     public ResponseEntity<String> verifyEmail(@RequestParam("useremail") String userEmail) throws Exception {
         return ResponseEntity.ok(memberService.verifyUserEmail(userEmail));
     }

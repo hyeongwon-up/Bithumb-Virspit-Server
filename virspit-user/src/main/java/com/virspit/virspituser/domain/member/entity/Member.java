@@ -1,13 +1,12 @@
-package com.virspit.virspitauth.domain.member.entity;
+package com.virspit.virspituser.domain.member.entity;
 
+import com.virspit.virspituser.global.code.Gender;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,22 +36,14 @@ public class Member implements Serializable {
     private Gender gender;
 
     @Column(nullable = false)
-    private String birthdayDate;
-
-    private Date access_dt;
+    private LocalDate birthdayDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @CreationTimestamp
-    private Date createdDate;
-
-    @UpdateTimestamp
-    private Date updatedDate;
-
 
     @Builder
-    public Member(String username, String email, String password, Gender gender, String birthdayDate) {
+    public Member(String username, String email, String password, Gender gender, LocalDate birthdayDate) {
         this.username = username;
         this.email = email;
         this.password = password;

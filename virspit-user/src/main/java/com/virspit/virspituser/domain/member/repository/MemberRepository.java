@@ -1,6 +1,6 @@
-package com.virspit.virspitauth.domain.member.repository;
+package com.virspit.virspituser.domain.member.repository;
 
-import com.virspit.virspitauth.domain.member.entity.Member;
+import com.virspit.virspituser.domain.member.entity.Member;
 import org.springframework.data.repository.CrudRepository;
 
 public interface MemberRepository extends CrudRepository<Member, Integer> {
