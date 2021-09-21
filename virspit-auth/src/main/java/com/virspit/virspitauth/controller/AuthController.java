@@ -1,9 +1,9 @@
-package com.virspit.virspitauth.domain.member.controller;
+package com.virspit.virspitauth.controller;
 
-import com.virspit.virspitauth.domain.member.dto.request.MemberSignInRequestDto;
-import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
-import com.virspit.virspitauth.domain.member.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.domain.member.service.MemberService;
+import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
+import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
+import com.virspit.virspitauth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

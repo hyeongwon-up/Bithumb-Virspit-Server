@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.domain.member.entity;
+package com.virspit.virspitauth.dto.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@
 //
 //import com.virspit.virspitauth.domain.member.entity.Member;
 //import com.virspit.virspitauth.domain.member.repository.MemberRepository;
-//import com.virspit.virspitauth.domain.member.service.JwtUserDetailsService;
+//import com.virspit.virspitauth.service.JwtUserDetailsService;
 //import com.virspit.virspitauth.jwt.JwtGenerator;
 //import io.jsonwebtoken.ExpiredJwtException;
 //import lombok.RequiredArgsConstructor;

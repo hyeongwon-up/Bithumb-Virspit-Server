@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.domain.member.dto.response;
+package com.virspit.virspitauth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

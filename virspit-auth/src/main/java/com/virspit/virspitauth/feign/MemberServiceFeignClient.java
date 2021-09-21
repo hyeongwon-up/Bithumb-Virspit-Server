@@ -1,6 +1,7 @@
-package com.virspit.virspitauth.domain.member.feign;
+package com.virspit.virspitauth.feign;
 
-import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspitauth.dto.model.Member;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
