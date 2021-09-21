@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.member.entity;
 
+import com.virspit.virspituser.global.code.Gender;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
