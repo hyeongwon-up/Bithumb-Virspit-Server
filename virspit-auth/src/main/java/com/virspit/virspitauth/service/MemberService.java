@@ -1,12 +1,11 @@
-package com.virspit.virspitauth.domain.member.service;
+package com.virspit.virspitauth.service;
 
-//import com.sun.jersey.api.MessageException;
 
-import com.virspit.virspitauth.domain.member.dto.request.MemberSignInRequestDto;
-import com.virspit.virspitauth.domain.member.dto.request.MemberSignUpRequestDto;
-import com.virspit.virspitauth.domain.member.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.domain.member.feign.Member;
-import com.virspit.virspitauth.domain.member.feign.MemberServiceFeignClient;
+import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
+import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
+import com.virspit.virspitauth.dto.model.Member;
+import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,9 @@
-package com.virspit.virspitauth.domain.member.feign;
+package com.virspit.virspitauth.dto.model;
 
-import com.virspit.virspitauth.domain.member.entity.Gender;
-import com.virspit.virspitauth.domain.member.entity.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data

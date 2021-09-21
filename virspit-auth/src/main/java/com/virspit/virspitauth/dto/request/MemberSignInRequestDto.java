@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.domain.member.dto.request;
+package com.virspit.virspitauth.dto.request;
 
 
 import lombok.Getter;

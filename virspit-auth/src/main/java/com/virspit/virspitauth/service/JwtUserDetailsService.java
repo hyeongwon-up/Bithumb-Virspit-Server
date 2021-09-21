@@ -1,9 +1,9 @@
-package com.virspit.virspitauth.domain.member.service;
+package com.virspit.virspitauth.service;
 
 
-import com.virspit.virspitauth.domain.member.entity.Role;
-import com.virspit.virspitauth.domain.member.feign.Member;
-import com.virspit.virspitauth.domain.member.feign.MemberServiceFeignClient;
+import com.virspit.virspitauth.dto.model.Role;
+import com.virspit.virspitauth.dto.model.Member;
+import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

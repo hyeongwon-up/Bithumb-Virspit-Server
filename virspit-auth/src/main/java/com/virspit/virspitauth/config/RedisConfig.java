@@ -1,7 +1,7 @@
 package com.virspit.virspitauth.config;
 
 
-import com.virspit.virspitauth.domain.member.feign.Member;
+import com.virspit.virspitauth.dto.model.Member;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
