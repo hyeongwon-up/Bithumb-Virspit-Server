@@ -1,11 +1,13 @@
 package com.virspit.virspituser.domain.member.controller;
 
+import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,5 +37,11 @@ public class MemberController {
         return memberService.changePwd(member);
     }
 
+    @ApiOperation("회원 정보 수정 (이름, 성별, 생년월일)")
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> changeMemberInfo(@PathVariable("id") Long memberId,
+                                                   @RequestBody MemberEditInfoRequestDto memberEditInfoRequestDto) {
+        return ResponseEntity.ok(memberService.changeMemberInfo(memberId, memberEditInfoRequestDto));
+    }
 
 }
