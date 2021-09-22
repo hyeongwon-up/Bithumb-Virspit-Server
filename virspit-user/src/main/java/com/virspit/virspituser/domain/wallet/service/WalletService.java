@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.wallet.service;
 
+import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.domain.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.
 public class WalletService {
 
     private final WalletRepository walletRepository;
+    private final MemberRepository memberRepository;
     private final CaverExtKAS caverExtKAS;
 
 
@@ -30,4 +32,9 @@ public class WalletService {
         return walletRepository.save(wallet);
 
     }
+
+    public String findByMemberId(Long memberId) {
+        return memberRepository.findById(memberId).get().getWallet().getAddress();
+    }
+
 }
