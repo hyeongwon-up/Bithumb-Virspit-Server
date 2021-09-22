@@ -47,6 +47,15 @@ dependencies {
 	implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
 	//Eureka
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	//feign
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
+	//kafka
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	implementation group: 'org.apache.kafka', name: 'kafka-clients'
+
+
 }
 
 dependencyManagement {
