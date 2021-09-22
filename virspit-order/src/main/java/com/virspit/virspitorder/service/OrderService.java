@@ -1,12 +1,19 @@
 package com.virspit.virspitorder.service;
 
+import com.virspit.virspitorder.dto.request.OrdersRequestDto;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
+import com.virspit.virspitorder.entity.Orders;
+import com.virspit.virspitorder.feign.MemberServiceFeignClient;
 import com.virspit.virspitorder.response.error.ErrorCode;
 import com.virspit.virspitorder.response.error.exception.BusinessException;
 import com.virspit.virspitorder.repository.OrderRepository;
 import com.virspit.virspitorder.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +23,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final MemberServiceFeignClient memberServiceFeignClient;
+    private final KafkaTemplate<String, Long> kafkaTemplate;
+
+    private static String TOPIC_NAME = "order";
 
     @Transactional(readOnly = true)
     public List<OrdersResponseDto> getAll(String startDate, String endDate, Pageable pageable) {
@@ -74,5 +86,13 @@ public class OrderService {
                 .stream()
                 .map(OrdersResponseDto::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    public Object getOrder(Long memberId, Long productId) {
+        String memberWalletAddress = memberServiceFeignClient.findByMemberId(memberId);
+        kafkaTemplate.send(TOPIC_NAME, productId);
+        Orders orders = new Orders(memberId, productId, memberWalletAddress);
+
+        return orderRepository.save(orders);
     }
 }
