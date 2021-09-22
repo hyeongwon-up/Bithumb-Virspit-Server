@@ -1,6 +1,7 @@
 package com.virspit.virspituser.domain.wallet.entity;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
-@ToString
+@Getter
 public class Wallet {
 
     @Id
@@ -19,7 +20,6 @@ public class Wallet {
     private String address;
 
     private String keyId;
-
 
     @Builder
     public Wallet(String address, String keyId) {

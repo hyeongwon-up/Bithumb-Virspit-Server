@@ -46,4 +46,10 @@ public class OrderController {
 
         return ResponseEntity.ok(orderService.getAllByMember(memberId, startDate, endDate, pageable));
     }
+
+    @ApiOperation("유저 상품 주문")
+    @GetMapping("/req")
+    public ResponseEntity<?> getOrder(@RequestParam Long memberId, @RequestParam Long productId) {
+        return ResponseEntity.ok(orderService.getOrder(memberId, productId));
+    }
 }

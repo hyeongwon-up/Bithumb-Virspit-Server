@@ -26,8 +26,11 @@ public class Member {
 
     private Role role;
 
+    private Wallet wallet;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
 
 }

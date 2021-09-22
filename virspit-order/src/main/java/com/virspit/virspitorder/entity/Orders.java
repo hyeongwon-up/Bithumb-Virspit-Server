@@ -32,4 +32,12 @@ public class Orders { // TODO order 불가; orders or purchase
     private Long tokenId;
 
     private String memberAddress; // 지갑 주소
+
+    public Orders(Long memberId, Long productId, String memberAddress) {
+        this.memberId = memberId;
+        this.productId = productId;
+        this.memberAddress = memberAddress;
+        this.orderDate = LocalDateTime.now();
+        this.tokenId = 10L; // 임시 바꿔야행~~!
+    }
 }
