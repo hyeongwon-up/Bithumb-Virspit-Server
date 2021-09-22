@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:52000/virspit_order
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    show-sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이징 1번 부터 시작
+
+kas:
+  chain-id: 1001 #baobab
+  access-key-id: accessKeyId
+  secret-access-key: secretAccessKey
+  admin-wallet-address: 0x5C48744aC9500933c0168DBD9d4847Da1d3A3505
+
+server:
+  port: 8084
+  servlet:
+    context-path: /order
+
+---
+
+eureka:
+
+  instance:
+    instance-id: order-microservice-instance
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+---
+
+spring:
+  application:
+    name: virspit-order
+
+logging:
+  level:
+    org.hibernate:
+      SQL: DEBUG # to logger
+      type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.core:
+      JdbcTemplate: DEBUG
+      StatementCreatorUtils: TRACE
+
+---
+jwt:
+  secret: temp
+
+---
+my:
+  ip: localhost
+
+---
+
+### Email Send Configuration_SMTP
+#spring.mail.host=smtp.gmail.com
+#spring.mail.port=587
+#spring.mail.username= 유저 id
+#spring.mail.password= 유저 비밀번호
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true

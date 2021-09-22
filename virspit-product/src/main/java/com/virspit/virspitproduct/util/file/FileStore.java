@@ -16,7 +16,7 @@ public class FileStore {
     private String fileDir;
 
     public String store(MultipartFile multipartFile) throws IOException {
-        if (multipartFile.isEmpty()) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
 

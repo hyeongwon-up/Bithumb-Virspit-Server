@@ -3,32 +3,35 @@ server:
   servlet:
     context-path: /product
 
-
 ---
-eureka:
-
-  instance:
-    instance-id: product-microservice-instance
-
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#
+#  instance:
+#    instance-id: product-microservice-instance
+#
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 ---
 
 spring:
+  profiles:
+    active: dev
   datasource:
-    url: jdbc:mariadb://localhost:3306/virspit_auth
+    url: jdbc:mariadb://localhost:3306/virspit_product
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
-    password: password
+    password: root
   jpa:
     hibernate:
       ddl-auto: create
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
+    properties.hibernate.format_sql: true
+
   servlet:
     multipart:
       max-file-size: 1MB
