@@ -18,6 +18,7 @@ kas:
   chain-id: 1001 #baobab
   access-key-id: accessKeyId
   secret-access-key: secretAccessKey
+  admin-wallet-address: 0x5C48744aC9500933c0168DBD9d4847Da1d3A3505
 
 server:
   port: 8084
