@@ -1,6 +1,7 @@
 package com.virspit.virspituser.domain.member.entity;
 
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
+import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.global.entity.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -8,7 +9,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
 @Entity
 @NoArgsConstructor
 @ToString
@@ -36,15 +36,20 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
 
     @Builder
-    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate) {
+    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate, Wallet wallet) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
         this.gender = gender;
         this.birthdayDate = birthdayDate;
         this.role = Role.USER;
+        this.wallet = wallet;
     }
 
     public void editInfo(MemberEditInfoRequestDto memberEditInfoRequestDto) {

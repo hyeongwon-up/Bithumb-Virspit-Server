@@ -6,12 +6,15 @@ import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
+import com.virspit.virspituser.domain.wallet.entity.Wallet;
+import com.virspit.virspituser.domain.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final WalletService walletService;
     private final AuthServiceFeignClient authServiceFeignClient;
 
 
-    public String registry(MemberSignUpRequestDto memberSignUpRequestDto) {
+    public String registry(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
+
 
 
         Member member = Member.builder()
@@ -31,8 +36,8 @@ public class MemberService {
                 .password(memberSignUpRequestDto.getPassword())
                 .gender(memberSignUpRequestDto.getGender())
                 .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
+                .wallet(walletService.createWallet())
                 .build();
-
 
         memberRepository.save(member);
 
