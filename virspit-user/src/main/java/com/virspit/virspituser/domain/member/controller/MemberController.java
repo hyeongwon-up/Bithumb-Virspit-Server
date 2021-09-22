@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 
 import javax.ws.rs.Path;
 
@@ -31,7 +32,7 @@ public class MemberController {
 
     @ApiOperation("회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")
-    public String save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+    public String save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
         return memberService.registry(memberSignUpRequestDto);
     }
 
