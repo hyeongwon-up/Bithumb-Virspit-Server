@@ -3,6 +3,7 @@ package com.virspit.virspitservice.domain.advertisement.repository;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.entity.Type;
+import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +29,9 @@ class AdvertisementDocRepositoryTest {
 
     @Autowired
     private AdvertisementDocRepository repository;
+
+    @Autowired
+    private ProductDocRepository productDocRepository;
 
     @BeforeEach
     void setUp() {
@@ -91,4 +97,31 @@ class AdvertisementDocRepositoryTest {
                 .verifyComplete();
     }
 
+
+    @Test
+    void insert2() {
+        ProductDoc product = ProductDoc.builder()
+                .id("id")
+                .type(Type.PLAYER)
+                .name(UUID.randomUUID().toString())
+                .startDate(LocalDateTime.now())
+                .count(4)
+                .price(10000)
+                .exhibition(false)
+                .description("description")
+                .build();
+        ProductDoc saved = productDocRepository.save(product).block();
+
+        ProductDoc productDoc = productDocRepository.findById("id").block();
+
+        AdvertisementDoc advertisement = AdvertisementDoc.builder()
+                .product(productDoc)
+                .description("!!!")
+                .build();
+
+        AdvertisementDoc result = repository.save(advertisement).block();
+        System.out.println(result);
+
+        assertThat(result.getProduct()).isEqualTo(saved);
+    }
 }

@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.advertisement.entity;
 
-import com.virspit.virspitservice.domain.advertisement.dto.AdvertisementDto;
+import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -21,11 +22,18 @@ public class AdvertisementDoc {
 
     private String description;
 
-    public static AdvertisementDoc dtoToEntity(AdvertisementDto advertisementDto) {
+    public static AdvertisementDoc dtoToEntity(AdvertisementResponseDto advertisementResponseDto) {
         return AdvertisementDoc.builder()
-                .id(advertisementDto.getId())
-                .product(ProductDoc.dtoToEntity(advertisementDto.getProduct()))
-                .description(advertisementDto.getDescription())
+                .id(advertisementResponseDto.getId())
+                .product(ProductDoc.dtoToEntity(advertisementResponseDto.getProduct()))
+                .description(advertisementResponseDto.getDescription())
+                .build();
+    }
+
+    public static AdvertisementDoc dtoToEntity(AdvertisementRequestDto requestDto, ProductDoc productDoc) {
+        return AdvertisementDoc.builder()
+                .product(productDoc)
+                .description(requestDto.getDescription())
                 .build();
     }
 }
