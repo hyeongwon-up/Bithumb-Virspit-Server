@@ -58,4 +58,8 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product")
     private List<ProductImage> images = new ArrayList<>();
+
+    @NotNull
+    @Column(nullable = false)
+    private String contractAlias;
 }
