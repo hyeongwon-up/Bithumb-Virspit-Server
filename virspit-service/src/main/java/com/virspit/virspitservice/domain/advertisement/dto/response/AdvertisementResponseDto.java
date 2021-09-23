@@ -4,7 +4,9 @@ import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import lombok.*;
 
-@EqualsAndHashCode(of = "id")
+import java.time.LocalDateTime;
+
+@EqualsAndHashCode
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,11 +19,19 @@ public class AdvertisementResponseDto {
 
     private String description;
 
+    private String url;
+
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
+
     public static AdvertisementResponseDto entityToDto(AdvertisementDoc advertisement){
         return AdvertisementResponseDto.builder()
                 .id(advertisement.getId())
                 .product(ProductDto.entityToDto(advertisement.getProduct()))
                 .description(advertisement.getDescription())
+                .createdDate(advertisement.getCreatedDate())
+                .updatedDate(advertisement.getUpdatedDate())
                 .build();
     }
 }

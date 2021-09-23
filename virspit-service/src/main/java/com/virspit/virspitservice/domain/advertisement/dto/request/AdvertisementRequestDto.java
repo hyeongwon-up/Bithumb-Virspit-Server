@@ -11,5 +11,4 @@ public class AdvertisementRequestDto {
     private String description;
     private String productId;
     private String url;
-
 }

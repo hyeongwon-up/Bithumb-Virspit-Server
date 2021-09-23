@@ -5,6 +5,7 @@ import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementD
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -40,6 +41,36 @@ class AdvertisementServiceTest {
 
         BDDMockito.when(repository.save(advertisement))
                 .thenReturn(Mono.just(advertisement));
+
+    }
+
+    @DisplayName("광고 생성")
+    @Test
+    void insert(){
+
+    }
+
+    @DisplayName("광고 목록")
+    @Test
+    void getAll(){
+
+    }
+
+    @DisplayName("광고 id 로 가져오기")
+    @Test
+    void get(){
+
+    }
+
+    @DisplayName("광고 수정")
+    @Test
+    void update(){
+
+    }
+
+    @DisplayName("광고 삭제")
+    @Test
+    void delete(){
 
     }
 }

@@ -10,13 +10,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,6 +61,7 @@ class AdvertisementDocRepositoryTest {
                 AdvertisementDoc.builder()
                         .id(null)
                         .product(product)
+                        .createdDate(LocalDateTime.now())
                         .description("description~" + product.getName())
                         .build()).block();
     }
@@ -71,7 +77,6 @@ class AdvertisementDocRepositoryTest {
     @Test
     void findAll() {
         // given
-
         generate("1");
         generate("2");
         generate("3");
@@ -97,7 +102,7 @@ class AdvertisementDocRepositoryTest {
                 .verifyComplete();
     }
 
-
+    @DisplayName("product 저장후 advertisement 저장")
     @Test
     void insert2() {
         ProductDoc product = ProductDoc.builder()
@@ -123,5 +128,73 @@ class AdvertisementDocRepositoryTest {
         System.out.println(result);
 
         assertThat(result.getProduct()).isEqualTo(saved);
+    }
+
+    @DisplayName("광고 목록")
+    @Test
+    void findAll_pageable(){
+        Pageable pageable = PageRequest.of(0, 3, Sort.by("createdDate").descending());
+        // given
+        for (int i = 0; i < 10; i++) {
+            generate("advertisement" + (i + 1));
+        }
+
+        // when, assert
+        Flux<ProductDoc> result = repository.findAll(pageable);
+        AtomicInteger i = new AtomicInteger();
+        result.subscribe(r->{
+            i.getAndIncrement();
+            System.out.println(r+ " i-> "+i);
+        });
+
+        StepVerifier
+                .create(result)
+                .expectNextCount(3)
+                .verifyComplete();
+
+    }
+
+    @DisplayName("광고 수정")
+    @Test
+    void update(){
+        AdvertisementDoc saved = generate("prev");
+
+        String id = saved.getId();
+        LocalDateTime now = LocalDateTime.now();
+        AdvertisementDoc updateDoc = AdvertisementDoc.builder()
+                .id(id)
+                .updatedDate(now)
+                .build();
+
+        // when
+        repository.save(updateDoc).block();
+
+        // assert
+        StepVerifier
+                .create(template.findById(saved.getId(), AdvertisementDoc.class))
+                .assertNext(advertisement -> {
+                    assertThat(advertisement.getId()).isEqualTo(id);
+                    assertThat(advertisement.getUpdatedDate()).isEqualTo(now);
+                })
+                .verifyComplete();
+    }
+
+    @DisplayName("광고 삭제")
+    @Test
+    void delete(){
+        // when
+        AdvertisementDoc advertisement = generate("delete");
+
+        // given
+        StepVerifier
+                .create(repository.deleteById(advertisement.getId()))
+                .expectNextCount(0)
+                .verifyComplete();
+
+        // assert
+        StepVerifier
+                .create(repository.findById(advertisement.getId()))
+                .expectNextCount(0)
+                .verifyComplete();
     }
 }
