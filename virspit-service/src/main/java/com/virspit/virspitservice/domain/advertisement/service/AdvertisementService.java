@@ -7,6 +7,7 @@ import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementD
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import com.virspit.virspitservice.domain.response.error.ErrorCode;
+import com.virspit.virspitservice.domain.response.error.GlobalException;
 import com.virspit.virspitservice.domain.response.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,20 +28,18 @@ public class AdvertisementService {
 
     @Transactional
     public Mono<AdvertisementResponseDto> insert(AdvertisementRequestDto requestDto) {
-        ProductDoc productDoc = productDocRepository.findById(requestDto.getProductId())
-                .onErrorReturn(null)
-                .block();
-        if (productDoc == null) {
-            throw new BusinessException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND);
+        Optional<ProductDoc> productDoc = productDocRepository.findById(requestDto.getProductId()).blockOptional();
+        if (!productDoc.isPresent()) {
+            throw new GlobalException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND);
         }
-        Mono<AdvertisementResponseDto> result = advertisementDocRepository.save(AdvertisementDoc.dtoToEntity(requestDto, productDoc))
+        Mono<AdvertisementResponseDto> result = advertisementDocRepository.save(AdvertisementDoc.dtoToEntity(requestDto, productDoc.get()))
                 .map(AdvertisementResponseDto::entityToDto).log();
         return result;
     }
 
     @Transactional(readOnly = true)
     public Flux<AdvertisementResponseDto> getAll(Pageable pageable) {
-        return advertisementDocRepository.findAll()
+        return advertisementDocRepository.findAll(pageable)
                 .map(AdvertisementResponseDto::entityToDto);
     }
 
@@ -49,26 +50,23 @@ public class AdvertisementService {
     }
 
     @Transactional
-    public void update(AdvertisementRequestDto requestDto, String id) {
-        AdvertisementDoc advertisement = advertisementDocRepository.findById(requestDto.getProductId())
-                .onErrorReturn(null)
-                .block();
-        if (advertisement == null) {
-            throw new BusinessException(String.format("id: {%s} 에 해당하는 advertise 가 없습니다.", id), ErrorCode.ENTITY_NOT_FOUND);
+    public AdvertisementResponseDto update(AdvertisementRequestDto requestDto, String id) {
+        Optional<AdvertisementDoc> advertisementDocOptional = advertisementDocRepository.findById(id).blockOptional();
+        if (!advertisementDocOptional.isPresent()) {
+            throw new GlobalException(String.format("id: {%s} 에 해당하는 advertise 가 없습니다.", id), ErrorCode.ENTITY_NOT_FOUND);
 
         }
-        ProductDoc productDoc = productDocRepository.findById(requestDto.getProductId())
-                .onErrorReturn(null)
-                .block();
-        if (productDoc == null) {
-            throw new BusinessException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND);
+        Optional<ProductDoc> productDoc = productDocRepository.findById(requestDto.getProductId()).blockOptional();
+        if (!productDoc.isPresent()) {
+            throw new GlobalException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND);
         }
-
-        advertisement.update(requestDto, productDoc);
+        AdvertisementDoc advertisement = advertisementDocOptional.get();
+        advertisement.update(requestDto, productDoc.get());
+        return AdvertisementResponseDto.entityToDto(advertisement);
     }
 
     @Transactional
-    public void delete(String id) {
-        advertisementDocRepository.deleteById(id);
+    public Mono<Void> delete(String id) {
+        return advertisementDocRepository.deleteById(id);
     }
 }

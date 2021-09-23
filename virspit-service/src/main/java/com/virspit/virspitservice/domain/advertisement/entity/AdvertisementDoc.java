@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document(collection = "products")
+@Document(collection = "advertisements")
 public class AdvertisementDoc {
     @Id
     private String id;

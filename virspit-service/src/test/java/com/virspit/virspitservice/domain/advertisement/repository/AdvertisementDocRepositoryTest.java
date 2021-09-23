@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.domain.PageRequest;
@@ -96,6 +97,8 @@ class AdvertisementDocRepositoryTest {
         // given
         AdvertisementDoc saved = generate("1");
 
+        repository.findById(saved.getId()).subscribe(i-> System.out.println(i));
+
         // when, assert
         StepVerifier.create(repository.findById(saved.getId()))
                 .expectNext(saved)
@@ -140,7 +143,7 @@ class AdvertisementDocRepositoryTest {
         }
 
         // when, assert
-        Flux<ProductDoc> result = repository.findAll(pageable);
+        Flux<AdvertisementDoc> result = repository.findAll(pageable);
         AtomicInteger i = new AtomicInteger();
         result.subscribe(r->{
             i.getAndIncrement();
@@ -161,21 +164,19 @@ class AdvertisementDocRepositoryTest {
 
         String id = saved.getId();
         LocalDateTime now = LocalDateTime.now();
+
         AdvertisementDoc updateDoc = AdvertisementDoc.builder()
                 .id(id)
                 .updatedDate(now)
                 .build();
 
         // when
-        repository.save(updateDoc).block();
+        AdvertisementDoc update = repository.save(updateDoc).block();
 
         // assert
         StepVerifier
-                .create(template.findById(saved.getId(), AdvertisementDoc.class))
-                .assertNext(advertisement -> {
-                    assertThat(advertisement.getId()).isEqualTo(id);
-                    assertThat(advertisement.getUpdatedDate()).isEqualTo(now);
-                })
+                .create(template.findById(updateDoc.getId(), AdvertisementDoc.class))
+                .expectNext(update)
                 .verifyComplete();
     }
 

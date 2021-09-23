@@ -4,12 +4,15 @@ import com.virspit.virspitservice.domain.advertisement.dto.request.Advertisement
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.service.AdvertisementService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RequestMapping("/advertisement")
+@RequestMapping("/advertisements")
 @RequiredArgsConstructor
 @RestController
 public class AdvertisementController {
@@ -22,8 +25,8 @@ public class AdvertisementController {
     }
 
     @GetMapping
-    public Flux<AdvertisementResponseDto> getAll(@RequestParam Pageable pageable) {
-        return advertisementService.getAll(pageable);
+    public Flux<AdvertisementResponseDto> getAll(@RequestParam int page, @RequestParam int size) {
+        return advertisementService.getAll(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
     }
 
     @GetMapping("/{id}")
@@ -37,7 +40,7 @@ public class AdvertisementController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
-        advertisementService.delete(id);
+    public Mono<Void> delete(@PathVariable String id) {
+        return advertisementService.delete(id);
     }
 }

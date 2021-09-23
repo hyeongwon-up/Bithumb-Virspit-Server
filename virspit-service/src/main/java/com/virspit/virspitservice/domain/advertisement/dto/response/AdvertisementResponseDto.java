@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id", "product", "description", "url"})
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,10 +25,10 @@ public class AdvertisementResponseDto {
 
     private LocalDateTime updatedDate;
 
-    public static AdvertisementResponseDto entityToDto(AdvertisementDoc advertisement){
+    public static AdvertisementResponseDto entityToDto(AdvertisementDoc advertisement) {
         return AdvertisementResponseDto.builder()
                 .id(advertisement.getId())
-                .product(ProductDto.entityToDto(advertisement.getProduct()))
+                .product(advertisement.getProduct() == null ? null : ProductDto.entityToDto(advertisement.getProduct()))
                 .description(advertisement.getDescription())
                 .createdDate(advertisement.getCreatedDate())
                 .updatedDate(advertisement.getUpdatedDate())

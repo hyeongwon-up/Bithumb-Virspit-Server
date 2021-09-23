@@ -2,6 +2,7 @@ package com.virspit.virspitservice.domain.response.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
@@ -35,5 +36,9 @@ public enum ErrorCode {
         this.status = status;
         this.message = message;
         this.code = code;
+    }
+
+    public HttpStatus getHttpStatus(){
+        return HttpStatus.resolve(status);
     }
 }
