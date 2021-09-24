@@ -23,7 +23,6 @@ ext {
     set('springCloudVersion', "2020.0.3")
 }
 
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -35,6 +34,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     //swagger
     compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
@@ -49,7 +50,6 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-
 
 test {
     useJUnitPlatform()
