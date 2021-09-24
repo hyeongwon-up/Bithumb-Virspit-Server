@@ -2,11 +2,13 @@ package com.virspit.virspituser.domain.favorite.entity;
 
 import com.virspit.virspituser.domain.member.entity.Member;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@ToString
 public class Favorite {
 
     @Id
@@ -19,4 +21,9 @@ public class Favorite {
     private Member member;
 
     private Long productId;
+
+    public Favorite(Member member, Long productId) {
+        this.member = member;
+        this.productId = productId;
+    }
 }
