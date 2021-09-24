@@ -1,6 +1,7 @@
 package com.virspit.virspituser.domain.favorite.entity;
 
 import com.virspit.virspituser.domain.member.entity.Member;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
-@ToString
+@Getter
 public class Favorite {
 
     @Id
