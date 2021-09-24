@@ -19,5 +19,18 @@ public class FavoriteController {
         return ResponseEntity.ok(favoriteService.createFavorite(memberId, productId));
     }
 
+    @DeleteMapping("/{id}")
+    @ApiOperation("상품 좋아요 취소하기")
+    public ResponseEntity<?> deleteFavorite(@PathVariable(name = "id") Long memberId, @RequestParam Long productId) {
+        return ResponseEntity.ok(favoriteService.deleteFavorite(memberId, productId));
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation("해당 Id의 member 좋아요 누른 상품 목록 가져오기")
+    public ResponseEntity<?> getAllFavoriteByMemberId(@PathVariable(name = "id") Long memberId) {
+        return ResponseEntity.ok(favoriteService.getAllFavoriteByMemberId(memberId));
+    }
+
+
 
 }
