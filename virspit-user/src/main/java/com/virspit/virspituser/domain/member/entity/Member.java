@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.member.entity;
 
+import com.virspit.virspituser.domain.favorite.entity.Favorite;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.global.entity.BaseTimeEntity;
@@ -8,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     @Column(nullable=false, unique=true, length=20)
@@ -39,6 +42,9 @@ public class Member extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Favorite> favoriteList;
 
 
     @Builder

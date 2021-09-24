@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.favorite.entity;
 
+import com.virspit.virspituser.domain.member.entity.Member;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,8 +13,10 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "favorite_id")
     private Long id;
-    
-    private Long memberId;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     private Long productId;
 }
