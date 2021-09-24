@@ -9,11 +9,13 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@ToString
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -44,8 +46,7 @@ public class Member extends BaseTimeEntity {
     private Wallet wallet;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Favorite> favoriteList;
-
+    private List<Favorite> favoriteList = new ArrayList<>();
 
     @Builder
     public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate, Wallet wallet) {
