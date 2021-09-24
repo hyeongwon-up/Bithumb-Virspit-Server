@@ -29,6 +29,8 @@ public class ProductDto {
 
     private Type type;
 
+    private String nftUri;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime updatedDate;
@@ -42,6 +44,7 @@ public class ProductDto {
                 .startDate(productDoc.getStartDate())
                 .exhibition(productDoc.getExhibition())
                 .type(productDoc.getType())
+                .nftUri(productDoc.getNftUri())
                 .createdDate(productDoc.getCreatedDate())
                 .updatedDate(productDoc.getUpdatedDate())
                 .build();

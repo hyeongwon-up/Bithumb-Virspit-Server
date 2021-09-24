@@ -32,9 +32,13 @@ public class ProductDoc {
 
     private Type type;
 
+    private String nftUri;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime updatedDate;
+
+//    private TeamPlayer teamPlayer; todo; 정보
 
     public static ProductDoc dtoToEntity(final ProductDto productDto) {
         return ProductDoc.builder()
@@ -45,6 +49,7 @@ public class ProductDoc {
                 .startDate(productDto.getStartDate())
                 .exhibition(productDto.getExhibition())
                 .type(productDto.getType())
+                .nftUri(productDto.getNftUri())
                 .createdDate(productDto.getCreatedDate())
                 .updatedDate(productDto.getUpdatedDate())
                 .build();
