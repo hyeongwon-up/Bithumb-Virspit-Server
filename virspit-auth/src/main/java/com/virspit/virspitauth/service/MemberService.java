@@ -8,11 +8,13 @@ import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -186,5 +188,22 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode(memberChangePwdRequestDto.getAfterPwd()));
 
         return member;
+    }
+
+    public String logout(String accessToken) {
+        String memberName = null;
+
+        try {
+            memberName = jwtGenerator.getUsernameFromToken(accessToken);
+        } catch (ExpiredJwtException e) {
+            memberName = e.getClaims().getSubject();
+            log.info("already logout : " + memberName);
+        }
+
+        stringRedisTemplate.delete("refresh-" + memberName);
+        stringRedisTemplate.opsForValue().set(accessToken, "true");
+        stringRedisTemplate.expire(accessToken, 10*6*1000, TimeUnit.MILLISECONDS);
+
+        return "logout success";
     }
 }
