@@ -30,6 +30,12 @@ public class AuthController {
         return memberService.login(memberSignInRequestDto);
     }
 
+    @PostMapping("/logout")
+    @ApiOperation("로그아웃")
+    public ResponseEntity<?> logout(@RequestParam String accessToken) {
+        return ResponseEntity.ok(memberService.logout(accessToken));
+    }
+
     @GetMapping("/verify/mail")
     @ApiOperation("회원가입시 입력한 이메일 인증")
     public ResponseEntity<String> verifyEmail(@RequestParam("useremail") String userEmail) throws Exception {
