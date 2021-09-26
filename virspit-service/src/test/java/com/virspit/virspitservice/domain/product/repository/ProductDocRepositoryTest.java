@@ -2,7 +2,6 @@ package com.virspit.virspitservice.domain.product.repository;
 
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.entity.Type;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ class ProductDocRepositoryTest {
         }
 
         // when, assert
-        Flux<ProductDoc> result = repository.findAllPagingBy(PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdDate")));
+        Flux<ProductDoc> result = repository.findAll(PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdDate")));
         AtomicInteger i = new AtomicInteger();
         result.subscribe(r->{
             i.getAndIncrement();

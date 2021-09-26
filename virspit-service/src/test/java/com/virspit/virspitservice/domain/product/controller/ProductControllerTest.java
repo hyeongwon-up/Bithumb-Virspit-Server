@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -52,11 +54,17 @@ class ProductControllerTest {
         Flux<ProductDto> productMono = Flux.just(dto);
 
         // when
-        when(service.getAllProducts()).thenReturn(productMono);
+        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(productMono);
 
         // assert
         client.get()
-                .uri("/products/list")
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/products/list")
+                                .queryParam("size", 1)
+                                .queryParam("page", 1)
+                                .build()
+                )
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk();

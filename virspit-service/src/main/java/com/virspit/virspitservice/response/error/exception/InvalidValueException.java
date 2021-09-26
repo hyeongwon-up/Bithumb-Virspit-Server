@@ -1,7 +1,7 @@
-package com.virspit.virspitservice.domain.response.error.exception;
+package com.virspit.virspitservice.response.error.exception;
 
 
-import com.virspit.virspitservice.domain.response.error.ErrorCode;
+import com.virspit.virspitservice.response.error.ErrorCode;
 
 public class InvalidValueException extends BusinessException {
 

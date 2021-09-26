@@ -5,6 +5,7 @@ import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +20,24 @@ public class ProductService {
 
     @Transactional
     public Mono<ProductDto> insert(ProductDto productDto) {
-        log.info("mongo db insert :{}",productDto);
-        Mono<ProductDto> result =  productRepository.save(ProductDoc.dtoToEntity(productDto))
+        log.info("mongo db insert :{}", productDto);
+        Mono<ProductDto> result = productRepository.save(ProductDoc.dtoToEntity(productDto))
                 .map(ProductDto::entityToDto);
-        result.subscribe(p->log.info("result {}",p));
+        result.subscribe(p -> log.info("result {}", p));
         return result;
     }
 
+    @Transactional(readOnly = true)
     public Flux<ProductDto> getAllProducts() {
         return productRepository.findAll()
                 .map(ProductDto::entityToDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<ProductDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(ProductDto::entityToDto);
+
     }
 
     public Mono<ProductDto> getProduct(final String id) {

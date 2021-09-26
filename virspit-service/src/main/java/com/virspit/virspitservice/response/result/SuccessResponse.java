@@ -1,4 +1,4 @@
-package com.virspit.virspitservice.domain.response.result;
+package com.virspit.virspitservice.response.result;
 
 import lombok.AccessLevel;
 import lombok.Getter;
