@@ -19,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -59,6 +61,10 @@ class ProductServiceTest {
 
         BDDMockito.when(repositoryMock.findByNameLikeOrderByCreatedDateDesc("product"))
                 .thenReturn(Flux.just(product));
+
+        BDDMockito.when(repositoryMock.findAll(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+                .thenReturn(Flux.just(product));
+
     }
 
     @DisplayName("카프카에서 받은 데이터를 mongoDB에 저장한다.")
@@ -87,6 +93,15 @@ class ProductServiceTest {
         StepVerifier.create(productService.getProductsBy("product"))
                 .expectSubscription()
                 .expectNext(dto)
+                .verifyComplete();
+    }
+
+    @DisplayName("전체 상품 목록을 페이징 처리해서 가져온다.")
+    @Test
+    void getAllPaging() {
+        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+                .expectSubscription()
+                .expectNextCount(1)
                 .verifyComplete();
     }
 

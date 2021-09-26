@@ -40,11 +40,13 @@ public class ProductService {
 
     }
 
+    @Transactional(readOnly = true)
     public Mono<ProductDto> getProduct(final String id) {
         return productRepository.findById(id)
                 .map(ProductDto::entityToDto);
     }
 
+    @Transactional(readOnly = true)
     public Flux<ProductDto> getProductsInPriceRange(final int minPrice, final int maxPrice) {
         return productRepository.findByPriceBetween(Range.closed(minPrice, maxPrice))
                 .map(ProductDto::entityToDto);
