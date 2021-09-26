@@ -10,9 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,9 +21,13 @@ import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 @DisplayName("서비스 유닛 테스트 (mock)")
 @ExtendWith(SpringExtension.class)
 class AdvertisementServiceTest {
+
     @InjectMocks
     private AdvertisementService advertisementService;
 
@@ -49,18 +54,28 @@ class AdvertisementServiceTest {
     @BeforeEach
     void setUp() {
 
-        BDDMockito.when(repository.findAll())
-                .thenReturn(Flux.just(advertisement));
+        when(productDocRepository.findById(requestDto.getProductId()))
+                .thenReturn(Mono.just(product));
 
-        BDDMockito.when(repository.save(advertisement))
+        when(repository.save(advertisement))
                 .thenReturn(Mono.just(advertisement));
 
+        when(repository.findAll(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+                .thenReturn(Flux.just(advertisement));
+
+        when(repository.findById("1"))
+                .thenReturn(Mono.just(advertisement));
+
+        when(productDocRepository.findById("1"))
+                .thenReturn(Mono.just(product));
+
+        when(productDocRepository.deleteById("1"))
+                .thenReturn(Mono.empty());
     }
 
     @DisplayName("광고 생성")
     @Test
     void insert(){
-        BDDMockito.when(productDocRepository.findById(requestDto.getProductId()).block()).thenReturn(product);
         Mono<AdvertisementResponseDto> result = advertisementService.insert(requestDto);
 
         StepVerifier.create(result)
@@ -72,24 +87,32 @@ class AdvertisementServiceTest {
     @DisplayName("광고 목록")
     @Test
     void getAll(){
-
+        StepVerifier.create(advertisementService.getAll(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+                .expectSubscription()
+                .expectNextCount(1)
+                .verifyComplete();
     }
 
     @DisplayName("광고 id 로 가져오기")
     @Test
     void get(){
-
+        StepVerifier.create(advertisementService.get("1"))
+                .expectSubscription()
+                .expectNextCount(1)
+                .verifyComplete();
     }
 
     @DisplayName("광고 수정")
     @Test
     void update(){
+        assertThat(advertisementService.update(requestDto, "1"))
+                .isEqualTo(AdvertisementResponseDto.entityToDto(advertisement));
 
     }
 
     @DisplayName("광고 삭제")
     @Test
     void delete(){
-
+        when(advertisementService.delete("1")).thenReturn(Mono.empty());
     }
 }
