@@ -49,7 +49,7 @@ public class ProductController {
     @ApiOperation("상품 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponseDto createProduct(@ModelAttribute ProductStoreRequestDto productStoreRequestDto) throws ApiException {
+    public ProductResponseDto createProduct(@ModelAttribute ProductStoreRequestDto productStoreRequestDto){
         return productService.createProduct(productStoreRequestDto);
     }
 
