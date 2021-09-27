@@ -5,7 +5,7 @@ import feign.auth.BasicAuthRequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-public class KasMetadataFeignConfig {
+public class KasFeignConfig {
     @Bean
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor(
             @Value("${kas.accessKeyId}") String accessKeyId,
