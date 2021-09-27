@@ -6,6 +6,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
-public class KasUploadMetadataRequest {
-    private KasMetadata metadata;
+public class Metadata {
+    private String name;
+    private String description;
+    private String image;
 }

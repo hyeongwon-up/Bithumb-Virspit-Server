@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class KasUploadAssetResponse {
+public class UploadAssetResponse {
     private String contentType;
     private String filename;
     private String uri;
