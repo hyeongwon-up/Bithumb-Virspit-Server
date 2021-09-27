@@ -1,4 +1,4 @@
-package com.virspit.virspitproduct.domain.product.feign.request;
+package com.virspit.virspitproduct.domain.product.feign.metadata.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

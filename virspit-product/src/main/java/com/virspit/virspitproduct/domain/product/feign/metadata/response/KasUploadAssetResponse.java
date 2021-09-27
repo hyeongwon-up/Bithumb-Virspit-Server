@@ -1,4 +1,4 @@
-package com.virspit.virspitproduct.domain.product.feign.response;
+package com.virspit.virspitproduct.domain.product.feign.metadata.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;
