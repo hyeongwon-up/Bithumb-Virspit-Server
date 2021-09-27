@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 public class KasFeignConfig {
     @Bean
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor(
-            @Value("${kas.accessKeyId}") String accessKeyId,
-            @Value("${kas.secretAccessKey}") String secretAccessKey) {
+            @Value("${kas.credential.accessKeyId}") String accessKeyId,
+            @Value("${kas.credential.secretAccessKey}") String secretAccessKey) {
         return new BasicAuthRequestInterceptor(accessKeyId, secretAccessKey);
     }
 
