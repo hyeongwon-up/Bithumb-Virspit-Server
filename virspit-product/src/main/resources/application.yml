@@ -37,4 +37,22 @@ spring:
       max-file-size: 1MB
       max-request-size: 10MB
 
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      bootstrap-servers: aws.yongwoonlim.com:9092
+      group-id: product_group
+      auto-offset-reset: earliest
+
+    producer:
+      bootstrap-servers: aws.yongwoonlim.com:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    product: product
+    order: order
+
 file.dir: C:/Users/yongwoon/file/
