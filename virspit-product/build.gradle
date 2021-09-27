@@ -35,6 +35,9 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    //Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
     //QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
