@@ -20,6 +20,7 @@ repositories {
 
 ext {
     set('springCloudVersion', "2020.0.3")
+    set('queryDslVersion', '4.4.0')
 }
 
 dependencies {
@@ -33,6 +34,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    //QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+    annotationProcessor "javax.persistence:javax.persistence-api"
+    annotationProcessor "javax.annotation:javax.annotation-api"
+    testImplementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    testAnnotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
 
     //swagger
     compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
