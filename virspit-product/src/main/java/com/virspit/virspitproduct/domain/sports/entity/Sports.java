@@ -4,6 +4,7 @@ import com.virspit.virspitproduct.domain.common.BaseEntity;
 import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayer;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,18 +14,19 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Sports extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @NotBlank
-    @Length(max = 10)
-    @Column(length = 10, unique = true)
+    @Length(max = 20)
+    @Column(length = 20, unique = true)
     private String name;
+
+    @Setter
     private String iconUrl;
 
     @OneToMany(mappedBy = "sports")
