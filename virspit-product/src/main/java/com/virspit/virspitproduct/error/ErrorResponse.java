@@ -10,26 +10,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class ErrorResponse {
     private String message;
     private int status;
     private List<FieldError> errors;
     private String code;
 
-    private ErrorResponse(final ErrorCode errorCode, final List<FieldError> errors) {
-        message = errorCode.getMessage();
-        status = errorCode.getStatus();
-        code = errorCode.getCode();
+    public ErrorResponse(String message, int status, List<FieldError> errors, String code) {
+        this.message = message;
+        this.status = status;
         this.errors = errors;
+        this.code = code;
+    }
+
+    private ErrorResponse(final ErrorCode errorCode, final List<FieldError> errors) {
+        this(errorCode.getMessage(), errorCode.getStatus(), errors, errorCode.getCode());
+    }
+
+    private ErrorResponse(final String message, final ErrorCode errorCode) {
+        this(message, errorCode.getStatus(), new ArrayList<>(), errorCode.getCode());
     }
 
     private ErrorResponse(final ErrorCode errorCode) {
-        message = errorCode.getMessage();
-        status = errorCode.getStatus();
-        code = errorCode.getCode();
-        errors = new ArrayList<>();
+        this(errorCode.getMessage(), errorCode);
+    }
+
+    public static ErrorResponse of(final String message, final ErrorCode errorCode) {
+        return new ErrorResponse(message, errorCode);
     }
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
@@ -38,10 +47,6 @@ public class ErrorResponse {
 
     public static ErrorResponse of(final ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
-    }
-
-    public static ErrorResponse of(final ErrorCode errorCode, final List<FieldError> errors) {
-        return new ErrorResponse(errorCode, errors);
     }
 
     public static ErrorResponse of(MethodArgumentTypeMismatchException e) {
