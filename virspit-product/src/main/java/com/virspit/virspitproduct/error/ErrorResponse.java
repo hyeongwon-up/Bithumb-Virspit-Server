@@ -1,5 +1,7 @@
 package com.virspit.virspitproduct.error;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ApiModel(value = "ErrorResponse", description = "오류")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ErrorResponse {
+    @ApiModelProperty("오류 메시지")
     private String message;
+    
+    @ApiModelProperty("HTTP 상태 코드")
     private int status;
+    
+    @ApiModelProperty("오류 상세 정보")
     private List<FieldError> errors;
+    
+    @ApiModelProperty("서비스 오류 코드")
     private String code;
 
     public ErrorResponse(String message, int status, List<FieldError> errors, String code) {
@@ -58,8 +68,13 @@ public class ErrorResponse {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FieldError {
+        @ApiModelProperty("오류 필드")
         private String field;
+
+        @ApiModelProperty("오류 값")
         private String value;
+
+        @ApiModelProperty("오류 사유")
         private String reason;
 
         private FieldError(final String field, final String value, final String reason) {
