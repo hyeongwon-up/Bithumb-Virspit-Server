@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Orders { // TODO order 불가; orders or purchase
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,11 +33,17 @@ public class Orders { // TODO order 불가; orders or purchase
 
     private String memberAddress; // 지갑 주소
 
+    private String memo;
+
     public Orders(Long memberId, Long productId, String memberAddress) {
         this.memberId = memberId;
         this.productId = productId;
         this.memberAddress = memberAddress;
         this.orderDate = LocalDateTime.now();
         this.tokenId = 10L; // 임시 바꿔야행~~!
+    }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
     }
 }
