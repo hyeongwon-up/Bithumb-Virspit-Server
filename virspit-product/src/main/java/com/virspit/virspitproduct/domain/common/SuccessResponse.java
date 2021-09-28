@@ -16,13 +16,21 @@ public class SuccessResponse<T> {
     @ApiModelProperty("응답 데이터")
     private T data;
 
-    private SuccessResponse(final T data) {
+    private SuccessResponse(final T data, final HttpStatus httpStatus) {
         message = "success";
-        status = HttpStatus.OK.value();
+        status = httpStatus.value();
         this.data = data;
     }
 
-    public static <T> SuccessResponse of(final T data) {
+    private SuccessResponse(final T data) {
+        this(data, HttpStatus.OK);
+    }
+
+    public static <T> SuccessResponse<T> of(final T data) {
+        return new SuccessResponse<>(data);
+    }
+
+    public static <T> SuccessResponse<T> of(final T data, final HttpStatus httpStatus) {
         return new SuccessResponse<>(data);
     }
 }
