@@ -29,6 +29,7 @@ public class Product extends BaseEntity {
     @NotBlank
     private String description;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_PLAYER_ID", nullable = false)
     private TeamPlayer teamPlayer;
