@@ -1,6 +1,7 @@
 package com.virspit.virspitproduct.domain.sports.dto.response;
 
 import com.virspit.virspitproduct.domain.sports.entity.Sports;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 import java.util.List;
@@ -8,9 +9,14 @@ import java.util.stream.Collectors;
 
 @Getter
 public class SportsResponseDto {
-    private Long id;
-    private String name;
-    private String iconUrl;
+    @ApiModelProperty("종목 ID")
+    private final Long id;
+
+    @ApiModelProperty("종목 이름")
+    private final String name;
+
+    @ApiModelProperty("아이콘 이미지 주소")
+    private final String iconUrl;
 
     private SportsResponseDto(Sports sports) {
         id = sports.getId();

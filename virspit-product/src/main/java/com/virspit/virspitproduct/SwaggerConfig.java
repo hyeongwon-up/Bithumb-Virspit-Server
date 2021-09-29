@@ -49,7 +49,7 @@ public class SwaggerConfig {
         @ApiModelProperty("페이지 번호(0..N)")
         private Integer page;
 
-        @ApiModelProperty(value = "페이지 당 아이템 개수(0..100)")
+        @ApiModelProperty(value = "페이지 당 아이템 개수(1..100)")
         private Integer size;
     }
 }

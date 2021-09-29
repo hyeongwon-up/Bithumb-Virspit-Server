@@ -32,8 +32,10 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 1MB
+      max-file-size: 10MB
       max-request-size: 10MB
+
+  data.web.pageable.max-page-size: 100
 
   kafka:
     consumer:
