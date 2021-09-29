@@ -1,6 +1,6 @@
 package com.virspit.virspitorder.service;
 
-import com.virspit.virspitorder.dto.request.OrdersRequestDto;
+import com.virspit.virspitorder.dto.request.OrderMemoRequestDto;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
 import com.virspit.virspitorder.entity.Orders;
 import com.virspit.virspitorder.feign.MemberServiceFeignClient;
@@ -10,8 +10,6 @@ import com.virspit.virspitorder.repository.OrderRepository;
 import com.virspit.virspitorder.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.protocol.types.Field;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -69,13 +67,13 @@ public class OrderService {
     public List<OrdersResponseDto> getAllByMember(Long memberId, String startDate, String endDate, Pageable pageable) {
         StringUtils.validateInputDate(startDate, endDate);
 
-        if(startDate == null && endDate == null) {
+        if (startDate == null && endDate == null) {
             return orderRepository.findByMemberId(memberId, pageable)
                     .stream()
                     .map(OrdersResponseDto::entityToDto)
                     .collect(Collectors.toList());
         }
-        if(startDate == null || endDate == null) {
+        if (startDate == null || endDate == null) {
             throw new BusinessException("startDate, endDate 를 정확히 입력해주세요.", ErrorCode.INVALID_INPUT_VALUE);
         }
         return orderRepository.findByMemberIdAndOrderDateBetween(
@@ -88,11 +86,19 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public Object getOrder(Long memberId, Long productId) {
+    public OrdersResponseDto getOrder(Long memberId, Long productId) {
         String memberWalletAddress = memberServiceFeignClient.findByMemberId(memberId);
         kafkaTemplate.send(TOPIC_NAME, productId);
         Orders orders = new Orders(memberId, productId, memberWalletAddress);
 
-        return orderRepository.save(orders);
+        return OrdersResponseDto.entityToDto(orderRepository.save(orders));
+    }
+
+    @Transactional
+    public OrdersResponseDto updateMemo(OrderMemoRequestDto requestDto) {
+        Orders orders = orderRepository.findById(requestDto.getOrderId())
+                .orElseThrow(() -> new BusinessException("해당 orderId가 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        orders.updateMemo(requestDto.getMemo());
+        return OrdersResponseDto.entityToDto(orders);
     }
 }

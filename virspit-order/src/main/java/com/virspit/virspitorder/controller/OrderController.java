@@ -1,5 +1,6 @@
 package com.virspit.virspitorder.controller;
 
+import com.virspit.virspitorder.dto.request.OrderMemoRequestDto;
 import com.virspit.virspitorder.response.result.SuccessResponse;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
 import com.virspit.virspitorder.service.OrderService;
@@ -29,8 +30,8 @@ public class OrderController {
     })
     @GetMapping
     public ResponseEntity allList(@PageableDefault(sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate) {
+                                  @RequestParam(value = "startDate", required = false) String startDate,
+                                  @RequestParam(value = "endDate", required = false) String endDate) {
         return new ResponseEntity<>(SuccessResponse.of(orderService.getAll(startDate, endDate, pageable)), HttpStatus.OK);
     }
 
@@ -44,12 +45,21 @@ public class OrderController {
                                              @RequestParam(value = "endDate", required = false) String endDate,
                                              @PathVariable("memberId") Long memberId) {
 
-        return ResponseEntity.ok(orderService.getAllByMember(memberId, startDate, endDate, pageable));
+        return ResponseEntity.ok(SuccessResponse.of(orderService.getAllByMember(memberId, startDate, endDate, pageable)));
     }
 
     @ApiOperation("유저 상품 주문")
     @GetMapping("/req")
     public ResponseEntity<?> getOrder(@RequestParam Long memberId, @RequestParam Long productId) {
-        return ResponseEntity.ok(orderService.getOrder(memberId, productId));
+        return ResponseEntity.ok(SuccessResponse.of(orderService.getOrder(memberId, productId)));
+    }
+
+    @ApiOperation("결제관리 - 메모 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class)
+    })
+    @PutMapping("/memo")
+    public ResponseEntity updateMemo(@RequestBody OrderMemoRequestDto requestDto) {
+        return ResponseEntity.ok(SuccessResponse.of(orderService.updateMemo(requestDto)));
     }
 }
