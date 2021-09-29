@@ -1,6 +1,7 @@
 package com.virspit.virspituser.domain.member.dto.request;
 
 import com.virspit.virspituser.domain.member.entity.Gender;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
+@Builder
 public class MemberSignUpRequestDto {
 
     private String memberName;
