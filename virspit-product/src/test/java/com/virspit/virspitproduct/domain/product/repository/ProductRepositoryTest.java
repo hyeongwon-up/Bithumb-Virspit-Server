@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
@@ -70,7 +69,7 @@ class ProductRepositoryTest {
 
         // then
         assertThat(storedProduct.getId()).isNotNull();
-        assertThat(storedProduct.getName()).isEqualTo(name);
+        assertThat(storedProduct.getTitle()).isEqualTo(name);
         assertThat(storedProduct.getDescription()).isEqualTo(description);
         assertThat(storedProduct.getTeamPlayer().getId()).isEqualTo(teamPlayer.getId());
         assertThat(storedProduct.getNftInfo()).isEqualTo(nftInfo);
@@ -91,7 +90,7 @@ class ProductRepositoryTest {
 
         // then
         assertThat(storedProduct.getId()).isEqualTo(product.getId());
-        assertThat(storedProduct.getName()).isEqualTo(product.getName());
+        assertThat(storedProduct.getTitle()).isEqualTo(product.getTitle());
         assertThat(storedProduct.getDescription()).isEqualTo(product.getDescription());
         assertThat(storedProduct.getTeamPlayer()).isEqualTo(product.getTeamPlayer());
         assertThat(storedProduct.getNftInfo()).isEqualTo(product.getNftInfo());
@@ -99,52 +98,6 @@ class ProductRepositoryTest {
         assertThat(storedProduct.getExhibition()).isEqualTo(product.getExhibition());
         assertThat(storedProduct.getPrice()).isEqualTo(product.getPrice());
         assertThat(storedProduct.getStartDateTime()).isEqualTo(product.getStartDateTime());
-    }
-
-    @Test
-    @DisplayName("팀플레이어 ID가 같고 이름이 포함된 상품 검색 테스트")
-    void searchByTeamPlayerIdAndNameContainsTest() {
-        // given
-        int count = 30;
-        saveProductsAndGetAll(count);
-
-        // when
-        List<Product> storedProducts = productRepository.findAllByTeamPlayerIdAndNameContains(teamPlayer.getId(), "흥", Sort.by("id").descending());
-
-        // then
-        assertThat(storedProducts.size()).isEqualTo(count);
-    }
-
-    @Test
-    @DisplayName("이름이 포함된 상품 검색 테스트")
-    void searchByNameContainsTest() {
-        // given
-        int count = 10;
-        saveProductsAndGetAll(count);
-
-        // when
-        List<Product> storedProducts = productRepository.findAllByNameContains("손흥민", Sort.by("id").descending());
-        List<Product> emptyProducts = productRepository.findAllByNameContains("K리그", Sort.by("id").descending());
-
-        // then
-        assertThat(storedProducts.size()).isEqualTo(count);
-        assertThat(emptyProducts).isEmpty();
-    }
-
-    @Test
-    @DisplayName("판매 예정인 상품 조회 테스트")
-    void searchByStartDateTimeAfterTest() {
-        // given
-        int count = 10;
-        saveProductsAndGetAll(count);
-
-        // when
-        List<Product> storedProducts = productRepository.findAllByStartDateTimeIsAfter(LocalDateTime.parse("2021-10-10T19:59:59"));
-        List<Product> emptyProducts = productRepository.findAllByStartDateTimeIsAfter(LocalDateTime.parse("2021-10-10T20:00:00"));
-
-        // then
-        assertThat(storedProducts.size()).isEqualTo(count);
-        assertThat(emptyProducts).isEmpty();
     }
 
     @Test
@@ -173,7 +126,7 @@ class ProductRepositoryTest {
                 .build();
 
         prevProduct.update(Product.builder()
-                .name(updatedName)
+                .title(updatedName)
                 .description(updatedDescription)
                 .teamPlayer(volleyballTeamPlayer)
                 .count(updatedCount)
@@ -187,7 +140,7 @@ class ProductRepositoryTest {
         Product updatedProduct = productRepository.save(prevProduct);
 
         assertThat(updatedProduct.getId()).isEqualTo(prevProduct.getId());
-        assertThat(updatedProduct.getName()).isEqualTo(updatedName);
+        assertThat(updatedProduct.getTitle()).isEqualTo(updatedName);
         assertThat(updatedProduct.getDescription()).isEqualTo(updatedDescription);
         assertThat(updatedProduct.getTeamPlayer()).isEqualTo(volleyballTeamPlayer);
         assertThat(updatedProduct.getNftInfo()).isEqualTo(updatedNftInfo);
@@ -214,7 +167,7 @@ class ProductRepositoryTest {
     }
 
     private List<Product> saveProductsAndGetAll(int productCount) {
-        String name = "손흥민 프리미어리그 2020-2021";
+        String title = "손흥민 프리미어리그 2020-2021";
         String description = "2020-2021 프리미어리그 손흥민 카드";
         int count = 100;
         boolean exhibition = true;
@@ -229,7 +182,7 @@ class ProductRepositoryTest {
 
         for (int i = 0; i < productCount; i++) {
             products.add(productRepository.save(Product.builder()
-                    .name(name)
+                    .title(title)
                     .description(description)
                     .teamPlayer(teamPlayer)
                     .count(count)
