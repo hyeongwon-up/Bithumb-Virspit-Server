@@ -14,7 +14,7 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
     Mono<ProductDoc> findByName(String id);
 
     @Query("{ id: { $exists: true }}")
-    Flux<ProductDoc> findAllPagingBy(Pageable page);
+    Flux<ProductDoc> findAll(Pageable page);
 
     @Query("{name:{$regex: ?0}}")
     Flux<ProductDoc> findByNameLikeOrderByCreatedDateDesc(String name);
