@@ -1,0 +1,55 @@
+server:
+  port: 8081
+
+
+---
+
+eureka:
+  instance:
+    instance-id: user-microservice-instance
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+---
+
+spring:
+  application:
+    name: virspit-user
+
+
+  jpa:
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: validate
+
+    properties:
+      hibernate:
+        #show_sql: true
+        format_sql: true
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://virspit-user.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit-user?allowMultiQueries=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8&passwordCharacterEncoding=UTF-8
+
+
+
+logging:
+  level:
+    org.hibernate:
+      SQL: DEBUG # to logger
+      type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.core:
+      JdbcTemplate: DEBUG
+      StatementCreatorUtils: TRACE
+
+
+---
+kas:
+  chainId : 1001
+  accessKeyId: KASKJ39TKMAJEZ1ZSOU559XC
+  secretAccessKey:  LeEbkR3sAF7lHBmmbVy1Se8cw0omnjLdV0WNomBF
