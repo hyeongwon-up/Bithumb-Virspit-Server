@@ -2,23 +2,27 @@ server:
   port: 8081
 
 ---
-#eureka:
-#
-#  instance:
-#    instance-id: product-microservice-instance
-#
-#  client:
-#    register-with-eureka: true
-#    fetch-registry: true
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka
+eureka:
+
+  instance:
+    instance-id: product-microservice-instance
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://3.38.44.130:8761/eureka
 
 ---
 
 spring:
+  application:
+    name: virspit-product
+
   datasource:
     url: jdbc:mariadb://virspit-product.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_product
     driver-class-name: org.mariadb.jdbc.Driver
+
   jpa:
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
