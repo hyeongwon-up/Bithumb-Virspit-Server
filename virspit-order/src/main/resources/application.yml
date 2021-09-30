@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:52000/virspit_order
+    url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: root
+    username: virspit
+    password: virspit!23$
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
   data:
@@ -15,13 +15,13 @@ spring:
         one-indexed-parameters: true # 페이징 1번 부터 시작
 
 kas:
-  chain-id: 1001 #baobab
-  access-key-id: accessKeyId
-  secret-access-key: secretAccessKey
+  chainId: 1001 #baobab
+  accessKeyId: accessKeyId
+  secretAccessKey: secretAccessKey
   admin-wallet-address: 0x5C48744aC9500933c0168DBD9d4847Da1d3A3505
 
 server:
-  port: 8084
+  port: 8080
   servlet:
     context-path: /order
 
