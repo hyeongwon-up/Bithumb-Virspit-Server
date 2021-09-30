@@ -1,6 +1,7 @@
 package com.virspit.virspitproduct.domain.teamplayer.service;
 
 import com.virspit.virspitproduct.domain.sports.entity.Sports;
+import com.virspit.virspitproduct.domain.sports.exception.SportsNotFoundException;
 import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
 import com.virspit.virspitproduct.domain.teamplayer.dto.request.TeamPlayerStoreRequestDto;
 import com.virspit.virspitproduct.domain.teamplayer.dto.response.TeamPlayerResponseDto;
@@ -10,7 +11,6 @@ import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerReposit
 import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerRepositorySupport;
 import com.virspit.virspitproduct.error.ErrorCode;
 import com.virspit.virspitproduct.error.exception.BusinessException;
-import com.virspit.virspitproduct.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -39,20 +39,24 @@ public class TeamPlayerService {
     public TeamPlayerResponseDto createTeamPlayer(final TeamPlayerStoreRequestDto teamPlayerStoreRequestDto) {
         final Long sportsId = teamPlayerStoreRequestDto.getSportsId();
         Sports sports = sportsRepository.findById(sportsId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
+                .orElseThrow(() -> new SportsNotFoundException(sportsId));
+
         TeamPlayer teamPlayer = teamPlayerStoreRequestDto.toTeamPlayer(sports);
+
         return TeamPlayerResponseDto.of(teamPlayerRepository.save(teamPlayer));
     }
 
     @Transactional
     public TeamPlayerResponseDto updateTeamPlayer(final Long teamPlayerId, final TeamPlayerStoreRequestDto teamPlayerStoreRequestDto) {
         TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 팀플레이어", teamPlayerId)));
+                .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
 
         Long sportsId = teamPlayerStoreRequestDto.getSportsId();
+
         if (!teamPlayer.getSports().getId().equals(sportsId)) {
             Sports sports = sportsRepository.findById(sportsId)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
+                    .orElseThrow(() -> new SportsNotFoundException(sportsId));
+
             teamPlayer.setSports(sports);
         }
 
