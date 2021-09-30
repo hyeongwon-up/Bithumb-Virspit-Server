@@ -46,7 +46,7 @@ public class SportsController {
     })
     @GetMapping("/{sportsId}")
     public SuccessResponse<SportsResponseDto> findSportsById(@PathVariable Long sportsId) {
-        return SuccessResponse.of(sportsService.findSportsById(sportsId));
+        return SuccessResponse.of(sportsService.getSportsById(sportsId));
     }
 
     @ApiOperation("종목 추가")
@@ -86,8 +86,7 @@ public class SportsController {
             @ApiResponse(code = 400, message = "1.존재하지 않는 종목 ID\n2.ID 타입 불일치", response = ErrorResponse.class)
     })
     @DeleteMapping("/{sportsId}")
-    public SuccessResponse<String> deleteSports(@PathVariable Long sportsId) {
-        sportsService.deleteSports(sportsId);
-        return SuccessResponse.of("deleted");
+    public SuccessResponse<SportsResponseDto> deleteSports(@PathVariable Long sportsId) {
+        return SuccessResponse.of(sportsService.deleteSports(sportsId), SuccessResponse.DELETED_MESSAGE);
     }
 }

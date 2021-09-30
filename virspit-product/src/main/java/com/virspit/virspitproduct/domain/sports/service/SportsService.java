@@ -5,9 +5,10 @@ import com.virspit.virspitproduct.domain.sports.dto.response.SportsResponseDto;
 import com.virspit.virspitproduct.domain.sports.entity.Sports;
 import com.virspit.virspitproduct.domain.sports.exception.IconFileNotFoundException;
 import com.virspit.virspitproduct.domain.sports.exception.NameDuplicatedException;
-import com.virspit.virspitproduct.domain.sports.exception.TeamPlayerExistException;
+import com.virspit.virspitproduct.domain.sports.exception.SportsNotFoundException;
 import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
-import com.virspit.virspitproduct.error.exception.EntityNotFoundException;
+import com.virspit.virspitproduct.error.ErrorCode;
+import com.virspit.virspitproduct.error.exception.BusinessException;
 import com.virspit.virspitproduct.util.file.FileStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,9 @@ public class SportsService {
         return SportsResponseDto.of(sportsRepository.findAll(pageable).toList());
     }
 
-    public SportsResponseDto findSportsById(final Long sportsId) {
+    public SportsResponseDto getSportsById(final Long sportsId) {
         return SportsResponseDto.of(sportsRepository.findById(sportsId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId))));
+                .orElseThrow(() -> new SportsNotFoundException(sportsId)));
     }
 
     @Transactional
@@ -55,7 +56,7 @@ public class SportsService {
     @Transactional
     public SportsResponseDto updateSports(final Long sportsId, final SportsStoreRequestDto sportsStoreRequestDto) throws IOException {
         Sports storedSports = sportsRepository.findById(sportsId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
+                .orElseThrow(() -> new SportsNotFoundException(sportsId));
 
         storedSports.setName(sportsStoreRequestDto.getName());
 
@@ -70,15 +71,17 @@ public class SportsService {
     }
 
     @Transactional
-    public void deleteSports(final Long sportsId) {
+    public SportsResponseDto deleteSports(final Long sportsId) {
         Sports sports = sportsRepository.findById(sportsId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
+                .orElseThrow(() -> new SportsNotFoundException(sportsId));
 
         if (!sports.getTeamPlayers().isEmpty()) {
-            throw new TeamPlayerExistException();
+            throw new BusinessException(ErrorCode.TEAM_PLAYER_EXIST);
         }
 
         localFileStore.deleteFile(sports.getIconUrl());
         sportsRepository.deleteById(sportsId);
+
+        return SportsResponseDto.of(sports);
     }
 }

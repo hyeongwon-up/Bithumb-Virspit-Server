@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 ---
 #eureka:
 #
@@ -13,16 +16,10 @@
 ---
 
 spring:
-  profiles:
-    active: dev
   datasource:
-    url: jdbc:mariadb://localhost:3306/virspit_product
+    url: jdbc:mariadb://virspit-product.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_product
     driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: root
   jpa:
-    hibernate:
-      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
     properties.hibernate.format_sql: true
@@ -38,12 +35,12 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      bootstrap-servers: 3.34.250.136:9092
+      bootstrap-servers: 15.164.129.26:9092
       group-id: product_group
       auto-offset-reset: earliest
 
     producer:
-      bootstrap-servers: 3.34.250.136:9092
+      bootstrap-servers: 15.164.129.26:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
@@ -52,4 +49,10 @@ kafka:
     product: product
     order: order
 
-file.dir: C:/Users/yongwoon/file/
+kas:
+  chainId: 1001
+  fee-payer:
+    krn: krn:1001:wallet:1e96a061-f2bb-40ec-bb68-456e125cf20d:feepayer-pool:fee-payer
+    address: "0xf57392DEC64F0EC7859F11284eF23Db23b111d35"
+
+file.dir: /tmp/
