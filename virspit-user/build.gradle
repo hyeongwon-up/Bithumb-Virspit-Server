@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.4'
+    id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -39,10 +39,12 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
 
     //swagger
-    compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    compileOnly group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
     implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
+    implementation group: 'org.springframework', name: 'spring-tx', version: '5.3.10'
+
 
 
 }
