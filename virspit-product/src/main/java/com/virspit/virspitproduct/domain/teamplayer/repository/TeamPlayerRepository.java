@@ -9,6 +9,4 @@ import java.util.List;
 
 @Repository
 public interface TeamPlayerRepository extends JpaRepository<TeamPlayer, Long> {
-    @Query(value = "SELECT * FROM team_player WHERE name like %:name% AND sports_id = :sportsId ORDER BY name", nativeQuery = true)
-    List<TeamPlayer> findBySportsIdAndName(Long sportsId, String name);
 }
