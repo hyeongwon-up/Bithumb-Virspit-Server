@@ -1,7 +1,6 @@
-package com.virspit.virspitauth.error;
+package com.virspit.virspituser.global.error;
 
-import com.virspit.virspitauth.error.exception.BusinessException;
-import feign.FeignException;
+import com.virspit.virspituser.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,11 +80,4 @@ public class GlobalControllerExceptionHandler {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.valueOf(errorCode.getStatus()));
     }
-
-//    @ExceptionHandler(FeignException.class)
-//    protected ResponseEntity<ErrorResponse> handleFeignException(final FeignException feignException) {
-//        log.error("feignException", feignException);
-//
-//
-//    }
 }

@@ -6,6 +6,7 @@ import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
+import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspitauth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    public SuccessResponse<String> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
         return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 

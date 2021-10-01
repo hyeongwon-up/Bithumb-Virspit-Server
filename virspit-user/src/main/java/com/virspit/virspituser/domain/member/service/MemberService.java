@@ -3,6 +3,7 @@ package com.virspit.virspituser.domain.member.service;
 import com.virspit.virspituser.domain.member.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspituser.domain.member.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
@@ -26,8 +27,7 @@ public class MemberService {
     private final AuthServiceFeignClient authServiceFeignClient;
 
 
-    public String registry(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
-
+    public MemberSignUpResponseDto registry(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
 
         Member member = Member.builder()
                 .memberName(memberSignUpRequestDto.getMemberName())
@@ -38,11 +38,8 @@ public class MemberService {
                 .wallet(walletService.createWallet())
                 .build();
 
-        System.out.println(member.toString());
+        return MemberSignUpResponseDto.of(memberRepository.save(member));
 
-        memberRepository.save(member);
-
-        return "ok";
     }
 
     public Member findByEmail(String memberEmail) {

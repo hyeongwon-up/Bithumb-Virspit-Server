@@ -69,10 +69,8 @@ class MemberServiceTest {
         given(memberRepository.save(any())).willReturn(member);
 
         //when
-        String result = memberService.registry(memberSignUpRequestDto);
 
         //then
-        assertThat(result).isEqualTo("ok");
 
     }
 
