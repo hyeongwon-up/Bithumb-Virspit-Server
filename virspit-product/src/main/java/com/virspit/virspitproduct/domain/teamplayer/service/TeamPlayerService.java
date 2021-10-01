@@ -5,63 +5,73 @@ import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
 import com.virspit.virspitproduct.domain.teamplayer.dto.request.TeamPlayerStoreRequestDto;
 import com.virspit.virspitproduct.domain.teamplayer.dto.response.TeamPlayerResponseDto;
 import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayer;
+import com.virspit.virspitproduct.domain.teamplayer.exception.TeamPlayerNotFoundException;
 import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerRepository;
+import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerRepositorySupport;
+import com.virspit.virspitproduct.error.ErrorCode;
+import com.virspit.virspitproduct.error.exception.BusinessException;
+import com.virspit.virspitproduct.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class TeamPlayerService {
     private final TeamPlayerRepository teamPlayerRepository;
+    private final TeamPlayerRepositorySupport teamPlayerRepositorySupport;
     private final SportsRepository sportsRepository;
 
-    public List<TeamPlayerResponseDto> getAllTeamPlayer() {
-        return TeamPlayerResponseDto.of(teamPlayerRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
+    public List<TeamPlayerResponseDto> getTeamPlayers(String name, Long sportsId, final Pageable pageable) {
+        return TeamPlayerResponseDto.of(teamPlayerRepositorySupport.findAll(name, sportsId, pageable));
     }
 
     public TeamPlayerResponseDto getTeamPlayerById(final Long teamPlayerId) {
-        return TeamPlayerResponseDto.of(teamPlayerRepository.findById(teamPlayerId).orElseThrow(EntityNotFoundException::new));
-    }
-
-    public List<TeamPlayerResponseDto> searchByName(final Long sportsId, final String name) {
-        return TeamPlayerResponseDto.of(teamPlayerRepository.findBySportsIdAndName(sportsId, name));
+        return TeamPlayerResponseDto.of(teamPlayerRepository.findById(teamPlayerId).orElseThrow());
     }
 
     @Transactional
     public TeamPlayerResponseDto createTeamPlayer(final TeamPlayerStoreRequestDto teamPlayerStoreRequestDto) {
-        Sports sports = sportsRepository.findById(teamPlayerStoreRequestDto.getSportsId()).orElseThrow(EntityNotFoundException::new);
+        final Long sportsId = teamPlayerStoreRequestDto.getSportsId();
+        Sports sports = sportsRepository.findById(sportsId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
         TeamPlayer teamPlayer = teamPlayerStoreRequestDto.toTeamPlayer(sports);
         return TeamPlayerResponseDto.of(teamPlayerRepository.save(teamPlayer));
     }
 
     @Transactional
     public TeamPlayerResponseDto updateTeamPlayer(final Long teamPlayerId, final TeamPlayerStoreRequestDto teamPlayerStoreRequestDto) {
-        TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId).orElseThrow(EntityNotFoundException::new);
+        TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 팀플레이어", teamPlayerId)));
 
         Long sportsId = teamPlayerStoreRequestDto.getSportsId();
         if (!teamPlayer.getSports().getId().equals(sportsId)) {
-            Sports sports = sportsRepository.findById(sportsId).orElseThrow(EntityNotFoundException::new);
+            Sports sports = sportsRepository.findById(sportsId)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("[ID:%d] 종목", sportsId)));
             teamPlayer.setSports(sports);
         }
 
-        teamPlayer.setName(teamPlayerStoreRequestDto.getName());
-        teamPlayer.setDescription(teamPlayerStoreRequestDto.getDescription());
-        teamPlayer.setType(teamPlayerStoreRequestDto.getType());
-        teamPlayer.setRevenueShareRate(teamPlayerStoreRequestDto.getRevenueShareRate());
+        teamPlayer.updateByDto(teamPlayerStoreRequestDto);
 
         return TeamPlayerResponseDto.of(teamPlayer);
     }
 
     @Transactional
-    public void deleteTeamPlayer(final Long teamPlayerId) {
+    public TeamPlayerResponseDto deleteTeamPlayer(final Long teamPlayerId) {
+        TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
+                .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
+
+        if (!teamPlayer.getProducts().isEmpty()) {
+            throw new BusinessException(ErrorCode.PRODUCT_EXIST);
+        }
+
         teamPlayerRepository.deleteById(teamPlayerId);
+
+        return TeamPlayerResponseDto.of(teamPlayer);
     }
 }

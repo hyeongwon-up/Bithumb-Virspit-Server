@@ -16,8 +16,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class TeamPlayerStoreRequestDto {
     @NotBlank
     @Length(max = 30)
