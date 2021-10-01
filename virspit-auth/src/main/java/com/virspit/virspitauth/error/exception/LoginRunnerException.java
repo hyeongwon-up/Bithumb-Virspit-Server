@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.exception;
+package com.virspit.virspitauth.error.exception;
 
 public class LoginRunnerException extends RuntimeException{
     private static final long SerializableUID = 1L;

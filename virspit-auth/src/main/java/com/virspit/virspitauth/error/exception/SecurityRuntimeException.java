@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.exception;
+package com.virspit.virspitauth.error.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
