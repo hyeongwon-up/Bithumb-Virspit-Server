@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.product.service;
 
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +28,19 @@ class ProductServiceSpringBootTest {
     @Test
     void insertReal() {
         // given
-        ProductDto dto = ProductDto.builder()
+        ProductKafkaDto kafkaDto = ProductKafkaDto.builder()
                 .id(UUID.randomUUID().toString())
                 .createdDate(LocalDateTime.now())
                 .price(45)
                 .build();
+
+        ProductDto dto = ProductDto.builder()
+                .id(kafkaDto.getId())
+                .createdDate(kafkaDto.getCreatedDate())
+                .price(kafkaDto.getPrice())
+                .build();
         // when
-        Mono<ProductDto> result = productService.insert(dto);
+        Mono<ProductDto> result = productService.insert(kafkaDto);
 
         // result
         result.subscribe(System.out::println);

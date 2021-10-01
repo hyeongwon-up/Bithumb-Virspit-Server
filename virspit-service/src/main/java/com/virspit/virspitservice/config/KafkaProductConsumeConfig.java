@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.config;
 
-import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -25,7 +25,7 @@ public class KafkaProductConsumeConfig {
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, ProductDto> productConsumerFactory() {
+    public ConsumerFactory<String, ProductKafkaDto> productConsumerFactory() {
 
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -33,15 +33,15 @@ public class KafkaProductConsumeConfig {
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         Deserializer<String> keyDeserializer = new StringDeserializer();
 
-        return new DefaultKafkaConsumerFactory<String, ProductDto>(
+        return new DefaultKafkaConsumerFactory<String, ProductKafkaDto>(
                 configs,
                 keyDeserializer,
-                new ErrorHandlingDeserializer<>(new JsonDeserializer(ProductDto.class)));
+                new ErrorHandlingDeserializer<>(new JsonDeserializer(ProductKafkaDto.class, false)));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ProductDto> productContainer() {
-        ConcurrentKafkaListenerContainerFactory<String, ProductDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, ProductKafkaDto> productContainer() {
+        ConcurrentKafkaListenerContainerFactory<String, ProductKafkaDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(productConsumerFactory());
         return factory;
     }

@@ -1,8 +1,8 @@
 package com.virspit.virspitservice.domain.product.service;
 
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,6 @@ import reactor.test.StepVerifier;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("서비스 유닛 테스트 (mock)")
 @ExtendWith(SpringExtension.class)
@@ -34,8 +33,12 @@ class ProductServiceTest {
     private ProductDocRepository repositoryMock;
 
     private ProductDoc product = ProductDoc.builder()
-            .name(UUID.randomUUID().toString())
+            .title(UUID.randomUUID().toString())
             .createdDate(LocalDateTime.now())
+            .build();
+    private ProductKafkaDto kafkaDto = ProductKafkaDto.builder()
+            .title(product.getTitle())
+            .createdDate(product.getCreatedDate())
             .build();
     private ProductDto dto = ProductDto.entityToDto(product);
 
@@ -58,7 +61,7 @@ class ProductServiceTest {
     @DisplayName("카프카에서 받은 데이터를 mongoDB에 저장한다.")
     @Test
     void insert() {
-        Mono<ProductDto> result = productService.insert(dto);
+        Mono<ProductDto> result = productService.insert(kafkaDto);
 
         StepVerifier.create(result)
                 .expectSubscription()

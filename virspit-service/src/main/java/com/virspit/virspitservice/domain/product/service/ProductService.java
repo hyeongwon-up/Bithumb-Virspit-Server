@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.product.service;
 
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class ProductService {
     private final ProductDocRepository productRepository;
 
     @Transactional
-    public Mono<ProductDto> insert(ProductDto productDto) {
+    public Mono<ProductDto> insert(ProductKafkaDto productDto) {
         log.info("mongo db insert :{}", productDto);
-        Mono<ProductDto> result = productRepository.save(ProductDoc.dtoToEntity(productDto))
+        Mono<ProductDto> result = productRepository.save(ProductDoc.kafkaToEntity(productDto))
                 .map(ProductDto::entityToDto);
         result.subscribe(p -> log.info("result {}", p));
         return result;

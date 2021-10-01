@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.repository;
 
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,7 @@ class ProductDocRepositoryTest {
         return template.insert(
                 ProductDoc.builder()
                         .id(null)
-                        .type(Type.PLAYER)
-                        .name(name)
+                        .title(name)
                         .createdDate(LocalDateTime.now())
                         .count(4)
                         .price(10000)
@@ -59,7 +57,7 @@ class ProductDocRepositoryTest {
         ProductDoc saved = generateDocument("product01");
 
         // when, assert
-        StepVerifier.create(repository.findByTitle(saved.getName()))
+        StepVerifier.create(repository.findByTitle(saved.getTitle()))
                 .expectNext(saved)
                 .verifyComplete();
     }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @ToString
-public class ProductDto {
+public class ProductKafkaDto {
     @ApiModelProperty("상품 id")
     private String id;
 
@@ -49,25 +48,11 @@ public class ProductDto {
     @ApiModelProperty("상품 nftUri")
     private NftInfo nftInfo;
 
+    @ApiModelProperty("등록 삭제 여부")
+    private Event event;
+
     @ApiModelProperty("생성 날짜")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
-
-//    @ApiModelProperty("업데이트 날짜")
-//    private LocalDateTime updatedDate;
-
-    public static ProductDto entityToDto(final ProductDoc productDoc) {
-        return ProductDto.builder()
-                .id(productDoc.getId())
-                .title(productDoc.getTitle())
-                .price(productDoc.getPrice())
-                .count(productDoc.getCount())
-                .startDateTime(productDoc.getStartDate())
-                .exhibition(productDoc.getExhibition())
-                .nftImageUrl(productDoc.getNftImageUrl())
-                .detailImageUrl(productDoc.getDetailImageUrl())
-                .nftInfo(new NftInfo(productDoc.getContractAlias(),
-                        productDoc.getMetadataUri()))
-                .build();
-    }
 
 }
