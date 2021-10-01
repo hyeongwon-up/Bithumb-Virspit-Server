@@ -1,13 +1,17 @@
 package com.virspit.virspitservice.domain.product.controller;
 
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -43,18 +47,24 @@ class ProductControllerTest {
     void allProducts() {
         // given
         ProductDto dto = ProductDto.builder()
-                .name(UUID.randomUUID().toString())
+                .title(UUID.randomUUID().toString())
                 .count(5)
                 .createdDate(LocalDateTime.now())
                 .build();
         Flux<ProductDto> productMono = Flux.just(dto);
 
         // when
-        when(service.getAllProducts()).thenReturn(productMono);
+        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(productMono);
 
         // assert
         client.get()
-                .uri("/products/list")
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/products/list")
+                                .queryParam("size", 1)
+                                .queryParam("page", 1)
+                                .build()
+                )
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk();

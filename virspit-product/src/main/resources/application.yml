@@ -1,8 +1,3 @@
-server:
-  port: 8082
-  servlet:
-    context-path: /product
-
 ---
 #eureka:
 #
@@ -27,14 +22,34 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB103Dialect
     show-sql: true
     properties.hibernate.format_sql: true
 
   servlet:
     multipart:
-      max-file-size: 1MB
+      max-file-size: 10MB
       max-request-size: 10MB
+
+  data.web.pageable.max-page-size: 100
+
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      bootstrap-servers: 3.34.250.136:9092
+      group-id: product_group
+      auto-offset-reset: earliest
+
+    producer:
+      bootstrap-servers: 3.34.250.136:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    product: product
+    order: order
 
 file.dir: C:/Users/yongwoon/file/

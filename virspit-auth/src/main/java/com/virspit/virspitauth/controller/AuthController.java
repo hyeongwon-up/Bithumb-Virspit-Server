@@ -1,10 +1,12 @@
 package com.virspit.virspitauth.controller;
 
+import com.virspit.virspitauth.common.SuccessResponse;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
+import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspitauth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +22,20 @@ public class AuthController {
 
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    public ResponseEntity<String> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        return ResponseEntity.ok(memberService.register(memberSignUpRequestDto));
+    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+        return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 
     @PostMapping("/login")
     @ApiOperation("로그인")
     public MemberSignInResponseDto login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {
         return memberService.login(memberSignInRequestDto);
+    }
+
+    @PostMapping("/logout")
+    @ApiOperation("로그아웃")
+    public ResponseEntity<?> logout(@RequestParam String accessToken) {
+        return ResponseEntity.ok(memberService.logout(accessToken));
     }
 
     @GetMapping("/verify/mail")

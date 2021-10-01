@@ -16,13 +16,12 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 ext {
     set('springCloudVersion', "2020.0.3")
+    set('queryDslVersion', '4.4.0')
 }
-
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -34,13 +33,24 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    //Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+    annotationProcessor "javax.persistence:javax.persistence-api"
+    annotationProcessor "javax.annotation:javax.annotation-api"
+    testImplementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    testAnnotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
 
     //swagger
-    compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    compileOnly group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
-//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 }
 
@@ -49,7 +59,6 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-
 
 test {
     useJUnitPlatform()

@@ -3,14 +3,20 @@ package com.virspit.virspitproduct.domain.sports.service;
 import com.virspit.virspitproduct.domain.sports.dto.request.SportsStoreRequestDto;
 import com.virspit.virspitproduct.domain.sports.dto.response.SportsResponseDto;
 import com.virspit.virspitproduct.domain.sports.entity.Sports;
+import com.virspit.virspitproduct.domain.sports.exception.IconFileNotFoundException;
+import com.virspit.virspitproduct.domain.sports.exception.NameDuplicatedException;
+import com.virspit.virspitproduct.domain.sports.exception.SportsNotFoundException;
 import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
+import com.virspit.virspitproduct.error.ErrorCode;
+import com.virspit.virspitproduct.error.exception.BusinessException;
 import com.virspit.virspitproduct.util.file.FileStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,50 +25,63 @@ import java.util.List;
 @Service
 public class SportsService {
     private final SportsRepository sportsRepository;
-    private final FileStore fileStore;
+    private final FileStore localFileStore;
 
-    public List<SportsResponseDto> getAllSports() {
-        return SportsResponseDto.of(sportsRepository.findAll());
+    public List<SportsResponseDto> getAllSports(Pageable pageable) {
+        return SportsResponseDto.of(sportsRepository.findAll(pageable).toList());
     }
 
-    public SportsResponseDto findSportsById(final Long sportsId) {
-        return SportsResponseDto.of(sportsRepository.findById(sportsId).orElseThrow(EntityNotFoundException::new));
+    public SportsResponseDto getSportsById(final Long sportsId) {
+        return SportsResponseDto.of(sportsRepository.findById(sportsId)
+                .orElseThrow(() -> new SportsNotFoundException(sportsId)));
     }
 
-    public SportsResponseDto addSports(final SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
-        MultipartFile iconFile = sportsCreateRequestDto.getIconFile();
-        String filename = fileStore.store(iconFile);
-
-        if (filename == null) {
-            log.info("failed to store file");
+    @Transactional
+    public SportsResponseDto createSports(final SportsStoreRequestDto sportsCreateRequestDto) throws IOException {
+        String name = sportsCreateRequestDto.getName();
+        if (sportsRepository.existsSportsByName(name)) {
+            throw new NameDuplicatedException();
         }
 
-        return SportsResponseDto.of(sportsRepository.save(new Sports(sportsCreateRequestDto.getName(), filename)));
+        MultipartFile iconFile = sportsCreateRequestDto.getIconFile();
+        if (iconFile == null || iconFile.isEmpty()) {
+            throw new IconFileNotFoundException();
+        }
+
+        String iconFileUrl = localFileStore.uploadFile(iconFile);
+
+        return SportsResponseDto.of(sportsRepository.save(new Sports(name, iconFileUrl)));
     }
 
+    @Transactional
     public SportsResponseDto updateSports(final Long sportsId, final SportsStoreRequestDto sportsStoreRequestDto) throws IOException {
-        Sports storedSports = sportsRepository.findById(sportsId).orElseThrow(EntityNotFoundException::new);
+        Sports storedSports = sportsRepository.findById(sportsId)
+                .orElseThrow(() -> new SportsNotFoundException(sportsId));
+
         storedSports.setName(sportsStoreRequestDto.getName());
 
         MultipartFile iconFile = sportsStoreRequestDto.getIconFile();
-        if (!iconFile.isEmpty()) {
-            String newFilename = fileStore.store(iconFile);
-
-            if (fileStore.delete(storedSports.getIconUrl())) {
-                log.error("failed to delete file. filename: {}", storedSports.getIconUrl());
-            }
-
-            if (newFilename != null) {
-                storedSports.setIconUrl(newFilename);
-            }
+        if (iconFile != null && !iconFile.isEmpty()) {
+            localFileStore.deleteFile(storedSports.getIconUrl());
+            String iconUrl = localFileStore.uploadFile(iconFile);
+            storedSports.setIconUrl(iconUrl);
         }
 
-        return SportsResponseDto.of(sportsRepository.save(storedSports));
+        return SportsResponseDto.of(storedSports);
     }
 
-    public void deleteSports(final Long sportsId) {
-        Sports sports = sportsRepository.findById(sportsId).orElseThrow(EntityNotFoundException::new);
-        fileStore.delete(sports.getIconUrl());
+    @Transactional
+    public SportsResponseDto deleteSports(final Long sportsId) {
+        Sports sports = sportsRepository.findById(sportsId)
+                .orElseThrow(() -> new SportsNotFoundException(sportsId));
+
+        if (!sports.getTeamPlayers().isEmpty()) {
+            throw new BusinessException(ErrorCode.TEAM_PLAYER_EXIST);
+        }
+
+        localFileStore.deleteFile(sports.getIconUrl());
         sportsRepository.deleteById(sportsId);
+
+        return SportsResponseDto.of(sports);
     }
 }

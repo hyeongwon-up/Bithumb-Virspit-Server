@@ -1,5 +1,7 @@
 package com.virspit.virspitorder.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.virspit.virspitorder.dto.request.OrderMemoRequestDto;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
 import com.virspit.virspitorder.entity.Orders;
 import com.virspit.virspitorder.service.OrderService;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
@@ -89,5 +93,30 @@ class OrderControllerTest {
         ).andExpect(status().isOk());
 
         verify(ordersService).getAllByMember(1l,startDate, endDate, page);
+    }
+
+    @DisplayName("메모 업데이트")
+    @Test
+    void updateMemo() throws Exception {
+        Orders order1 = Orders.builder()
+                .id(1l)
+                .memberId(1l)
+                .productId(1l)
+                .memo("memo update")
+                .orderDate(LocalDateTime.now())
+                .build();
+        OrderMemoRequestDto requestDto = OrderMemoRequestDto.builder()
+                .memo("memo update")
+                .orderId(1l)
+                .build();
+        given(ordersService.updateMemo(requestDto))
+                .willReturn(OrdersResponseDto.entityToDto(order1));
+        ObjectMapper objectMapper = new ObjectMapper();
+        mvc.perform(put("/orders/memo")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+        ).andExpect(status().isOk());
+
+        verify(ordersService).updateMemo(requestDto);
     }
 }

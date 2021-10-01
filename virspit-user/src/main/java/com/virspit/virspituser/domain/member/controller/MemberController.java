@@ -3,10 +3,13 @@ package com.virspit.virspituser.domain.member.controller;
 import com.virspit.virspituser.domain.member.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspituser.domain.member.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.service.MemberService;
+import com.virspit.virspituser.global.common.SuccessResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jnr.a64asm.Mem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +33,9 @@ public class MemberController {
         return memberService.findById(id);
     }
 
-    @ApiOperation("회원가입 요청한 Member를 db에 저장")
+    @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")
-    public String save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
+    public MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
         return memberService.registry(memberSignUpRequestDto);
     }
 

@@ -1,6 +1,7 @@
 package com.virspit.virspitproduct.domain.product.entity;
 
 import com.virspit.virspitproduct.domain.common.BaseEntity;
+import com.virspit.virspitproduct.domain.product.dto.request.ProductStoreRequestDto;
 import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayer;
 import lombok.*;
 
@@ -10,8 +11,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,12 +23,13 @@ public class Product extends BaseEntity {
 
     @NotBlank
     @Column(nullable = false)
-    private String name;
+    private String title;
 
     @Column(nullable = false)
     @NotBlank
     private String description;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_PLAYER_ID", nullable = false)
     private TeamPlayer teamPlayer;
@@ -53,15 +53,12 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Boolean exhibition;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductImage> images = new ArrayList<>();
-
     @NotNull
     private NftInfo nftInfo;
 
     @Builder
-    public Product(String name, String description, TeamPlayer teamPlayer, Integer price, Integer count, LocalDateTime startDateTime, Boolean exhibition, NftInfo nftInfo) {
-        this.name = name;
+    public Product(String title, String description, TeamPlayer teamPlayer, Integer price, Integer count, LocalDateTime startDateTime, Boolean exhibition, NftInfo nftInfo) {
+        this.title = title;
         this.description = description;
         this.teamPlayer = teamPlayer;
         this.price = price;
@@ -72,7 +69,7 @@ public class Product extends BaseEntity {
     }
 
     public void update(Product product) {
-        this.name = product.name;
+        this.title = product.title;
         this.description = product.description;
         this.teamPlayer = product.teamPlayer;
         this.price = product.price;
@@ -80,5 +77,14 @@ public class Product extends BaseEntity {
         this.startDateTime = product.startDateTime;
         this.exhibition = product.exhibition;
         this.nftInfo = product.nftInfo;
+    }
+
+    public void updateByDto(ProductStoreRequestDto productStoreRequestDto) {
+        this.title = productStoreRequestDto.getTitle();
+        this.description = productStoreRequestDto.getDescription();
+        this.price = productStoreRequestDto.getPrice();
+        this.count = productStoreRequestDto.getCount();
+        this.startDateTime = productStoreRequestDto.getStartDateTime();
+        this.exhibition = productStoreRequestDto.getExhibition();
     }
 }

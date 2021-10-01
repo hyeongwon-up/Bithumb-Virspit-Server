@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.repository;
 
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +38,7 @@ class ProductDocRepositoryBasicTest {
         return template.insert(
                 ProductDoc.builder()
                         .id(null)
-                        .type(Type.PLAYER)
-                        .name(UUID.randomUUID().toString())
+                        .title(UUID.randomUUID().toString())
                         .startDate(LocalDateTime.now())
                         .count(4)
                         .price(10000)
@@ -56,8 +54,7 @@ class ProductDocRepositoryBasicTest {
         // given
         ProductDoc product = ProductDoc.builder()
                 .id(null)
-                .type(Type.PLAYER)
-                .name(UUID.randomUUID().toString())
+                .title(UUID.randomUUID().toString())
                 .startDate(LocalDateTime.now())
                 .count(4)
                 .price(10000)
@@ -80,7 +77,7 @@ class ProductDocRepositoryBasicTest {
         String id = saved.getId();
         ProductDoc updateDoc = ProductDoc.builder()
                 .id(id)
-                .name(name)
+                .title(name)
                 .build();
 
         // when
@@ -91,7 +88,7 @@ class ProductDocRepositoryBasicTest {
                 .create(template.findById(saved.getId(), ProductDoc.class))
                 .assertNext(product -> {
                     assertThat(product.getId()).isEqualTo(id);
-                    assertThat(product.getName()).isEqualTo(name);
+                    assertThat(product.getTitle()).isEqualTo(name);
                 })
                 .verifyComplete();
     }

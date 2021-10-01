@@ -11,16 +11,16 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc, String> {
-    Mono<ProductDoc> findByName(String id);
+    Mono<ProductDoc> findByTitle(String title);
 
     @Query("{ id: { $exists: true }}")
-    Flux<ProductDoc> findAllPagingBy(Pageable page);
+    Flux<ProductDoc> findAll(Pageable page);
 
-    @Query("{name:{$regex: ?0}}")
-    Flux<ProductDoc> findByNameLikeOrderByCreatedDateDesc(String name);
+    @Query("{title:{$regex: ?0}}")
+    Flux<ProductDoc> findByTitleLikeOrderByCreatedDateDesc(String title);
 
-    @Query("{name:{$regex: ?0}}, id: { $exists: true }}")
-    Flux<ProductDoc> findByNameLikePagingBy(String name, Pageable page);
+    @Query("{title:{$regex: ?0}}, id: { $exists: true }}")
+    Flux<ProductDoc> findByTitleLikePagingBy(String name, Pageable page);
 
     Flux<ProductDoc> findByPriceBetween(Range<Integer> priceRange);
 }

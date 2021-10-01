@@ -1,6 +1,5 @@
 package com.virspit.virspitorder.config;
 
-import com.virspit.virspitorder.dto.request.OrdersRequestDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;

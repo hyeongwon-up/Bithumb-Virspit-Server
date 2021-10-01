@@ -1,6 +1,6 @@
 
 server:
-  port: 8080
+  port: 8070
 ---
 eureka:
   client:
@@ -23,7 +23,7 @@ spring:
           predicates:
             - Path=/user/**
           filters:
-            - JwtRequestFilter
+            - JwtUserRequestFilter
 
         - id: virspit-auth
           uri: lb://VIRSPIT-AUTH
