@@ -53,7 +53,7 @@ public class ProductService {
     }
 
     public Flux<ProductDto> getProductsBy(String search) {
-        return productRepository.findByNameLikeOrderByCreatedDateDesc(search)
+        return productRepository.findByTitleLikeOrderByCreatedDateDesc(search)
                 .map(ProductDto::entityToDto);
     }
 

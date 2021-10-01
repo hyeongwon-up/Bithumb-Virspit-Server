@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.dto;
 
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -18,10 +17,13 @@ public class ProductDto {
     private String id;
 
     @ApiModelProperty("상품 이름")
-    private String name;
+    private String title;
 
     @ApiModelProperty("상품 설명")
     private String description;
+
+    @ApiModelProperty("팀/선수 id")
+    private Long teamPlayerId;
 
     @ApiModelProperty("상품 금액")
     private Integer price;
@@ -35,30 +37,33 @@ public class ProductDto {
     @ApiModelProperty("상품 전시 여부")
     private Boolean exhibition;
 
-    @ApiModelProperty("상품 타입")
-    private Type type;
+    @ApiModelProperty("nft image url")
+    private String nftImageUrl;
+
+    @ApiModelProperty("detail image url")
+    private String detailImageUrl;
 
     @ApiModelProperty("상품 nftUri")
-    private String nftUri;
+    private NftInfo nftInfo;
 
-    @ApiModelProperty("상품 생성 날짜")
+    @ApiModelProperty("생성 날짜")
     private LocalDateTime createdDate;
 
-    @ApiModelProperty("상품 수정 날짜")
+    @ApiModelProperty("업데이트 날짜")
     private LocalDateTime updatedDate;
 
     public static ProductDto entityToDto(final ProductDoc productDoc) {
         return ProductDto.builder()
                 .id(productDoc.getId())
-                .name(productDoc.getName())
+                .title(productDoc.getTitle())
                 .price(productDoc.getPrice())
                 .count(productDoc.getCount())
                 .startDate(productDoc.getStartDate())
                 .exhibition(productDoc.getExhibition())
-                .type(productDoc.getType())
-                .nftUri(productDoc.getNftUri())
-                .createdDate(productDoc.getCreatedDate())
-                .updatedDate(productDoc.getUpdatedDate())
+                .nftImageUrl(productDoc.getNftImageUrl())
+                .detailImageUrl(productDoc.getDetailImageUrl())
+                .nftInfo(new NftInfo(productDoc.getContractAlias(),
+                        productDoc.getMetadataUri()))
                 .build();
     }
 

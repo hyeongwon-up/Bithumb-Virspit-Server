@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.product.entity;
 
+import com.virspit.virspitservice.domain.product.dto.NftInfo;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -18,9 +19,11 @@ public class ProductDoc {
     @Id
     private String id;
 
-    private String name;
+    private String title;
 
     private String description;
+
+    private Long teamPlayerId;
 
     private Integer price;
 
@@ -30,26 +33,30 @@ public class ProductDoc {
 
     private Boolean exhibition;
 
-    private Type type;
+    private String nftImageUrl;
 
-    private String nftUri;
+    private String detailImageUrl;
+
+    private String contractAlias;
+
+    private String metadataUri;
 
     private LocalDateTime createdDate;
 
     private LocalDateTime updatedDate;
 
-//    private TeamPlayer teamPlayer; todo; 정보
-
     public static ProductDoc dtoToEntity(final ProductDto productDto) {
         return ProductDoc.builder()
                 .id(productDto.getId())
-                .name(productDto.getName())
+                .title(productDto.getTitle())
                 .description(productDto.getDescription())
                 .price(productDto.getCount())
                 .startDate(productDto.getStartDate())
                 .exhibition(productDto.getExhibition())
-                .type(productDto.getType())
-                .nftUri(productDto.getNftUri())
+                .nftImageUrl(productDto.getNftImageUrl())
+                .detailImageUrl(productDto.getDetailImageUrl())
+                .metadataUri(productDto.getNftInfo().getMetadataUri())
+                .contractAlias(productDto.getNftInfo().getContractAlias())
                 .createdDate(productDto.getCreatedDate())
                 .updatedDate(productDto.getUpdatedDate())
                 .build();
