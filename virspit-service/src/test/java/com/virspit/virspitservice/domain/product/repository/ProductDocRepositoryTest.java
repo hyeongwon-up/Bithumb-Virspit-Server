@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.repository;
 
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,7 @@ class ProductDocRepositoryTest {
         return template.insert(
                 ProductDoc.builder()
                         .id(null)
-                        .type(Type.PLAYER)
-                        .name(name)
+                        .title(name)
                         .createdDate(LocalDateTime.now())
                         .count(4)
                         .price(10000)
@@ -59,7 +57,7 @@ class ProductDocRepositoryTest {
         ProductDoc saved = generateDocument("product01");
 
         // when, assert
-        StepVerifier.create(repository.findByName(saved.getName()))
+        StepVerifier.create(repository.findByTitle(saved.getTitle()))
                 .expectNext(saved)
                 .verifyComplete();
     }
@@ -93,7 +91,7 @@ class ProductDocRepositoryTest {
         for (int i = 0; i < 10; i++) {
             generateDocument("product" + (i + 1));
         }
-        Flux<ProductDoc> result = repository.findByNameLikeOrderByCreatedDateDesc("product");
+        Flux<ProductDoc> result = repository.findByTitleLikeOrderByCreatedDateDesc("product");
         AtomicInteger i = new AtomicInteger();
         result.subscribe(r->{
             i.getAndIncrement();
@@ -102,7 +100,7 @@ class ProductDocRepositoryTest {
 
         // when, assert
         StepVerifier
-                .create(repository.findByNameLikeOrderByCreatedDateDesc("product"))
+                .create(repository.findByTitleLikeOrderByCreatedDateDesc("product"))
                 .expectNextCount(10)
                 .verifyComplete();
     }
@@ -115,7 +113,7 @@ class ProductDocRepositoryTest {
             generateDocument("product" + (i + 1));
         }
 
-        Flux<ProductDoc> result = repository.findByNameLikePagingBy("1", PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdDate")));
+        Flux<ProductDoc> result = repository.findByTitleLikePagingBy("1", PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdDate")));
 
         AtomicInteger i = new AtomicInteger();
         result.subscribe(r->{

@@ -47,7 +47,7 @@ class ProductControllerTest {
     void allProducts() {
         // given
         ProductDto dto = ProductDto.builder()
-                .name(UUID.randomUUID().toString())
+                .title(UUID.randomUUID().toString())
                 .count(5)
                 .createdDate(LocalDateTime.now())
                 .build();
