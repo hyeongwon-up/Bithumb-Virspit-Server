@@ -1,5 +1,6 @@
 package com.virspit.virspitauth.controller;
 
+import com.virspit.virspitauth.common.SuccessResponse;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
@@ -20,8 +21,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    public ResponseEntity<String> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        return ResponseEntity.ok(memberService.register(memberSignUpRequestDto));
+    public SuccessResponse<String> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+        return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 
     @PostMapping("/login")

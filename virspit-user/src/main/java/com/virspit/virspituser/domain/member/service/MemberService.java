@@ -29,7 +29,6 @@ public class MemberService {
     public String registry(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
 
 
-
         Member member = Member.builder()
                 .memberName(memberSignUpRequestDto.getMemberName())
                 .email(memberSignUpRequestDto.getEmail())
@@ -38,6 +37,8 @@ public class MemberService {
                 .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
                 .wallet(walletService.createWallet())
                 .build();
+
+        System.out.println(member.toString());
 
         memberRepository.save(member);
 

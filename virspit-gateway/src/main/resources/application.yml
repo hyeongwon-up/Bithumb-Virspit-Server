@@ -23,7 +23,7 @@ spring:
           predicates:
             - Path=/user/**
           filters:
-            - JwtRequestFilter
+            - JwtUserRequestFilter
 
         - id: virspit-auth
           uri: lb://VIRSPIT-AUTH
