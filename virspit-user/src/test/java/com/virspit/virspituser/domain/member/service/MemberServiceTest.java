@@ -62,23 +62,15 @@ class MemberServiceTest {
     void registry() throws ApiException {
 
         //given
-        MemberSignUpRequestDto memberSignUpRequestDto
-                = MemberSignUpRequestDto.builder()
-                .memberName("testName")
-                .email("testEmail")
-                .password("testPassword")
-                .gender(Gender.ETC)
-                .birthdayDate(LocalDate.now())
-                .build();
+        MemberSignUpRequestDto memberSignUpRequestDto =
+                new MemberSignUpRequestDto();
 
         given(walletService.createWallet()).willReturn(wallet);
         given(memberRepository.save(any())).willReturn(member);
 
         //when
-        String result = memberService.registry(memberSignUpRequestDto);
 
         //then
-        assertThat(result).isEqualTo("ok");
 
     }
 

@@ -20,15 +20,14 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 @Component
-public class JwtRequestFilter extends
-        AbstractGatewayFilterFactory<JwtRequestFilter.Config> implements Ordered {
+public class JwtUserRequestFilter extends
+        AbstractGatewayFilterFactory<JwtUserRequestFilter.Config> implements Ordered {
 
     final Logger logger =
-            LoggerFactory.getLogger(JwtRequestFilter.class);
+            LoggerFactory.getLogger(JwtUserRequestFilter.class);
 
     @Autowired
     private JwtValidator jwtValidator;
@@ -82,7 +81,7 @@ public class JwtRequestFilter extends
     }
 
 
-    public JwtRequestFilter() {
+    public JwtUserRequestFilter() {
         super(Config.class);
     }
 

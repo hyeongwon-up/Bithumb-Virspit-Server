@@ -6,6 +6,7 @@ import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.dto.model.Member;
+import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -48,11 +49,14 @@ public class MemberService {
     @Value("${my.ip}")
     private String myIp;
 
-    public String register(MemberSignUpRequestDto memberSignUpRequestDto) {
+    public MemberSignUpResponseDto register(MemberSignUpRequestDto memberSignUpRequestDto) {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
-        memberServiceFeignClient.save(memberSignUpRequestDto);
-        return "회원가입 성공";
+
+        MemberSignUpResponseDto test =  memberServiceFeignClient.save(memberSignUpRequestDto);
+        System.out.println(test.toString());
+        return test;
+
     }
 
 
