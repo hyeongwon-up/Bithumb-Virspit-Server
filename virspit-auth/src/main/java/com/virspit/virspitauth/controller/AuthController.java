@@ -52,8 +52,8 @@ public class AuthController {
 
     @PostMapping("/initpwd")
     @ApiOperation("비밀번호 잃어버렸을 때 초기화 요청")
-    public ResponseEntity<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception{
-        return ResponseEntity.ok(memberService.findPasssword(userEmail));
+    public SuccessResponse<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception{
+        return SuccessResponse.of(memberService.findPasssword(userEmail));
     }
 
     @GetMapping("/findpwd/res")

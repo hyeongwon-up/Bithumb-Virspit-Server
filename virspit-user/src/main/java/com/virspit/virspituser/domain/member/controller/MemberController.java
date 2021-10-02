@@ -33,25 +33,6 @@ public class MemberController {
         return memberService.findById(id);
     }
 
-    @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
-    @PostMapping("/save")
-    public MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
-        return memberService.registry(memberSignUpRequestDto);
-    }
-
-    @ApiOperation("email을 통해 member 정보 전달")
-    @GetMapping
-    public Member findByEmail(@RequestParam String memberEmail) {
-        log.info("find email controller start");
-        return memberService.findByEmail(memberEmail);
-    }
-
-    @ApiOperation("Member 비밀번호 초기화 저장")
-    @PostMapping("/pwd")
-    public String edit(@RequestBody Member member) {
-        return memberService.edit(member);
-    }
-
     @ApiOperation("회원 정보 수정 (이름, 성별, 생년월일)")
     @PutMapping("/edit/info/{id}")
     public ResponseEntity<String> changeMemberInfo(@PathVariable("id") Long memberId,
