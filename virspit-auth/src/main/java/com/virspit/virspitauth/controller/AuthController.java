@@ -28,8 +28,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiOperation("로그인")
-    public MemberSignInResponseDto login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {
-        return memberService.login(memberSignInRequestDto);
+    public SuccessResponse<MemberSignInResponseDto> login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {
+        return SuccessResponse.of(memberService.login(memberSignInRequestDto));
     }
 
     @PostMapping("/logout")
