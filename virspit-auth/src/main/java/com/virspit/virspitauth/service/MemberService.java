@@ -62,13 +62,13 @@ public class MemberService {
 
     public MemberSignInResponseDto login(MemberSignInRequestDto memberSignInRequestDto) throws Exception {
         final String userEmail = memberSignInRequestDto.getEmail();
-        Member member = memberServiceFeignClient.findByEmail(userEmail);
 
         //블랙리스트 검증
         if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
             throw new Exception("잘못된 정보 임다");
         }
         log.info("check1 :" + memberSignInRequestDto);
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
 
         log.info("check2");
@@ -80,7 +80,7 @@ public class MemberService {
         //generate Token and save in redis
         stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
         log.info("check");
-        return new MemberSignInResponseDto(accessToken, refreshToken);
+        return new MemberSignInResponseDto(userEmail, accessToken, refreshToken);
     }
 
     public String verifyUserEmail(String userEmail) throws Exception {

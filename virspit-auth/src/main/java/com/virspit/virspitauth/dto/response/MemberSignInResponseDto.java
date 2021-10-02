@@ -1,5 +1,6 @@
 package com.virspit.virspitauth.dto.response;
 
+import com.virspit.virspitauth.dto.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MemberSignInResponseDto {
-    String accessToken;
-    String refreshToken;
+    private String email;
+    private String accessToken;
+    private String refreshToken;
 }
