@@ -40,14 +40,14 @@ public class AuthController {
 
     @GetMapping("/verify/mail")
     @ApiOperation("회원가입시 입력한 이메일 인증")
-    public ResponseEntity<String> verifyEmail(@RequestParam("useremail") String userEmail) throws Exception {
-        return ResponseEntity.ok(memberService.verifyUserEmail(userEmail));
+    public SuccessResponse<String> verifyEmail(@RequestParam("useremail") String userEmail) throws Exception {
+        return SuccessResponse.of(memberService.verifyUserEmail(userEmail));
     }
 
     @PostMapping("/verify/mail")
     @ApiOperation("이메일에 전송된 인증번호 검증")
-    public ResponseEntity<Boolean> verifyNumber(@RequestParam("useremail") String userEmail, Integer number) throws Exception{
-        return ResponseEntity.ok(memberService.verifyNumber(userEmail, number));
+    public SuccessResponse<Boolean> verifyNumber(@RequestParam("useremail") String userEmail, Integer number) throws Exception{
+        return SuccessResponse.of(memberService.verifyNumber(userEmail, number));
     }
 
     @PostMapping("/initpwd")
