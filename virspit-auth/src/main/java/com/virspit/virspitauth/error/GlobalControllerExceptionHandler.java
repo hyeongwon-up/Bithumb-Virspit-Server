@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 @ControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
@@ -82,10 +85,10 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.valueOf(errorCode.getStatus()));
     }
 
-//    @ExceptionHandler(FeignException.class)
-//    protected ResponseEntity<ErrorResponse> handleFeignException(final FeignException feignException) {
-//        log.error("feignException", feignException);
-//
-//
-//    }
+    @ExceptionHandler(FeignException.FeignClientException.class)
+    protected ResponseEntity<String> handleFeignException(final FeignException feignException) {
+        ByteBuffer byteBuffer = feignException.responseBody().get();
+        String response = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
