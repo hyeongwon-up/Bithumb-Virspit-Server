@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.member.service;
 
+import com.virspit.virspituser.domain.member.dto.request.InitPwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
@@ -49,6 +50,15 @@ public class MemberService {
     public String edit(@RequestBody Member member) {
         memberRepository.save(member);
         return "저장하였습니다.";
+    }
+
+    public Boolean initPwd(InitPwdRequestDto initPwdRequestDto) {
+
+        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail());
+        member.changePwd(initPwdRequestDto.getPassword());
+        memberRepository.save(member);
+
+        return true;
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {

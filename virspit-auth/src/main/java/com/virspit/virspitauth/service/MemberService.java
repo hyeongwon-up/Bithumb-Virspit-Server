@@ -1,6 +1,7 @@
 package com.virspit.virspitauth.service;
 
 
+import com.virspit.virspitauth.dto.request.InitPwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
@@ -172,9 +173,10 @@ public class MemberService {
         if (stringRedisTemplate.opsForValue().get("changepw-" + userEmail).equals(hash)) {
             stringRedisTemplate.delete("changepw-" + userEmail);
 
-            Member member = memberServiceFeignClient.findByEmail(userEmail);
-            member.setPassword(passwordEncoder.encode("virspit!23$"));
-            memberServiceFeignClient.edit(member);
+            String initPwd = passwordEncoder.encode("virspit!23$");
+            InitPwdRequestDto initPwdRequestDto = new InitPwdRequestDto(userEmail, initPwd);
+
+            memberServiceFeignClient.initPwd(initPwdRequestDto);
 
             return true;
         } else {
