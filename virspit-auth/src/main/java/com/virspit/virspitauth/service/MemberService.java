@@ -184,16 +184,15 @@ public class MemberService {
         }
     }
 
-    public Member changePassword(MemberChangePwdRequestDto memberChangePwdRequestDto) {
-        Member member = memberServiceFeignClient.findById(memberChangePwdRequestDto.getId());
-        String userEmail = member.getEmail();
+    public Boolean changePassword(MemberChangePwdRequestDto memberChangePwdRequestDto) {
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userEmail, memberChangePwdRequestDto.getBeforePwd()));
+                new UsernamePasswordAuthenticationToken(memberChangePwdRequestDto.getEmail(), memberChangePwdRequestDto.getBeforePwd()));
 
-        member.setPassword(passwordEncoder.encode(memberChangePwdRequestDto.getAfterPwd()));
-
-        return member;
+        String password = passwordEncoder.encode(memberChangePwdRequestDto.getAfterPwd());
+        InitPwdRequestDto initPwdRequestDto = new InitPwdRequestDto(memberChangePwdRequestDto.getEmail(), password);
+        memberServiceFeignClient.initPwd(initPwdRequestDto);
+        return true;
     }
 
     public String logout(String accessToken) {

@@ -65,8 +65,8 @@ public class AuthController {
 
     @PutMapping("/changepwd")
     @ApiOperation("비밀번호 변경")
-    public Member changePassword(@RequestBody MemberChangePwdRequestDto memberChangePwdRequestDto) {
-        return memberService.changePassword(memberChangePwdRequestDto);
+    public SuccessResponse<Boolean> changePassword(@RequestBody MemberChangePwdRequestDto memberChangePwdRequestDto) {
+        return SuccessResponse.of(memberService.changePassword(memberChangePwdRequestDto));
     }
 
 

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class MemberChangePwdRequestDto {
-    private Long id;
+    private String email;
     private String beforePwd;
     private String afterPwd;
 }

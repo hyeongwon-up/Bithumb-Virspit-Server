@@ -33,7 +33,7 @@ public class MemberFeignController {
         return memberService.findByEmail(memberEmail);
     }
 
-    @ApiOperation("feign - Member 비밀번호 초기화 저장")
+    @ApiOperation("feign - Member 비밀번호 변경 저장")
     @PostMapping("/pwd")
     public Boolean initPwd(@RequestBody InitPwdRequestDto initPwdRequestDto) {
         return memberService.initPwd(initPwdRequestDto);
