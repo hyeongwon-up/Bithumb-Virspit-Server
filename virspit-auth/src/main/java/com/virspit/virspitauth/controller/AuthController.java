@@ -9,8 +9,10 @@ import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspitauth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,16 +28,16 @@ public class AuthController {
         return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     @ApiOperation("로그인")
     public SuccessResponse<MemberSignInResponseDto> login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {
         return SuccessResponse.of(memberService.login(memberSignInRequestDto));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/signout")
     @ApiOperation("로그아웃")
-    public ResponseEntity<?> logout(@RequestParam String accessToken) {
-        return ResponseEntity.ok(memberService.logout(accessToken));
+    public SuccessResponse<String> logout(String accessToken) {
+        return SuccessResponse.of(memberService.logout(accessToken));
     }
 
     @GetMapping("/verify/mail")
