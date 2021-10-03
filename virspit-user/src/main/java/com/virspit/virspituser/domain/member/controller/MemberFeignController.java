@@ -19,6 +19,11 @@ public class MemberFeignController {
 
     private final MemberService memberService;
 
+    @ApiOperation("feign - call feign check")
+    @GetMapping("/feign")
+    public String check() {
+        return "check feign from";
+    }
 
     @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")

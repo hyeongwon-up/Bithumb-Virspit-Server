@@ -55,7 +55,6 @@ public class MemberService {
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
 
         MemberSignUpResponseDto test =  memberServiceFeignClient.save(memberSignUpRequestDto);
-        System.out.println(test.toString());
         return test;
 
     }
@@ -210,5 +209,9 @@ public class MemberService {
         stringRedisTemplate.expire(accessToken, 10*6*1000, TimeUnit.MILLISECONDS);
 
         return "logout success";
+    }
+
+    public String checkFeign() {
+        return memberServiceFeignClient.check();
     }
 }

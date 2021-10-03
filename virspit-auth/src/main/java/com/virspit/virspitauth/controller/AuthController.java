@@ -22,6 +22,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MemberService memberService;
 
+    @GetMapping("/check")
+    @ApiOperation("feign user server check")
+    public String check() {
+        return memberService.checkFeign();
+    }
+
     @PostMapping("/register")
     @ApiOperation("회원가입")
     public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {

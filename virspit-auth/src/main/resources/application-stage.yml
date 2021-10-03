@@ -17,12 +17,15 @@ eureka:
       defaultZone: http://3.38.44.130:8761/eureka
 
 
+feign:
+  httpclient:
+    connection-timeout: 160000000
+
 ---
 
 spring:
   application:
     name: virspit-auth
-
 
   redis:
     port: 6379
