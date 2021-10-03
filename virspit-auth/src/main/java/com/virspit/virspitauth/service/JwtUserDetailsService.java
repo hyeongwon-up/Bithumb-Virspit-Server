@@ -30,9 +30,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (member == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        if (member.getRole()== Role.USER) {
+        if (member.getRole() == Role.USER) {
             roles.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else if(member.getRole() == Role.ADMIN) {
+        } else if (member.getRole() == Role.ADMIN) {
             roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return new User(member.getMemberName(), member.getPassword(), roles);

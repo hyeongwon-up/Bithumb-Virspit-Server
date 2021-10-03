@@ -22,7 +22,6 @@ public class MemberSignUpResponseDto {
     private LocalDate birthdayDate;
     private Role role;
 
-
     MemberSignUpResponseDto(Member member) {
         memberName = member.getMemberName();
         email = member.getEmail();
