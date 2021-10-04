@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.advertisement.controller;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
@@ -78,11 +79,14 @@ class AdvertisementControllerTest {
                 .description("description")
                 .createdDate(LocalDateTime.now())
                 .build();
+
         Flux<AdvertisementResponseDto> advertisementResponseDtoFlux = Flux.just(dto);
+        Mono<Long> count = Mono.empty();
         Pageable pageable = PageRequest.of(0, 3, Sort.by("createdDate").descending());
+        WebfluxPagingResponseDto result = WebfluxPagingResponseDto.of(count, advertisementResponseDtoFlux);
 
         // when
-        when(service.getAll(pageable)).thenReturn(advertisementResponseDtoFlux);
+        when(service.getAll(pageable)).thenReturn(result);
 
         // assert
         client.get()

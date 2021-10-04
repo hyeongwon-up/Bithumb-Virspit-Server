@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import com.virspit.virspitservice.domain.product.service.ProductService;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ class ProductControllerTest {
     ProductDto generateDocument(String name) {
         return ProductDto.builder()
                 .id(name)
-                .createdDate(LocalDateTime.now())
+                .createdDateTime(LocalDateTime.now())
                 .build();
     }
 
@@ -48,13 +50,14 @@ class ProductControllerTest {
         // given
         ProductDto dto = ProductDto.builder()
                 .title(UUID.randomUUID().toString())
-                .count(5)
-                .createdDate(LocalDateTime.now())
+                .remainedCount(5)
+                .createdDateTime(LocalDateTime.now())
                 .build();
         Flux<ProductDto> productMono = Flux.just(dto);
+        WebfluxPagingResponseDto result = WebfluxPagingResponseDto.of(Mono.just(1l), productMono);
 
         // when
-        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(productMono);
+        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(result);
 
         // assert
         client.get()

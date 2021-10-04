@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.advertisement.controller;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.service.AdvertisementService;
@@ -28,7 +29,7 @@ public class AdvertisementController {
 
     @ApiOperation("광고 전체 목록 페이징 조회")
     @GetMapping
-    public Flux<AdvertisementResponseDto> getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public WebfluxPagingResponseDto getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
         return advertisementService.getAll(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
     }
 

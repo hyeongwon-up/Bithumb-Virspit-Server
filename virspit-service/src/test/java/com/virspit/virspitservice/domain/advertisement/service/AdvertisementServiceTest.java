@@ -39,7 +39,7 @@ class AdvertisementServiceTest {
 
     private ProductDoc product = ProductDoc.builder()
             .id("1")
-            .createdDate(LocalDateTime.now())
+            .createdDateTime(LocalDateTime.now())
             .build();
 
     private AdvertisementDoc advertisement = AdvertisementDoc.builder()
@@ -53,6 +53,7 @@ class AdvertisementServiceTest {
 
     @BeforeEach
     void setUp() {
+        when(repository.count()).thenReturn(Mono.just(20l));
 
         when(productDocRepository.findById(requestDto.getProductId()))
                 .thenReturn(Mono.just(product));
@@ -75,7 +76,7 @@ class AdvertisementServiceTest {
 
     @DisplayName("광고 생성")
     @Test
-    void insert(){
+    void insert() {
         Mono<AdvertisementResponseDto> result = advertisementService.insert(requestDto);
 
         StepVerifier.create(result)
@@ -86,8 +87,10 @@ class AdvertisementServiceTest {
 
     @DisplayName("광고 목록")
     @Test
-    void getAll(){
-        StepVerifier.create(advertisementService.getAll(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+    void getAll() {
+        StepVerifier.create(advertisementService.getAll(
+                PageRequest.of(0, 4, Sort.by("createdDate").descending()))
+                .getData())
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();
@@ -95,7 +98,7 @@ class AdvertisementServiceTest {
 
     @DisplayName("광고 id 로 가져오기")
     @Test
-    void get(){
+    void get() {
         StepVerifier.create(advertisementService.get("1"))
                 .expectSubscription()
                 .expectNextCount(1)
@@ -104,7 +107,7 @@ class AdvertisementServiceTest {
 
     @DisplayName("광고 수정")
     @Test
-    void update(){
+    void update() {
         assertThat(advertisementService.update(requestDto, "1"))
                 .isEqualTo(AdvertisementResponseDto.entityToDto(advertisement));
 
@@ -112,7 +115,7 @@ class AdvertisementServiceTest {
 
     @DisplayName("광고 삭제")
     @Test
-    void delete(){
+    void delete() {
         when(advertisementService.delete("1")).thenReturn(Mono.empty());
     }
 }

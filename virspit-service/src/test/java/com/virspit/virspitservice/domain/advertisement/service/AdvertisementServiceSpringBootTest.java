@@ -38,8 +38,8 @@ class AdvertisementServiceSpringBootTest {
 
     ProductDoc productDoc = ProductDoc.builder()
             .id("1")
-            .count(3)
-            .createdDate(LocalDateTime.now())
+            .remainedCount(3)
+            .createdDateTime(LocalDateTime.now())
             .exhibition(false)
             .build();
     @BeforeEach
@@ -87,7 +87,7 @@ class AdvertisementServiceSpringBootTest {
         }
         Pageable pageable = PageRequest.of(1, 1, Sort.by("createdDate").descending());
 
-        StepVerifier.create(advertisementService.getAll(pageable))
+        StepVerifier.create(advertisementService.getAll(pageable).getData())
                 .expectNextCount(1)
                 .verifyComplete();
     }

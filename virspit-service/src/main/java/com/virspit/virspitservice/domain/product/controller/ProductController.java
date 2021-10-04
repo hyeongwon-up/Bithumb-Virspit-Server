@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +19,7 @@ public class ProductController {
 
     @ApiOperation("전체 상품 조회")
     @GetMapping
-    public Flux<ProductDto> getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public WebfluxPagingResponseDto getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
         return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
     }
 

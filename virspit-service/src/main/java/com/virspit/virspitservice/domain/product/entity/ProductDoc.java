@@ -1,12 +1,14 @@
 package com.virspit.virspitservice.domain.product.entity;
 
-import com.virspit.virspitservice.domain.product.dto.ProductDto;
-import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
+import com.virspit.virspitservice.domain.product.dto.*;
+
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @ToString
@@ -25,11 +27,17 @@ public class ProductDoc {
 
     private Long teamPlayerId;
 
+    private String teamPlayerName;
+
+    private Long sportsId;
+
+    private String sportsName;
+
     private Integer price;
 
-    private Integer count;
+    private Integer remainedCount;
 
-    private LocalDateTime startDate;
+    private LocalDateTime startDateTime;
 
     private Boolean exhibition;
 
@@ -41,37 +49,35 @@ public class ProductDoc {
 
     private String metadataUri;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
+
+    private LocalDateTime updateDateTime;
 
     public static ProductDoc kafkaToEntity(final ProductKafkaDto productDto) {
         return ProductDoc.builder()
                 .id(productDto.getId())
                 .title(productDto.getTitle())
                 .description(productDto.getDescription())
-                .price(productDto.getCount())
-                .startDate(productDto.getStartDateTime())
+                .price(productDto.getPrice())
+                .remainedCount(productDto.getRemainedCount())
+                .startDateTime(productDto.getStartDateTime())
                 .exhibition(productDto.getExhibition())
                 .nftImageUrl(productDto.getNftImageUrl())
                 .detailImageUrl(productDto.getDetailImageUrl())
-                .metadataUri(productDto.getNftInfo().getMetadataUri())
-                .contractAlias(productDto.getNftInfo().getContractAlias())
-                .createdDate(productDto.getCreatedDate())
-                .build();
-    }
-
-    public static ProductDoc dtoToEntity(final ProductDto productDto) {
-        return ProductDoc.builder()
-                .id(productDto.getId())
-                .title(productDto.getTitle())
-                .description(productDto.getDescription())
-                .price(productDto.getCount())
-                .startDate(productDto.getStartDateTime())
-                .exhibition(productDto.getExhibition())
-                .nftImageUrl(productDto.getNftImageUrl())
-                .detailImageUrl(productDto.getDetailImageUrl())
-                .metadataUri(productDto.getNftInfo().getMetadataUri())
-                .contractAlias(productDto.getNftInfo().getContractAlias())
-                .createdDate(productDto.getCreatedDate())
+                .metadataUri(Optional.ofNullable(productDto.getNftInfo())
+                        .map(NftInfo::getMetadataUri).orElse(null))
+                .contractAlias(Optional.ofNullable(productDto.getNftInfo())
+                        .map(NftInfo::getContractAlias).orElse(null))
+                .teamPlayerId(Optional.ofNullable(productDto.getTeamPlayerInfo())
+                        .map(TeamPlayerInfo::getId).orElse(null))
+                .teamPlayerName(Optional.ofNullable(productDto.getTeamPlayerInfo())
+                        .map(TeamPlayerInfo::getName).orElse(null))
+                .sportsId(Optional.ofNullable(productDto.getSportsInfo())
+                        .map(SportsInfo::getId).orElse(null))
+                .sportsName(Optional.ofNullable(productDto.getSportsInfo())
+                        .map(SportsInfo::getName).orElse(null))
+                .createdDateTime(productDto.getCreatedDateTime())
+                .updateDateTime(productDto.getUpdateDateTime())
                 .build();
     }
 
