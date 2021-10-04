@@ -22,11 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MemberService memberService;
 
-    @GetMapping("/check")
-    @ApiOperation("feign user server check")
-    public String check() {
-        return memberService.checkFeign();
-    }
 
     @PostMapping("/register")
     @ApiOperation("회원가입")
@@ -54,20 +49,20 @@ public class AuthController {
 
     @PostMapping("/verify/mail")
     @ApiOperation("이메일에 전송된 인증번호 검증")
-    public SuccessResponse<Boolean> verifyNumber(@RequestParam("useremail") String userEmail, Integer number) throws Exception{
+    public SuccessResponse<Boolean> verifyNumber(@RequestParam("useremail") String userEmail, Integer number) throws Exception {
         return SuccessResponse.of(memberService.verifyNumber(userEmail, number));
     }
 
     @PostMapping("/initpwd")
     @ApiOperation("비밀번호 잃어버렸을 때 초기화 요청")
-    public SuccessResponse<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception{
+    public SuccessResponse<Boolean> findPassword(@RequestParam("useremail") String userEmail) throws Exception {
         return SuccessResponse.of(memberService.findPasssword(userEmail));
     }
 
     @GetMapping("/findpwd/res")
     @ApiOperation("비밀번호 초기화 요청 후 응답")
     public ResponseEntity<Boolean> initPassword(
-            @RequestParam("useremail") String userEmail, @RequestParam("key") String hash) throws Exception{
+            @RequestParam("useremail") String userEmail, @RequestParam("key") String hash) throws Exception {
         return ResponseEntity.ok(memberService.initPassword(userEmail, hash));
     }
 
@@ -76,7 +71,6 @@ public class AuthController {
     public SuccessResponse<Boolean> changePassword(@RequestBody MemberChangePwdRequestDto memberChangePwdRequestDto) {
         return SuccessResponse.of(memberService.changePassword(memberChangePwdRequestDto));
     }
-
 
 
 }
