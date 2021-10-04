@@ -29,18 +29,18 @@ public class Orders {
     @NotNull
     private LocalDateTime orderDate;
 
-    private Long tokenId;
+    private String tokenId;
 
     private String memberAddress; // 지갑 주소
 
     private String memo;
 
-    public Orders(Long memberId, Long productId, String memberAddress) {
+    public Orders(Long memberId, Long productId, String memberAddress, String tokenId) {
         this.memberId = memberId;
         this.productId = productId;
         this.memberAddress = memberAddress;
         this.orderDate = LocalDateTime.now();
-        this.tokenId = 10L; // 임시 바꿔야행~~!
+        this.tokenId = tokenId;
     }
 
     public void updateMemo(String memo) {

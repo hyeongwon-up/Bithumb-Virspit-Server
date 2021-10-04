@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import xyz.groundx.caver_ext_kas.CaverExtKAS;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TokenListResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TransactionStatusResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.TransactionResult;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.ValueTransferTransactionRequest;
@@ -37,9 +38,9 @@ public class NftService {
         return true;
     }
 
-    // nft 에 대한 uri 는 product 에서 받아온다.
     public String issueToken(String memberWalletAddress, String uri, String contractAlias) throws ApiException {
-        String id = "0x1"; // todo : id 생성 방법 미정
+        Kip17TokenListResponse tokenList = caver.kas.kip17.getTokenList(contractAlias);
+        String id = Integer.toHexString(tokenList.getItems().size() + 1);
 
         Kip17TransactionStatusResponse response = caver.kas.kip17.mint(contractAlias, memberWalletAddress, id, uri);
         log.info("issueToken :: transactionHash {}, transactionStatus{}", response.getTransactionHash(), response.getStatus());

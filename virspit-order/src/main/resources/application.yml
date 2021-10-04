@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
+    url: jdbc:mariadb://localhost:52000/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
-    username: virspit
-    password: virspit!23$
+    username: root
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: update
@@ -27,32 +27,32 @@ server:
 
 ---
 
-eureka:
-
-  instance:
-    instance-id: order-microservice-instance
-
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#
+#  instance:
+#    instance-id: order-microservice-instance
+#
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 
 ---
 
-spring:
-  application:
-    name: virspit-order
-
-logging:
-  level:
-    org.hibernate:
-      SQL: DEBUG # to logger
-      type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.jdbc.core:
-      JdbcTemplate: DEBUG
-      StatementCreatorUtils: TRACE
+#spring:
+#  application:
+#    name: virspit-order
+#
+#logging:
+#  level:
+#    org.hibernate:
+#      SQL: DEBUG # to logger
+#      type.descriptor.sql.BasicBinder: TRACE
+#    org.springframework.jdbc.core:
+#      JdbcTemplate: DEBUG
+#      StatementCreatorUtils: TRACE
 
 ---
 jwt:
