@@ -53,9 +53,7 @@ public class MemberService {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
 
-        MemberSignUpResponseDto test =  memberServiceFeignClient.save(memberSignUpRequestDto);
-        return test;
-
+        return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
 
 
