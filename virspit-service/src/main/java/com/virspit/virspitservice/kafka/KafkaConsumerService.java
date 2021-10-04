@@ -22,7 +22,7 @@ public class KafkaConsumerService {
             containerFactory = "productContainer")
     public void listenProductGroup(ProductKafkaDto productKafkaDto) throws IOException {
         log.info("Consumer Message is : {}", productKafkaDto);
-        if(productKafkaDto.getEvent().equals(Event.DELETE)) {
+        if(Event.DELETE.equals(productKafkaDto.getEvent())) {
             productService.deleteProduct(productKafkaDto.getId());
             return;
         }

@@ -4,8 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @ApiModel("종목 정보")
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class SportsInfo {
