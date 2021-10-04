@@ -8,6 +8,8 @@ import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
+import com.virspit.virspitauth.error.ErrorCode;
+import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -62,13 +64,11 @@ public class MemberService {
 
         //블랙리스트 검증
         if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
-            throw new Exception("잘못된 정보 임다");
+            throw new InvalidValueException(userEmail, ErrorCode.BLACKLIST_MEMBER);
         }
-        log.info("check1 :" + memberSignInRequestDto);
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
 
-        log.info("check2");
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
@@ -76,7 +76,6 @@ public class MemberService {
 
         //generate Token and save in redis
         stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
-        log.info("check");
         return new MemberSignInResponseDto(userEmail, accessToken, refreshToken);
     }
 
