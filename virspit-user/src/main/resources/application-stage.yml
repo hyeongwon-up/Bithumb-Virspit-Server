@@ -7,6 +7,7 @@ server:
 eureka:
   instance:
     instance-id: user-microservice-instance
+    prefer-ip-address: true
 
   client:
     register-with-eureka: true
@@ -54,6 +55,6 @@ logging:
 
 ---
 kas:
-  chainId : 1001
+  chainId: 1001
   accessKeyId: KASKJ39TKMAJEZ1ZSOU559XC
-  secretAccessKey:  LeEbkR3sAF7lHBmmbVy1Se8cw0omnjLdV0WNomBF
+  secretAccessKey: LeEbkR3sAF7lHBmmbVy1Se8cw0omnjLdV0WNomBF

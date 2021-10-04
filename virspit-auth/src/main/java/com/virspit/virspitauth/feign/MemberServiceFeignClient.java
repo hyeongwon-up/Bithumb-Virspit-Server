@@ -7,7 +7,8 @@ import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "VIRSPIT-USER", url = "http://3.38.44.130:8081")
+//@FeignClient(name = "VIRSPIT-USER", url = "http://3.38.44.130:8081")
+@FeignClient(name = "virspit-user")
 public interface MemberServiceFeignClient {
 
     @PostMapping(value = "/member/save", consumes = "application/json")
