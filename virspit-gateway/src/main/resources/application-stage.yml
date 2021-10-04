@@ -5,6 +5,7 @@ server:
 eureka:
   instance:
     instance-id: gateway-instance
+    prefer-ip-address: true
 
   client:
     fetch-registry: true

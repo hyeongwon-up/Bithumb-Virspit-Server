@@ -9,7 +9,7 @@ eureka:
 
   instance:
     instance-id: auth-microservice-instance
-
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
