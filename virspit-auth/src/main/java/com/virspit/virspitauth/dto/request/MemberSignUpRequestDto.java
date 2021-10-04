@@ -1,6 +1,7 @@
 package com.virspit.virspitauth.dto.request;
 
 import com.virspit.virspitauth.dto.model.Gender;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,9 +9,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class MemberSignUpRequestDto {
 
     @NotNull

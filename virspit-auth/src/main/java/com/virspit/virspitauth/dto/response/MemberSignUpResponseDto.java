@@ -5,10 +5,7 @@ import com.virspit.virspitauth.dto.model.Gender;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.model.Role;
 import com.virspit.virspitauth.dto.model.Wallet;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 

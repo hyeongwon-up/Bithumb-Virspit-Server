@@ -8,6 +8,8 @@ import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
+import com.virspit.virspitauth.error.ErrorCode;
+import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,7 +43,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
-    private final RedisTemplate<String, Object> memberRedisTemplate;
     private final RedisTemplate<String, Integer> verifyRedisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final JavaMailSenderImpl javaMailSender;
@@ -54,9 +55,7 @@ public class MemberService {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
 
-        MemberSignUpResponseDto test =  memberServiceFeignClient.save(memberSignUpRequestDto);
-        return test;
-
+        return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
 
 
@@ -65,13 +64,10 @@ public class MemberService {
 
         //블랙리스트 검증
         if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
-            throw new Exception("잘못된 정보 임다");
+            throw new InvalidValueException(userEmail, ErrorCode.BLACKLIST_MEMBER);
         }
-        log.info("check1 :" + memberSignInRequestDto);
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
 
-        log.info("check2");
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
@@ -79,7 +75,6 @@ public class MemberService {
 
         //generate Token and save in redis
         stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
-        log.info("check");
         return new MemberSignInResponseDto(userEmail, accessToken, refreshToken);
     }
 
@@ -138,7 +133,7 @@ public class MemberService {
                         "<br>" +
                         "초기화를 원하시면 아래 링크를 눌러주세요." +
                         "<br>" +
-                        "<a href='http://" + myIp + ":8083" + "/auth/findpwd/res?useremail="+userEmail+"&key="+hash+"'>" +
+                        "<a href='http://" + myIp + ":8083" + "/auth/findpwd/res?useremail=" + userEmail + "&key=" + hash + "'>" +
                         "비밀번호 변경하기</a></p>" +
                         "<br>" +
                         "반드시 로그인 후 비밀번호를 변경해주세요.!";
@@ -150,14 +145,14 @@ public class MemberService {
         return true;
     }
 
-    public String getSHA512Token(String passwordToHash, String salt){
+    public String getSHA512Token(String passwordToHash, String salt) {
         String generatedPassword = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(salt.getBytes(StandardCharsets.UTF_8));
             byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++){
+            for (int i = 0; i < bytes.length; i++) {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
             generatedPassword = sb.toString();
@@ -206,12 +201,9 @@ public class MemberService {
 
         stringRedisTemplate.delete("refresh-" + memberName);
         stringRedisTemplate.opsForValue().set(accessToken, "true");
-        stringRedisTemplate.expire(accessToken, 10*6*1000, TimeUnit.MILLISECONDS);
+        stringRedisTemplate.expire(accessToken, 10 * 6 * 1000, TimeUnit.MILLISECONDS);
 
         return "logout success";
     }
 
-    public String checkFeign() {
-        return memberServiceFeignClient.check();
-    }
 }
