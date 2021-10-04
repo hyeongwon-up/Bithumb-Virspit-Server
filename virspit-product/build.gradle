@@ -51,7 +51,7 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 dependencyManagement {

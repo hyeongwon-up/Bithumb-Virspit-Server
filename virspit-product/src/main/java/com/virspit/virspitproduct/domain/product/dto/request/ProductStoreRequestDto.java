@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@ApiModel(description = "상품 등록 및 수정 요청 DTO")
+@ApiModel(description = "상품 등록/수정 요청 모델")
 @Getter
 @Setter
 public class ProductStoreRequestDto {
@@ -41,7 +41,7 @@ public class ProductStoreRequestDto {
     @NotNull
     @DecimalMin("0")
     @DecimalMax("100")
-    private Integer count;
+    private Integer remainedCount;
 
     @ApiModelProperty("판매 시작 일 ex) 2021-09-26 18:00:00")
     @NotNull
@@ -58,16 +58,18 @@ public class ProductStoreRequestDto {
     @ApiModelProperty("상품 상세 이미지 파일")
     private MultipartFile detailImageFile;
 
-    public Product toProduct(final TeamPlayer teamPlayer, final NftInfo nftInfo) {
+    public Product toProduct(final TeamPlayer teamPlayer, final NftInfo nftInfo, final String nftImageUrl, final String detailImageUrl) {
         return Product.builder()
                 .title(title)
                 .description(description)
                 .teamPlayer(teamPlayer)
                 .nftInfo(nftInfo)
                 .price(price)
-                .count(count)
+                .remainedCount(remainedCount)
                 .exhibition(exhibition)
                 .startDateTime(startDateTime)
+                .detailImageUrl(detailImageUrl)
+                .nftImageUrl(nftImageUrl)
                 .build();
     }
 }

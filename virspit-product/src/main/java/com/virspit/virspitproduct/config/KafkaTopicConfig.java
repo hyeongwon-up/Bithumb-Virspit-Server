@@ -1,4 +1,4 @@
-package com.virspit.virspitproduct;
+package com.virspit.virspitproduct.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -16,7 +16,7 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootStrapServers;
 
-    @Value("${kafka.topic.product}")
+    @Value("${spring.kafka.topic.product}")
     private String topic;
 
     @Bean

@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 
 @ApiModel(value = "ProductResponseDto", description = "상품 응답 DTO")
 @Getter
-public class ProductResponseDto {
+public class ProductKafkaDto {
+    private final KafkaEvent event;
+
     @ApiModelProperty("상품 ID")
     private final Long id;
 
@@ -54,7 +56,16 @@ public class ProductResponseDto {
     @ApiModelProperty("상품 NFT 정보")
     private final NftInfo nftInfo;
 
-    private ProductResponseDto(final Product product) {
+    @ApiModelProperty(value = "상품 업데이트 일", example = "2021-09-26 17:00:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime updatedDateTime;
+
+    @ApiModelProperty(value = "상품 등록 일", example = "2021-09-26 17:00:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime createdDateTime;
+
+    public ProductKafkaDto(final Product product, final KafkaEvent event) {
+        this.event = event;
         id = product.getId();
         title = product.getTitle();
         description = product.getDescription();
@@ -65,19 +76,13 @@ public class ProductResponseDto {
         detailImageUrl = product.getDetailImageUrl();
         nftInfo = product.getNftInfo();
         startDateTime = product.getStartDateTime();
+        updatedDateTime = product.getUpdatedDateTime();
+        createdDateTime = product.getCreatedDateTime();
 
         TeamPlayer teamPlayer = product.getTeamPlayer();
         teamPlayerInfo = new TeamPlayerInfo(teamPlayer.getId(), teamPlayer.getName());
 
         Sports sports = teamPlayer.getSports();
         sportsInfo = new SportsInfo(sports.getId(), sports.getName());
-    }
-
-    public static ProductResponseDto of(final Product product) {
-        return new ProductResponseDto(product);
-    }
-
-    public static List<ProductResponseDto> of(final List<Product> products) {
-        return products.stream().map(ProductResponseDto::new).collect(Collectors.toList());
     }
 }

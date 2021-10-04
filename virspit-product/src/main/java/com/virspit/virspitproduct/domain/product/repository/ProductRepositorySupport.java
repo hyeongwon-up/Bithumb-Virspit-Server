@@ -1,6 +1,7 @@
 package com.virspit.virspitproduct.domain.product.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.virspit.virspitproduct.domain.product.entity.Product;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import static com.virspit.virspitproduct.domain.teamplayer.entity.QTeamPlayer.te
 public class ProductRepositorySupport {
     private final JPAQueryFactory queryFactory;
 
-    public List<Product> findAll(String keyword, Long teamPlayerId, Long sportsId, Pageable pageable) {
+    public QueryResults<Product> findAll(String keyword, Long teamPlayerId, Long sportsId, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (keyword != null && !keyword.isBlank()) {
@@ -37,6 +38,6 @@ public class ProductRepositorySupport {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(product.id.desc())
-                .fetch();
+                .fetchResults();
     }
 }

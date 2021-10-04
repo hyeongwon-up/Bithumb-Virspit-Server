@@ -68,7 +68,7 @@ public class TeamPlayerController {
     public SuccessResponse<TeamPlayerResponseDto> updateTeamPlayer(
             @ApiParam(value = "팀/플레이어 ID", required = true) @PathVariable Long teamPlayerId,
             @ApiParam(value = "팀/플레이어 수정 요청 바디", required = true) @RequestBody @Valid TeamPlayerStoreRequestDto teamPlayerStoreRequestDto) {
-        return SuccessResponse.of(teamPlayerService.updateTeamPlayer(teamPlayerId, teamPlayerStoreRequestDto));
+        return SuccessResponse.of(teamPlayerService.updateTeamPlayer(teamPlayerId, teamPlayerStoreRequestDto), SuccessResponse.UPDATED_MESSAGE);
     }
 
     @ApiOperation("팀/플레이어 삭제")

@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface FileStore {
-    String uploadFile(MultipartFile multipartFile) throws IOException;
+    String uploadFile(MultipartFile multipartFile, ContentType contentType) throws IOException;
 
-    boolean deleteFile(String fileUrl);
+    boolean deleteFile(String fileUrl, ContentType contentType);
 }
