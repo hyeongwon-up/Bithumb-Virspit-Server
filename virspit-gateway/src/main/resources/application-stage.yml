@@ -1,8 +1,12 @@
 
 server:
-  port: 8080
+  port: 8070
 ---
 eureka:
+  instance:
+    instance-id: gateway-instance
+    prefer-ip-address: true
+
   client:
     fetch-registry: true
     register-with-eureka: true
@@ -23,7 +27,7 @@ spring:
           predicates:
             - Path=/user/**
           filters:
-            - JwtRequestFilter
+            - JwtUserRequestFilter
 
         - id: virspit-auth
           uri: lb://VIRSPIT-AUTH

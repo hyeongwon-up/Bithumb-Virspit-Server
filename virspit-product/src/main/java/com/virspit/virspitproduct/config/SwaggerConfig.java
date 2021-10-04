@@ -1,4 +1,4 @@
-package com.virspit.virspitproduct;
+package com.virspit.virspitproduct.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import io.swagger.annotations.ApiModel;
@@ -46,7 +46,7 @@ public class SwaggerConfig {
     @Setter
     @ApiModel
     static class Page {
-        @ApiModelProperty("페이지 번호(0..N)")
+        @ApiModelProperty("페이지 번호(1..N)")
         private Integer page;
 
         @ApiModelProperty(value = "페이지 당 아이템 개수(1..100)")

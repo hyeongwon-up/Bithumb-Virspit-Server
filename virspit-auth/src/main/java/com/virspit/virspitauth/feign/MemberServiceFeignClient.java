@@ -1,24 +1,30 @@
 package com.virspit.virspitauth.feign;
 
+import com.virspit.virspitauth.dto.request.InitPwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient("virspit-user")
+//@FeignClient(name = "VIRSPIT-USER", url = "http://3.38.44.130:8081")
+@FeignClient(name = "virspit-user")
 public interface MemberServiceFeignClient {
 
     @PostMapping(value = "/member/save", consumes = "application/json")
     MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto);
 
     @GetMapping(value = "/member", consumes = "application/json")
-    Member findByEmail(@RequestParam String memberEmail);
+    Member findByEmail(@RequestParam("memberEmail") String memberEmail);
 
     @PostMapping(value = "/member/pwd", consumes = "application/json")
-    String edit(@RequestBody Member member);
+    Boolean initPwd(@RequestBody InitPwdRequestDto initPwdRequestDto);
 
     @GetMapping(value = "/member/{id}", consumes = "application/json")
-    Member findById(@PathVariable Long id);
+    Member findById(@PathVariable(name = "id") Long id);
+
+    @GetMapping(value = "/member/feign", consumes = "application/json")
+    String check();
+
 
 }

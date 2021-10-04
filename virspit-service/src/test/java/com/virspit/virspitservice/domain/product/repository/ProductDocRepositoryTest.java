@@ -18,8 +18,6 @@ import reactor.test.StepVerifier;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ExtendWith(SpringExtension.class)
 @DataMongoTest
 class ProductDocRepositoryTest {
@@ -41,8 +39,8 @@ class ProductDocRepositoryTest {
                 ProductDoc.builder()
                         .id(null)
                         .title(name)
-                        .createdDate(LocalDateTime.now())
-                        .count(4)
+                        .createdDateTime(LocalDateTime.now())
+                        .remainedCount(4)
                         .price(10000)
                         .exhibition(false)
                         .description("description")

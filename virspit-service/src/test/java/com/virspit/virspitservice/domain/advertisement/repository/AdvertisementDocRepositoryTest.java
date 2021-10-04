@@ -2,13 +2,11 @@ package com.virspit.virspitservice.domain.advertisement.repository;
 
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
-import com.virspit.virspitservice.domain.product.entity.Type;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
@@ -49,10 +46,9 @@ class AdvertisementDocRepositoryTest {
     AdvertisementDoc generate(String name) {
         ProductDoc product = ProductDoc.builder()
                 .id(null)
-                .type(Type.PLAYER)
-                .name(name)
-                .createdDate(LocalDateTime.now())
-                .count(4)
+                .title(name)
+                .createdDateTime(LocalDateTime.now())
+                .remainedCount(4)
                 .price(10000)
                 .exhibition(false)
                 .description("description")
@@ -63,7 +59,7 @@ class AdvertisementDocRepositoryTest {
                         .id(null)
                         .product(product)
                         .createdDate(LocalDateTime.now())
-                        .description("description~" + product.getName())
+                        .description("description~" + product.getTitle())
                         .build()).block();
     }
 
@@ -71,7 +67,7 @@ class AdvertisementDocRepositoryTest {
     @Test
     void insert() {
         AdvertisementDoc saved = generate("adv1");
-        assertThat(saved.getProduct().getName()).isEqualTo("adv1");
+        assertThat(saved.getProduct().getTitle()).isEqualTo("adv1");
     }
 
     @DisplayName("전체 조회 했을 때 insert 한 갯수만큼 갯수가 조회된다.")
@@ -110,10 +106,9 @@ class AdvertisementDocRepositoryTest {
     void insert2() {
         ProductDoc product = ProductDoc.builder()
                 .id("id")
-                .type(Type.PLAYER)
-                .name(UUID.randomUUID().toString())
-                .startDate(LocalDateTime.now())
-                .count(4)
+                .title(UUID.randomUUID().toString())
+                .startDateTime(LocalDateTime.now())
+                .remainedCount(4)
                 .price(10000)
                 .exhibition(false)
                 .description("description")
@@ -196,6 +191,18 @@ class AdvertisementDocRepositoryTest {
         StepVerifier
                 .create(repository.findById(advertisement.getId()))
                 .expectNextCount(0)
+                .verifyComplete();
+    }
+
+    @Test
+    void count(){
+        for(int i=0; i<5; i++){
+            generate(String.valueOf(i+1));
+        }
+
+        StepVerifier
+                .create(repository.count())
+                .expectNext(5l)
                 .verifyComplete();
     }
 }

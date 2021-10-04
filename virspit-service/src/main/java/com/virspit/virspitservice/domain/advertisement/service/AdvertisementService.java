@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -36,9 +36,12 @@ public class AdvertisementService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<AdvertisementResponseDto> getAll(Pageable pageable) {
-        return advertisementDocRepository.findAll(pageable)
-                .map(AdvertisementResponseDto::entityToDto);
+    public WebfluxPagingResponseDto getAll(Pageable pageable) {
+        return WebfluxPagingResponseDto.of(
+                advertisementDocRepository.count(),
+                advertisementDocRepository
+                        .findAll(pageable)
+                        .map(AdvertisementResponseDto::entityToDto));
     }
 
     @Transactional(readOnly = true)

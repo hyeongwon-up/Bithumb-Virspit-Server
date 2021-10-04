@@ -30,13 +30,13 @@ class ProductServiceSpringBootTest {
         // given
         ProductKafkaDto kafkaDto = ProductKafkaDto.builder()
                 .id(UUID.randomUUID().toString())
-                .createdDate(LocalDateTime.now())
+                .createdDateTime(LocalDateTime.now())
                 .price(45)
                 .build();
 
         ProductDto dto = ProductDto.builder()
                 .id(kafkaDto.getId())
-                .createdDate(kafkaDto.getCreatedDate())
+                .createdDateTime(kafkaDto.getCreatedDateTime())
                 .price(kafkaDto.getPrice())
                 .build();
         // when

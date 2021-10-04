@@ -64,5 +64,9 @@ public class Member extends BaseTimeEntity {
         this.gender = memberEditInfoRequestDto.getGender();
         this.birthdayDate = memberEditInfoRequestDto.getBirthdayDate();
     }
+
+    public void changePwd(final String password) {
+        this.password = password;
+    }
 }
 

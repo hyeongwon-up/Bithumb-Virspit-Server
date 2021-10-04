@@ -12,36 +12,38 @@ import java.util.UUID;
 @Component
 public class LocalFileStore implements FileStore {
 
-    @Value("${file.dir}")
+    @Value("${file.dir.root-path}")
     private String fileDir;
 
-    public String uploadFile(MultipartFile multipartFile) throws IOException {
-        if (multipartFile == null || multipartFile.isEmpty()) {
+    @Override
+    public String uploadFile(final MultipartFile multipartFile, final ContentType contentType) throws IOException {
+        if (multipartFile.isEmpty()) {
             return null;
         }
 
-        String storeFilename = createStoreFilename(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(new File(getFullPath(storeFilename)));
+        String filename = createFilename(multipartFile.getOriginalFilename());
+        multipartFile.transferTo(new File(getFullPath(filename, contentType)));
 
-        return storeFilename;
+        return filename;
     }
 
-    public boolean deleteFile(String filename) {
-        File file = new File(getFullPath(filename));
+    @Override
+    public boolean deleteFile(final String filename, final ContentType contentType) {
+        File file = new File(getFullPath(filename, contentType));
         return file.delete();
     }
 
-    public String getFullPath(final String filename) {
-        return fileDir + filename;
+    public String getFullPath(final String filename, final ContentType contentType) {
+        return fileDir + contentType.getPath() + filename;
     }
 
-    private String createStoreFilename(String originalFilename) {
-        String storeFilename = UUID.randomUUID().toString();
+    private String createFilename(final String originalFilename) {
+        String filename = UUID.randomUUID().toString().replace("-", "");
         String extension = StringUtils.getFilenameExtension(originalFilename);
         if (extension != null) {
-            storeFilename += "." + extension;
+            filename = filename + "." + extension;
         }
 
-        return storeFilename;
+        return filename;
     }
 }

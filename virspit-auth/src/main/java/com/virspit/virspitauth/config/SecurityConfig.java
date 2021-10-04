@@ -1,4 +1,4 @@
-package com.virspit.virspitauth.auth.config;
+package com.virspit.virspitauth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.
                 httpBasic().disable().
-                //cors().and().
+                cors().and().
                 csrf().disable().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().

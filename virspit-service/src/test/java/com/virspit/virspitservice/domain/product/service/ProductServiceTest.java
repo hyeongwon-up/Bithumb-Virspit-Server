@@ -1,7 +1,6 @@
 package com.virspit.virspitservice.domain.product.service;
 
-import com.virspit.virspitservice.domain.product.dto.ProductDto;
-import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
+import com.virspit.virspitservice.domain.product.dto.*;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +18,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 
 @DisplayName("서비스 유닛 테스트 (mock)")
 @ExtendWith(SpringExtension.class)
@@ -32,14 +29,24 @@ class ProductServiceTest {
     @Mock
     private ProductDocRepository repositoryMock;
 
-    private ProductDoc product = ProductDoc.builder()
-            .title(UUID.randomUUID().toString())
-            .createdDate(LocalDateTime.now())
-            .build();
     private ProductKafkaDto kafkaDto = ProductKafkaDto.builder()
-            .title(product.getTitle())
-            .createdDate(product.getCreatedDate())
+            .title("title")
+            .description("test")
+            .id("1234")
+            .detailImageUrl("")
+            .exhibition(false)
+            .event(Event.UPDATE)
+            .nftImageUrl("")
+            .nftInfo(new NftInfo("", ""))
+            .price(1)
+            .sportsInfo(new SportsInfo(1l, "name"))
+            .teamPlayerInfo(new TeamPlayerInfo(1l, "name"))
+            .remainedCount(4)
+            .startDateTime(LocalDateTime.now())
+            .updateDateTime(LocalDateTime.now())
+            .createdDateTime(LocalDateTime.now())
             .build();
+    private ProductDoc product = ProductDoc.kafkaToEntity(kafkaDto);
     private ProductDto dto = ProductDto.entityToDto(product);
 
     @BeforeEach
@@ -56,6 +63,8 @@ class ProductServiceTest {
         BDDMockito.when(repositoryMock.findAll(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
                 .thenReturn(Flux.just(product));
 
+        BDDMockito.when(repositoryMock.count())
+                .thenReturn(Mono.just(20l));
     }
 
     @DisplayName("카프카에서 받은 데이터를 mongoDB에 저장한다.")
@@ -90,7 +99,7 @@ class ProductServiceTest {
     @DisplayName("전체 상품 목록을 페이징 처리해서 가져온다.")
     @Test
     void getAllPaging() {
-        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())).getData())
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();

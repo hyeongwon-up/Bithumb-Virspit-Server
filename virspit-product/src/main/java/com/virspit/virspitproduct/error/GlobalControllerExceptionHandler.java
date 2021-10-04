@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.io.FileNotFoundException;
+
 @ControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
@@ -61,9 +63,16 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    protected ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception){
+    protected ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException exception) {
         log.error("handleHttpMediaTypeNotSupportedException", exception);
         final ErrorCode errorCode = ErrorCode.INVALID_CONTENT_TYPE;
+        return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleFileNotFoundException(FileNotFoundException exception) {
+        log.error("handleHttpMediaTypeNotSupportedException", exception);
+        final ErrorCode errorCode = ErrorCode.FILE_NOT_FOUND;
         return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.valueOf(errorCode.getStatus()));
     }
 

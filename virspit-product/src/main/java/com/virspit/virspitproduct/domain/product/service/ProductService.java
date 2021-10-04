@@ -1,9 +1,14 @@
 package com.virspit.virspitproduct.domain.product.service;
 
+import com.querydsl.core.QueryResults;
+import com.virspit.virspitproduct.domain.common.PagingResponseDto;
 import com.virspit.virspitproduct.domain.product.dto.request.ProductStoreRequestDto;
+import com.virspit.virspitproduct.domain.product.dto.response.KafkaEvent;
+import com.virspit.virspitproduct.domain.product.dto.response.ProductKafkaDto;
 import com.virspit.virspitproduct.domain.product.dto.response.ProductResponseDto;
 import com.virspit.virspitproduct.domain.product.entity.NftInfo;
 import com.virspit.virspitproduct.domain.product.entity.Product;
+import com.virspit.virspitproduct.domain.product.exception.ProductNotFoundException;
 import com.virspit.virspitproduct.domain.product.feign.contract.KasContractFeignClient;
 import com.virspit.virspitproduct.domain.product.feign.contract.request.DeployKip17ContractRequest;
 import com.virspit.virspitproduct.domain.product.feign.contract.request.Kip17FeePayerOption;
@@ -17,7 +22,10 @@ import com.virspit.virspitproduct.domain.product.kafka.KafkaProductProducer;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepository;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepositorySupport;
 import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayer;
+import com.virspit.virspitproduct.domain.teamplayer.exception.TeamPlayerNotFoundException;
 import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerRepository;
+import com.virspit.virspitproduct.util.file.ContentType;
+import com.virspit.virspitproduct.util.file.FileStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +51,17 @@ public class ProductService {
 
     private final KafkaProductProducer kafkaProductProducer;
 
+    private final FileStore awsS3FileStore;
+
     @Value("${kas.fee-payer.krn}")
     private String feePayerKrn;
 
     @Value("${kas.fee-payer.address}")
     private String feePayerAddress;
 
-    public List<ProductResponseDto> getProducts(String keyword, Long teamPlayerId, Long sportsId, final Pageable pageable) {
-        return ProductResponseDto.of(productRepositorySupport.findAll(keyword, teamPlayerId, sportsId, pageable));
+    public PagingResponseDto<ProductResponseDto> getProducts(String keyword, Long teamPlayerId, Long sportsId, final Pageable pageable) {
+        QueryResults<Product> queryResults = productRepositorySupport.findAll(keyword, teamPlayerId, sportsId, pageable);
+        return new PagingResponseDto<>(queryResults.getTotal(), ProductResponseDto.of(queryResults.getResults()));
     }
 
     public ProductResponseDto getProduct(final Long productId) {
@@ -58,23 +69,26 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto createProduct(final ProductStoreRequestDto productStoreRequestDto) {
-        TeamPlayer teamPlayer = teamPlayerRepository.findById(productStoreRequestDto.getTeamPlayerId()).orElseThrow(EntityNotFoundException::new);
+    public ProductResponseDto createProduct(final ProductStoreRequestDto productStoreRequestDto) throws IOException {
+        final Long teamPlayerId = productStoreRequestDto.getTeamPlayerId();
 
-        // deploy nft contract
+        TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
+                .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
+
         String contractAlias = "product-" + teamPlayer.getId() + "-" + System.currentTimeMillis(); // TODO alias 이름 지정 방법 찾기
         deployContract(contractAlias, false);
-
-        // create nft metadata
         String metadataUri = createNftMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
-
         NftInfo nftInfo = new NftInfo(contractAlias, metadataUri);
-        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo);
 
-        ProductResponseDto productResponseDto = ProductResponseDto.of(productRepository.save(product));
-        kafkaProductProducer.sendProduct(productResponseDto);
+        String nftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
+        String detailImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getDetailImageFile(), ContentType.PRODUCT_DETAIL_IMAGE);
 
-        return productResponseDto;
+        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo, nftImageUrl, detailImageUrl);
+        productRepository.save(product);
+
+        kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
+
+        return ProductResponseDto.of(product);
     }
 
     private void deployContract(final String alias, final Boolean enableGlobalFeePayer) {
@@ -113,7 +127,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(final Long productId, final ProductStoreRequestDto productStoreRequestDto) {
+    public ProductResponseDto updateProduct(final Long productId, final ProductStoreRequestDto productStoreRequestDto) throws IOException {
         Product product = productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
 
         if (!product.getTeamPlayer().getId().equals(productStoreRequestDto.getTeamPlayerId())) {
@@ -121,7 +135,27 @@ public class ProductService {
             product.setTeamPlayer(teamPlayer);
         }
 
+        MultipartFile detailImageFile = productStoreRequestDto.getDetailImageFile();
+        if (detailImageFile != null && !detailImageFile.isEmpty()) {
+            awsS3FileStore.deleteFile(product.getDetailImageUrl(), ContentType.PRODUCT_DETAIL_IMAGE);
+            String iconUrl = awsS3FileStore.uploadFile(detailImageFile, ContentType.PRODUCT_DETAIL_IMAGE);
+            product.setDetailImageUrl(iconUrl);
+        }
+
         product.updateByDto(productStoreRequestDto);
+
+        kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
+
+        return ProductResponseDto.of(product);
+    }
+
+    @Transactional
+    public ProductResponseDto deleteProduct(final Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+        awsS3FileStore.deleteFile(product.getNftImageUrl(), ContentType.PRODUCT_NFT_IMAGE);
+        awsS3FileStore.deleteFile(product.getDetailImageUrl(), ContentType.PRODUCT_DETAIL_IMAGE);
+        productRepository.delete(product);
+        kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.DELETE));
 
         return ProductResponseDto.of(product);
     }
