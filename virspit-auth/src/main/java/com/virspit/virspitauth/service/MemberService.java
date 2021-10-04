@@ -41,7 +41,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
-    private final RedisTemplate<String, Object> memberRedisTemplate;
     private final RedisTemplate<String, Integer> verifyRedisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final JavaMailSenderImpl javaMailSender;
