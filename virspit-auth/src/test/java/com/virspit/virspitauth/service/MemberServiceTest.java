@@ -66,6 +66,9 @@ class MemberServiceTest {
         memberSignUpRequestDto.setPassword("password");
         memberSignUpRequestDto.setGender(Gender.ETC);
         memberSignUpRequestDto.setBirthdayDate(LocalDate.of(1996, 12, 28));
+
+
+        Mockito.clearInvocations();
     }
 
     @Test
@@ -104,37 +107,18 @@ class MemberServiceTest {
 
     }
 
-    @Test
-    void verifyUserEmail() throws Exception {
-        String result = memberService.verifyUserEmail("test@test.com");
+//    @Test
+//    void login_실패_비밀번호틀림(){
+//        //given
+//        MemberSignInRequestDto memberSignInRequestDto =
+//                new MemberSignInRequestDto("test@test.com",  "password");
+//
+//        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
+//        Mockito.doReturn("").when(valueOperations).get(any());
+//
+//    }
 
-    }
 
-    @Test
-    void verifyNumber() {
-    }
 
-    @Test
-    void findPasssword() {
-    }
 
-    @Test
-    void getSHA512Token() {
-    }
-
-    @Test
-    void initPassword() {
-    }
-
-    @Test
-    void changePassword() {
-    }
-
-    @Test
-    void logout() {
-    }
-
-    @Test
-    void checkFeign() {
-    }
 }
