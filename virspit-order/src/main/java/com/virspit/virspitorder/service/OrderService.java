@@ -24,11 +24,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderService {
 
+    private static final String TOPIC_NAME = "order";
+
+    private final NftService nftService;
     private final OrderRepository orderRepository;
     private final MemberServiceFeignClient memberServiceFeignClient;
     private final KafkaTemplate<String, Long> kafkaTemplate;
-
-    private static String TOPIC_NAME = "order";
 
     @Transactional(readOnly = true)
     public List<OrdersResponseDto> getAll(String startDate, String endDate, Pageable pageable) {
@@ -64,6 +65,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<OrdersResponseDto> getAllByMember(Long memberId, String startDate, String endDate, Pageable pageable) {
         StringUtils.validateInputDate(startDate, endDate);
 
@@ -86,12 +88,27 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrdersResponseDto getOrder(Long memberId, Long productId) {
+    @Transactional
+    public OrdersResponseDto order(Long memberId, Long productId) {
         String memberWalletAddress = memberServiceFeignClient.findByMemberId(memberId);
+        if(memberWalletAddress.isBlank() || memberWalletAddress == null) {
+            throw new BusinessException("member wallet 정보를 가져오지 못했습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+
+
         kafkaTemplate.send(TOPIC_NAME, productId);
         Orders orders = new Orders(memberId, productId, memberWalletAddress);
 
-        return OrdersResponseDto.entityToDto(orderRepository.save(orders));
+        OrdersResponseDto saved = OrdersResponseDto.entityToDto(orderRepository.save(orders));
+
+        // 결제
+//        nftService.payToAdminFeesByCustomer()
+
+//        nftService.issueToken(memberWalletAddress, )
+
+
+        return saved;
     }
 
     @Transactional
