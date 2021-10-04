@@ -1,5 +1,6 @@
 # Bithumb-Virspit-Server
 
+![image](https://user-images.githubusercontent.com/61967790/135897254-5dd573b1-a5c1-4ce0-8a63-f7c5849327c0.png)
 ## Commit Convention
    
           feat : 새로운 기능에 대한 커밋 
