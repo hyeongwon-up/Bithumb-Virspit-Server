@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.product.service;
 
+import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
@@ -22,6 +23,7 @@ public class ProductService {
     @Transactional
     public Mono<ProductDto> insert(ProductKafkaDto productDto) {
         log.info("mongo db insert :{}", productDto);
+
         Mono<ProductDto> result = productRepository.save(ProductDoc.kafkaToEntity(productDto))
                 .map(ProductDto::entityToDto);
         result.subscribe(p -> log.info("result {}", p));
@@ -35,10 +37,12 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<ProductDto> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
-                .map(ProductDto::entityToDto);
-
+    public WebfluxPagingResponseDto getAllProducts(Pageable pageable) {
+        return WebfluxPagingResponseDto.of(
+                productRepository.count(),
+                productRepository
+                        .findAll(pageable)
+                        .map(ProductDto::entityToDto));
     }
 
     @Transactional(readOnly = true)
@@ -55,15 +59,6 @@ public class ProductService {
 
     public Flux<ProductDto> getProductsBy(String search) {
         return productRepository.findByTitleLikeOrderByCreatedDateDesc(search)
-                .map(ProductDto::entityToDto);
-    }
-
-    @Transactional
-    public Mono<ProductDto> updateProduct(Mono<ProductDto> productDto, String id) {
-        return productRepository.findById(id)
-                .flatMap(p -> productDto.map(ProductDoc::dtoToEntity))
-                .doOnNext(e -> e.setId(id))
-                .flatMap(productRepository::save)
                 .map(ProductDto::entityToDto);
     }
 
