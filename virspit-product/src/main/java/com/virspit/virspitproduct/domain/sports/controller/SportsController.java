@@ -75,8 +75,8 @@ public class SportsController {
             @ApiResponse(code = 400, message = "1.종목 이름, ID 누락\n2.종목 이름 중복\n3.유효하지 않은 종목 이름", response = ErrorResponse.class)
     })
     @PutMapping(value = "/{sportsId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public SportsResponseDto updateSports(@PathVariable Long sportsId, @Valid @ModelAttribute SportsStoreRequestDto sportsStoreRequestDto) throws IOException {
-        return sportsService.updateSports(sportsId, sportsStoreRequestDto);
+    public SuccessResponse<SportsResponseDto> updateSports(@PathVariable Long sportsId, @Valid @ModelAttribute SportsStoreRequestDto sportsStoreRequestDto) throws IOException {
+        return SuccessResponse.of(sportsService.updateSports(sportsId, sportsStoreRequestDto), SuccessResponse.UPDATED_MESSAGE);
     }
 
     @ApiOperation("종목 삭제")

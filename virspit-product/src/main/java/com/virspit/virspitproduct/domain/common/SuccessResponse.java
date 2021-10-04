@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SuccessResponse<T> {
     public static final String SUCCESS_MESSAGE = "success";
+    public static final String UPDATED_MESSAGE = "updated";
     public static final String DELETED_MESSAGE = "deleted";
 
     @ApiModelProperty("메시지")
@@ -30,7 +31,7 @@ public class SuccessResponse<T> {
     }
 
     public static <T> SuccessResponse<T> of(final T data, final HttpStatus httpStatus) {
-        return new SuccessResponse<>(SUCCESS_MESSAGE, data, httpStatus);
+        return new SuccessResponse<>(httpStatus.name().toLowerCase(), data, httpStatus);
     }
 
     public static <T> SuccessResponse<T> of(final T data, final String message) {

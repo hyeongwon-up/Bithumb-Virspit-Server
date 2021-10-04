@@ -44,6 +44,15 @@ public class TeamPlayerStoreRequestDto {
     @NotNull
     private Long sportsId;
 
+    @Builder
+    public TeamPlayerStoreRequestDto(String name, String description, TeamPlayerType type, Integer revenueShareRate, Long sportsId) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.revenueShareRate = revenueShareRate;
+        this.sportsId = sportsId;
+    }
+
     public TeamPlayer toTeamPlayer(final Sports sports) {
         return new TeamPlayer(name, type, description, revenueShareRate, sports);
     }

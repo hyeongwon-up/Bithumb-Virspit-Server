@@ -9,6 +9,7 @@ import com.virspit.virspitproduct.domain.sports.exception.SportsNotFoundExceptio
 import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
 import com.virspit.virspitproduct.error.ErrorCode;
 import com.virspit.virspitproduct.error.exception.BusinessException;
+import com.virspit.virspitproduct.util.file.ContentType;
 import com.virspit.virspitproduct.util.file.FileStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import java.util.List;
 @Service
 public class SportsService {
     private final SportsRepository sportsRepository;
-    private final FileStore localFileStore;
+    private final FileStore awsS3FileStore;
 
     public List<SportsResponseDto> getAllSports(Pageable pageable) {
         return SportsResponseDto.of(sportsRepository.findAll(pageable).toList());
@@ -48,7 +49,7 @@ public class SportsService {
             throw new IconFileNotFoundException();
         }
 
-        String iconFileUrl = localFileStore.uploadFile(iconFile);
+        String iconFileUrl = awsS3FileStore.uploadFile(iconFile, ContentType.SPORTS_ICON_IMAGE);
 
         return SportsResponseDto.of(sportsRepository.save(new Sports(name, iconFileUrl)));
     }
@@ -62,8 +63,8 @@ public class SportsService {
 
         MultipartFile iconFile = sportsStoreRequestDto.getIconFile();
         if (iconFile != null && !iconFile.isEmpty()) {
-            localFileStore.deleteFile(storedSports.getIconUrl());
-            String iconUrl = localFileStore.uploadFile(iconFile);
+            awsS3FileStore.deleteFile(storedSports.getIconUrl(), ContentType.SPORTS_ICON_IMAGE);
+            String iconUrl = awsS3FileStore.uploadFile(iconFile, ContentType.SPORTS_ICON_IMAGE);
             storedSports.setIconUrl(iconUrl);
         }
 
@@ -79,7 +80,7 @@ public class SportsService {
             throw new BusinessException(ErrorCode.TEAM_PLAYER_EXIST);
         }
 
-        localFileStore.deleteFile(sports.getIconUrl());
+        awsS3FileStore.deleteFile(sports.getIconUrl(), ContentType.SPORTS_ICON_IMAGE);
         sportsRepository.deleteById(sportsId);
 
         return SportsResponseDto.of(sports);

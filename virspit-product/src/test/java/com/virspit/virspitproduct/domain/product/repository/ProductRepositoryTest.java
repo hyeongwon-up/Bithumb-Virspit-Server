@@ -73,7 +73,7 @@ class ProductRepositoryTest {
         assertThat(storedProduct.getDescription()).isEqualTo(description);
         assertThat(storedProduct.getTeamPlayer().getId()).isEqualTo(teamPlayer.getId());
         assertThat(storedProduct.getNftInfo()).isEqualTo(nftInfo);
-        assertThat(storedProduct.getCount()).isEqualTo(count);
+        assertThat(storedProduct.getRemainedCount()).isEqualTo(count);
         assertThat(storedProduct.getExhibition()).isEqualTo(exhibition);
         assertThat(storedProduct.getPrice()).isEqualTo(price);
         assertThat(storedProduct.getStartDateTime()).isEqualTo(startDateTime);
@@ -94,7 +94,7 @@ class ProductRepositoryTest {
         assertThat(storedProduct.getDescription()).isEqualTo(product.getDescription());
         assertThat(storedProduct.getTeamPlayer()).isEqualTo(product.getTeamPlayer());
         assertThat(storedProduct.getNftInfo()).isEqualTo(product.getNftInfo());
-        assertThat(storedProduct.getCount()).isEqualTo(product.getCount());
+        assertThat(storedProduct.getRemainedCount()).isEqualTo(product.getRemainedCount());
         assertThat(storedProduct.getExhibition()).isEqualTo(product.getExhibition());
         assertThat(storedProduct.getPrice()).isEqualTo(product.getPrice());
         assertThat(storedProduct.getStartDateTime()).isEqualTo(product.getStartDateTime());
@@ -144,7 +144,7 @@ class ProductRepositoryTest {
         assertThat(updatedProduct.getDescription()).isEqualTo(updatedDescription);
         assertThat(updatedProduct.getTeamPlayer()).isEqualTo(volleyballTeamPlayer);
         assertThat(updatedProduct.getNftInfo()).isEqualTo(updatedNftInfo);
-        assertThat(updatedProduct.getCount()).isEqualTo(updatedCount);
+        assertThat(updatedProduct.getRemainedCount()).isEqualTo(updatedCount);
         assertThat(updatedProduct.getExhibition()).isEqualTo(updatedExhibition);
         assertThat(updatedProduct.getPrice()).isEqualTo(updatedPrice);
         assertThat(updatedProduct.getStartDateTime()).isEqualTo(updatedStartDateTime);

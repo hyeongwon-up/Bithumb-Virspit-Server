@@ -136,7 +136,7 @@ class TeamPlayerControllerTest {
                 .filter(teamPlayerResponseDto -> teamPlayerResponseDto.getName().contains(keywordName))
                 .collect(Collectors.toList());
 
-        given(teamPlayerService.searchByName(sportsId, keywordName))
+        /*given(teamPlayerService.searchByName(sportsId, keywordName))
                 .willReturn(filteredTeamPlayerResponseDtos);
 
         mockMvc.perform(get("/team-player/search")
@@ -144,7 +144,7 @@ class TeamPlayerControllerTest {
                         .param("sportsId", String.valueOf(sportsId))
                         .param("name", "est"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(filteredTeamPlayerResponseDtos)));
+                .andExpect(content().json(objectMapper.writeValueAsString(filteredTeamPlayerResponseDtos)));*/
     }
 
     @Test
