@@ -1,5 +1,7 @@
 package com.virspit.gateway.filter;
 
+import com.virspit.gateway.error.ErrorCode;
+import com.virspit.gateway.error.exception.InvalidValueException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -20,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -44,8 +47,12 @@ public class JwtUserRequestFilter extends
             this.role = role;
         }
 
-        public String getRole() {
+        public String getUser() {
             return Role.USER.getCode();
+        }
+
+        public String getAdmin() {
+            return Role.ADMIN.getCode();
         }
     }
 
@@ -92,8 +99,9 @@ public class JwtUserRequestFilter extends
             String token = exchange.getRequest().getHeaders().get("Authorization").get(0).substring(7);
             Map<String, Object> userInfo = jwtValidator.getUserParseInfo(token);
             ArrayList<String> arr = (ArrayList<String>) userInfo.get("role");
-            if (!arr.contains(config.getRole())) {
-                throw new IllegalArgumentException();
+            logger.info("?" + arr);
+            if (!arr.contains(config.getUser()) && !arr.contains(config.getAdmin())) {
+                throw new InvalidValueException(token, ErrorCode.TOKEN_NOT_VALID);
             }
             return chain.filter(exchange);
         };
