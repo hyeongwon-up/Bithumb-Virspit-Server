@@ -28,12 +28,6 @@ public class AuthController {
         return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 
-    @PostMapping("/register/admin")
-    @ApiOperation("admin 회원가입")
-    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        return SuccessResponse.of(memberService.registerAdmin(memberSignUpRequestDto));
-    }
-
     @PostMapping("/signin")
     @ApiOperation("로그인")
     public SuccessResponse<MemberSignInResponseDto> login(@RequestBody MemberSignInRequestDto memberSignInRequestDto) throws Exception {

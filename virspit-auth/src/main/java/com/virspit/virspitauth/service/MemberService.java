@@ -58,13 +58,6 @@ public class MemberService {
         return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
 
-    public MemberSignUpResponseDto registerAdmin(MemberSignUpRequestDto memberSignUpRequestDto) {
-        String pwd = memberSignUpRequestDto.getPassword();
-        memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
-
-        return memberServiceFeignClient.admin(memberSignUpRequestDto);
-    }
-
 
     public MemberSignInResponseDto login(MemberSignInRequestDto memberSignInRequestDto) throws Exception {
         final String userEmail = memberSignInRequestDto.getEmail();
