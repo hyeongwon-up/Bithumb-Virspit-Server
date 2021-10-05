@@ -25,7 +25,7 @@ spring:
         - id: virspit-user
           uri: lb://VIRSPIT-USER
           predicates:
-            - Path=/user/**
+            - Path=/member/**
           filters:
             - JwtUserRequestFilter
 
@@ -33,6 +33,13 @@ spring:
           uri: lb://VIRSPIT-AUTH
           predicates:
             - Path=/auth/**
+
+        - id: virspit-product
+            uri: lb://VIRSPIT-PRODUCT
+            predicates:
+              - Path=/product/**
+            filters:
+              - JwtUserRequestFilter
 
         - id: virspit-order
           uri: lb://VIRSPIT-ORDER
