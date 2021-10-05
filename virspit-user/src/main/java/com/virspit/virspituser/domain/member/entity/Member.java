@@ -6,6 +6,7 @@ import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.global.entity.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.web3j.protocol.admin.Admin;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -49,13 +50,13 @@ public class Member extends BaseTimeEntity {
     private List<Favorite> favoriteList = new ArrayList<>();
 
     @Builder
-    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate, Wallet wallet) {
+    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate,Role role, Wallet wallet) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
         this.gender = gender;
         this.birthdayDate = birthdayDate;
-        this.role = Role.USER;
+        this.role = role;
         this.wallet = wallet;
     }
 
@@ -68,5 +69,6 @@ public class Member extends BaseTimeEntity {
     public void changePwd(final String password) {
         this.password = password;
     }
+
 }
 

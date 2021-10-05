@@ -22,11 +22,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MemberService memberService;
 
-
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+    public SuccessResponse<MemberSignUpResponseDto> addAdmin(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
         return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
+    }
+
+    @PostMapping("/register/admin")
+    @ApiOperation("admin 회원가입")
+    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+        return SuccessResponse.of(memberService.registerAdmin(memberSignUpRequestDto));
     }
 
     @PostMapping("/signin")

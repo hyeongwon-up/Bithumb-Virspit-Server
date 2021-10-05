@@ -6,6 +6,7 @@ import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDt
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspituser.domain.member.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspituser.domain.member.entity.Member;
+import com.virspit.virspituser.domain.member.entity.Role;
 import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import com.virspit.virspituser.domain.wallet.entity.Wallet;
@@ -36,12 +37,28 @@ public class MemberService {
                 .password(memberSignUpRequestDto.getPassword())
                 .gender(memberSignUpRequestDto.getGender())
                 .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
+                .role(Role.USER)
                 .wallet(walletService.createWallet())
                 .build();
 
         return MemberSignUpResponseDto.of(memberRepository.save(member));
 
     }
+
+    public MemberSignUpResponseDto admin(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
+        Member member = Member.builder()
+                .memberName(memberSignUpRequestDto.getMemberName())
+                .email(memberSignUpRequestDto.getEmail())
+                .password(memberSignUpRequestDto.getPassword())
+                .gender(memberSignUpRequestDto.getGender())
+                .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
+                .role(Role.ADMIN)
+                .build();
+
+        return MemberSignUpResponseDto.of(memberRepository.save(member));
+    }
+
+
 
     public Member findByEmail(String memberEmail) {
         return memberRepository.findByEmail(memberEmail);

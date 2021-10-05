@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberSignUpResponseDto {
     private String memberName;
     private String email;
