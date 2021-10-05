@@ -34,6 +34,7 @@ public class MemberService {
         Member member = Member.builder()
                 .memberName(memberSignUpRequestDto.getMemberName())
                 .email(memberSignUpRequestDto.getEmail())
+                .phoneNumber(memberSignUpRequestDto.getPhoneNumber())
                 .password(memberSignUpRequestDto.getPassword())
                 .gender(memberSignUpRequestDto.getGender())
                 .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
