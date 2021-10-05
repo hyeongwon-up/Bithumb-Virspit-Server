@@ -29,6 +29,8 @@ eureka:
 
   instance:
     instance-id: order-microservice-instance
+    prefer-ip-address: true
+
 
   client:
     register-with-eureka: true
