@@ -4,11 +4,9 @@ package com.virspit.virspituser.domain.member.dto.response;
 import com.virspit.virspituser.domain.member.entity.Gender;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.entity.Role;
-import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
