@@ -1,15 +1,14 @@
 package com.virspit.virspitservice.domain.advertisement.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
+import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.service.AdvertisementService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,8 +28,14 @@ public class AdvertisementController {
 
     @ApiOperation("광고 전체 목록 페이징 조회")
     @GetMapping
-    public WebfluxPagingResponseDto getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public Flux getAll(@RequestParam("page") int page, @RequestParam("size") int size) { ;
         return advertisementService.getAll(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
+    }
+
+    @ApiOperation("광고 전체 목록 페이징 조회")
+    @GetMapping("/page")
+    public Mono<PageSupport> getAll2(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return advertisementService.getByPage(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
     }
 
     @ApiOperation("광고 id로 조회")
@@ -41,8 +46,8 @@ public class AdvertisementController {
 
     @ApiOperation("광고 내용 업데이트")
     @PutMapping("/{id}")
-    public void update(@RequestBody AdvertisementRequestDto requestDto, @PathVariable String id) {
-        advertisementService.update(requestDto, id);
+    public Mono<AdvertisementResponseDto> update(@RequestBody AdvertisementUpdateRequestDto requestDto, @PathVariable String id) {
+        return advertisementService.update(requestDto, id);
     }
 
     @ApiOperation("광고 삭제")

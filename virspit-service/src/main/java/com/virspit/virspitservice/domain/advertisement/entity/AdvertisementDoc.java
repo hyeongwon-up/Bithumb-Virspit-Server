@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.advertisement.entity;
 
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -38,10 +39,10 @@ public class AdvertisementDoc {
                 .build();
     }
 
-    public void update(AdvertisementRequestDto requestDto, ProductDoc product) {
+    public void update(AdvertisementUpdateRequestDto requestDto) {
         this.description = requestDto.getDescription();
         this.url = requestDto.getUrl();
-        this.product = product;
         this.updatedDate = LocalDateTime.now();
     }
+
 }

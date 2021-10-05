@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementDocRepository;
@@ -49,6 +50,10 @@ class AdvertisementServiceTest {
     private AdvertisementRequestDto requestDto = AdvertisementRequestDto.builder()
             .productId("1")
             .description("request")
+            .build();
+
+    private AdvertisementUpdateRequestDto updateRequestDto = AdvertisementUpdateRequestDto.builder()
+            .description("update")
             .build();
 
     @BeforeEach
@@ -108,7 +113,7 @@ class AdvertisementServiceTest {
     @DisplayName("광고 수정")
     @Test
     void update() {
-        assertThat(advertisementService.update(requestDto, "1"))
+        assertThat(advertisementService.update(updateRequestDto, "1"))
                 .isEqualTo(AdvertisementResponseDto.entityToDto(advertisement));
 
     }
