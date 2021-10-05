@@ -19,22 +19,11 @@ public class MemberFeignController {
 
     private final MemberService memberService;
 
-    @ApiOperation("feign - call feign check")
-    @GetMapping("/feign")
-    public String check() {
-        return "check feign from";
-    }
 
     @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")
     public MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
         return memberService.registry(memberSignUpRequestDto);
-    }
-
-    @ApiOperation("feign - 회원가입 요청한 Admin db에 저장")
-    @PostMapping("/admin")
-    public MemberSignUpResponseDto saveAdmin(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
-        return memberService.admin(memberSignUpRequestDto);
     }
 
     @ApiOperation("feign - email을 통해 member 정보 전달")

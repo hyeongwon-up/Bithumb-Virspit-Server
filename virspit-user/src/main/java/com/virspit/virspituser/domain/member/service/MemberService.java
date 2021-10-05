@@ -46,20 +46,6 @@ public class MemberService {
 
     }
 
-    public MemberSignUpResponseDto admin(MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
-        Member member = Member.builder()
-                .memberName(memberSignUpRequestDto.getMemberName())
-                .email(memberSignUpRequestDto.getEmail())
-                .password(memberSignUpRequestDto.getPassword())
-                .gender(memberSignUpRequestDto.getGender())
-                .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
-                .role(Role.ADMIN)
-                .build();
-
-        return MemberSignUpResponseDto.of(memberRepository.save(member));
-    }
-
-
     public Member findByEmail(String memberEmail) {
         return memberRepository.findByEmail(memberEmail);
     }

@@ -14,9 +14,6 @@ public interface MemberServiceFeignClient {
     @PostMapping(value = "/member/save", consumes = "application/json")
     MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto);
 
-    @PostMapping(value = "/member/admin", consumes = "application/json")
-    MemberSignUpResponseDto admin(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto);
-
     @GetMapping(value = "/member", consumes = "application/json")
     Member findByEmail(@RequestParam("memberEmail") String memberEmail);
 
