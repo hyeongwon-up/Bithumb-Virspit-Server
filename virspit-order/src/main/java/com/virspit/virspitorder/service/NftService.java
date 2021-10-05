@@ -8,6 +8,7 @@ import xyz.groundx.caver_ext_kas.CaverExtKAS;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TokenListResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TransactionStatusResponse;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.TransactionReceipt;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.TransactionResult;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.ValueTransferTransactionRequest;
 
@@ -35,7 +36,8 @@ public class NftService {
         log.info("transactionResult:: transactionHash {}, transactionStatus {}",
                 transactionResult.getTransactionHash(),
                 transactionResult.getStatus());
-        return true;
+
+        return isCommitted(transactionResult.getTransactionHash());
     }
 
     public String issueToken(String memberWalletAddress, String uri, String contractAlias) throws ApiException {
@@ -44,8 +46,18 @@ public class NftService {
 
         Kip17TransactionStatusResponse response = caver.kas.kip17.mint(contractAlias, memberWalletAddress, id, uri);
         log.info("issueToken :: transactionHash {}, transactionStatus{}", response.getTransactionHash(), response.getStatus());
-
+        if (!isCommitted(response.getTransactionHash())) {
+            log.warn("transaction status is Submitted : {}", response);
+        }
         return response.getTransactionHash();
+    }
+
+    private boolean isCommitted(String transactionHashCode) throws ApiException {
+        TransactionReceipt res = caver.kas.wallet.getTransaction(transactionHashCode);
+        if ("Committed".equals(res.getStatus())) {
+            return true;
+        }
+        return false;
     }
 
 }

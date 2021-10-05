@@ -7,6 +7,7 @@ import xyz.groundx.caver_ext_kas.CaverExtKAS;
 import xyz.groundx.caver_ext_kas.kas.tokenhistory.TokenHistoryQueryOptions;
 import xyz.groundx.caver_ext_kas.kas.wallet.WalletQueryOptions;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17ContractInfoResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TokenListResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TransactionStatusResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.tokenhistory.model.PageableNfts;
@@ -16,8 +17,8 @@ import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.
 class KasApiTest {
 
     private int chainId = 1001;
-    private String accessKeyId = "";
-    private String secretAccessKey = "";
+    private String accessKeyId = "KASKW2G3TI0STDF12DK5Q6MY";
+    private String secretAccessKey = "vmAwDDXv2DdtGfla75IAhpW61a5s9SqIYEGtf4Rv";
     private CaverExtKAS caver;
 
     @BeforeEach
@@ -88,11 +89,11 @@ class KasApiTest {
     void 토큰_발행() throws ApiException {
         String contractAlias = "my-first-kip17";
         String to = "0x5C48744aC9500933c0168DBD9d4847Da1d3A3505";
-        String id = "0x2"; // randomTokenId
+        String id = "0x21"; // randomTokenId
         String uri = "https://metadata-store.klaytnapi.com/21d95c27-11ef-8140-64a8-19903ce3eebb/3b06f1b7-78fb-7a2c-032d-b91fb535f3a0.jpg";
 
         Kip17TransactionStatusResponse response = caver.kas.kip17.mint(contractAlias, to, id, uri);
-        System.out.println(response);
+        System.out.println(response); // 0x968ac3eeb0036bffd343f20971c437f79215499a581dbe905b33a7585296cc68 : transactionHashCode
     }
 
     @DisplayName("KIP-17 토큰 전송")
@@ -125,6 +126,12 @@ class KasApiTest {
         System.out.println(nfts);
         int size = nfts.getItems().size();
         System.out.println(size);
+    }
+
+    @Test
+    void getTransaction() throws ApiException {
+        TransactionReceipt res = caver.kas.wallet.getTransaction("0x968ac3eeb0036bffd343f20971c437f79215499a581dbe905b33a7585296cc68");
+        System.out.println(res);
     }
 
 }

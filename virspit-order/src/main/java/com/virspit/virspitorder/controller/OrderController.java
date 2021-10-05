@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 
 @Api("주문 관련 API")
 @RequestMapping("/orders")
@@ -53,7 +54,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class, responseContainer = "List")
     })
     @PostMapping
-    public ResponseEntity order(@RequestParam Long memberId, @RequestParam Long productId) {
+    public ResponseEntity order(@RequestParam Long memberId, @RequestParam Long productId) throws ApiException {
         return ResponseEntity.ok(SuccessResponse.of(orderService.order(memberId, productId)));
     }
 
