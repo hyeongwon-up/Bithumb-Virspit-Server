@@ -17,8 +17,8 @@ import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.
 class KasApiTest {
 
     private int chainId = 1001;
-    private String accessKeyId = "KASKW2G3TI0STDF12DK5Q6MY";
-    private String secretAccessKey = "vmAwDDXv2DdtGfla75IAhpW61a5s9SqIYEGtf4Rv";
+    private String accessKeyId = "";
+    private String secretAccessKey = "";
     private CaverExtKAS caver;
 
     @BeforeEach
