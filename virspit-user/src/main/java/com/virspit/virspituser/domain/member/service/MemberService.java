@@ -59,7 +59,6 @@ public class MemberService {
     }
 
 
-
     public Member findByEmail(String memberEmail) {
         return memberRepository.findByEmail(memberEmail);
     }
@@ -79,7 +78,6 @@ public class MemberService {
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {
-
         Member member = memberRepository.findById(memberId).get();
         member.editInfo(memberEditInfoRequestDto);
         memberRepository.save(member);
