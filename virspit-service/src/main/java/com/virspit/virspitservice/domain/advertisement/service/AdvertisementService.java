@@ -25,14 +25,19 @@ public class AdvertisementService {
     private final ProductDocRepository productDocRepository;
     private final AdvertisementDocRepository advertisementDocRepository;
 
+    private Mono<ProductDoc> findProductById(String productId) {
+        return productDocRepository.findById(productId)
+                .switchIfEmpty(
+                        Mono.error(new GlobalException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", productId), ErrorCode.ENTITY_NOT_FOUND)));
+    }
+
     @Transactional
     public Mono<AdvertisementResponseDto> insert(AdvertisementRequestDto requestDto) {
-        return productDocRepository.findById(requestDto.getProductId())
-                .map(product -> advertisementDocRepository.save(AdvertisementDoc.dtoToEntity(requestDto, product))
-                        .map(AdvertisementResponseDto::entityToDto).block())
-                .switchIfEmpty(
-                        Mono.error(new GlobalException(String.format("id: {%s} 에 해당하는 product 가 없습니다.",
-                                requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND)));
+        Mono<AdvertisementDoc> advertisementDoc = findProductById(requestDto.getProductId())
+                .log()
+                .flatMap(productDoc -> advertisementDocRepository.save(AdvertisementDoc.dtoToEntity(requestDto, productDoc)));
+        return advertisementDoc.log()
+                .map(AdvertisementResponseDto::entityToDto);
     }
 
     @Transactional(readOnly = true)
