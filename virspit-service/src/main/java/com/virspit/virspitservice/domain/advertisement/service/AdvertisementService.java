@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
-import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
+import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,18 +44,24 @@ public class AdvertisementService {
     }
 
     @Transactional(readOnly = true)
-    public WebfluxPagingResponseDto getAll(Pageable pageable) {
-        advertisementDocRepository
+    public Flux getAll(Pageable pageable) {
+        return advertisementDocRepository
                 .findAll(pageable)
-                .map(AdvertisementResponseDto::entityToDto)
-                .subscribe(s-> System.out.println(s));
+                .map(AdvertisementResponseDto::entityToDto);
+    }
 
-        return WebfluxPagingResponseDto.of(
-                advertisementDocRepository.count(),
-                advertisementDocRepository
-                        .findAll(pageable)
-                        .log()
-                        .map(AdvertisementResponseDto::entityToDto));
+    @Transactional(readOnly = true)
+    public Mono<PageSupport> getByPage(Pageable pageable) {
+        return advertisementDocRepository.findAllByOrderByCreatedDateDesc()
+                .collectList()
+                .map(list -> new PageSupport<>(
+                        list
+                                .stream()
+                                .map(m -> AdvertisementResponseDto.entityToDto((AdvertisementDoc) m))
+                                .skip(pageable.getPageNumber() * pageable.getPageSize())
+                                .limit(pageable.getPageSize())
+                                .collect(Collectors.toList()),
+                        pageable.getPageNumber(), pageable.getPageSize(), list.size()));
     }
 
     @Transactional(readOnly = true)

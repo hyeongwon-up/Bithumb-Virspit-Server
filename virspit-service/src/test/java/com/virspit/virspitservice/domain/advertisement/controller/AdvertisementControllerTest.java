@@ -1,14 +1,10 @@
 package com.virspit.virspitservice.domain.advertisement.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
-import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementDocRepository;
 import com.virspit.virspitservice.domain.advertisement.service.AdvertisementService;
-import com.virspit.virspitservice.domain.product.controller.ProductController;
-import com.virspit.virspitservice.domain.product.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -82,12 +77,10 @@ class AdvertisementControllerTest {
                 .build();
 
         Flux<AdvertisementResponseDto> advertisementResponseDtoFlux = Flux.just(dto);
-        Mono<Long> count = Mono.empty();
         Pageable pageable = PageRequest.of(0, 3, Sort.by("createdDate").descending());
-        WebfluxPagingResponseDto result = WebfluxPagingResponseDto.of(count.block(), advertisementResponseDtoFlux);
 
         // when
-        when(service.getAll(pageable)).thenReturn(result);
+        when(service.getAll(pageable)).thenReturn(advertisementResponseDtoFlux);
 
         // assert
         client.get()

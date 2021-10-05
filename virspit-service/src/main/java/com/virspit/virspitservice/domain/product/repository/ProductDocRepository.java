@@ -23,4 +23,6 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
     Flux<ProductDoc> findByTitleLikePagingBy(String name, Pageable page);
 
     Flux<ProductDoc> findByPriceBetween(Range<Integer> priceRange);
+
+    Flux<ProductDoc> findAllByOrderByCreatedDateDesc();
 }

@@ -88,7 +88,7 @@ class AdvertisementServiceSpringBootTest {
         }
         Pageable pageable = PageRequest.of(1, 1, Sort.by("createdDate").descending());
 
-        StepVerifier.create(advertisementService.getAll(pageable).getData())
+        StepVerifier.create(advertisementService.getAll(pageable))
                 .expectNextCount(1)
                 .verifyComplete();
     }

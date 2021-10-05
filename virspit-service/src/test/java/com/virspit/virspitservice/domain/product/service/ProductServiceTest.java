@@ -99,7 +99,7 @@ class ProductServiceTest {
     @DisplayName("전체 상품 목록을 페이징 처리해서 가져온다.")
     @Test
     void getAllPaging() {
-        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())).getData())
+        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();
