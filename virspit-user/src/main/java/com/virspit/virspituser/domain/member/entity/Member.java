@@ -25,11 +25,11 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable=false, length=20)
+    @Column(nullable = false, length = 20)
     @NotNull(message = "이름을 입력해주세요.")
     private String memberName;
 
-    @Column(nullable=false, unique=true, length=50)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
     @Column(nullable = false)
@@ -55,9 +55,11 @@ public class Member extends BaseTimeEntity {
     private List<Favorite> favoriteList = new ArrayList<>();
 
     @Builder
-    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate,Role role, Wallet wallet) {
+    public Member(String memberName, String email, String phoneNumber,
+                  String password, Gender gender, LocalDate birthdayDate, Role role, Wallet wallet) {
         this.memberName = memberName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.gender = gender;
         this.birthdayDate = birthdayDate;
