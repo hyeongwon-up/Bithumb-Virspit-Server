@@ -2,6 +2,7 @@ package com.virspit.virspitservice.domain.advertisement.controller;
 
 import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.service.AdvertisementService;
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +39,8 @@ public class AdvertisementController {
 
     @ApiOperation("광고 내용 업데이트")
     @PutMapping("/{id}")
-    public void update(@RequestBody AdvertisementRequestDto requestDto, @PathVariable String id) {
-        advertisementService.update(requestDto, id);
+    public Mono<AdvertisementResponseDto> update(@RequestBody AdvertisementUpdateRequestDto requestDto, @PathVariable String id) {
+        return advertisementService.update(requestDto, id);
     }
 
     @ApiOperation("광고 삭제")

@@ -20,4 +20,5 @@ public class WebfluxPagingResponseDto<T> {
     public static <T> WebfluxPagingResponseDto of(Mono<Long> totalCount, Flux<T> data) {
         return new WebfluxPagingResponseDto<>(totalCount, data);
     }
+
 }

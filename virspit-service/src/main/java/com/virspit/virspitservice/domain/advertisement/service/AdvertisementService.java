@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
 import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
@@ -42,10 +43,16 @@ public class AdvertisementService {
 
     @Transactional(readOnly = true)
     public WebfluxPagingResponseDto getAll(Pageable pageable) {
+        advertisementDocRepository
+                .findAll(pageable)
+                .map(AdvertisementResponseDto::entityToDto)
+                .subscribe(s-> System.out.println(s));
+
         return WebfluxPagingResponseDto.of(
                 advertisementDocRepository.count(),
                 advertisementDocRepository
                         .findAll(pageable)
+                        .log()
                         .map(AdvertisementResponseDto::entityToDto));
     }
 
@@ -56,19 +63,16 @@ public class AdvertisementService {
     }
 
     @Transactional
-    public AdvertisementResponseDto update(AdvertisementRequestDto requestDto, String id) {
-        Optional<AdvertisementDoc> advertisementDocOptional = advertisementDocRepository.findById(id).blockOptional();
-        if (!advertisementDocOptional.isPresent()) {
-            throw new GlobalException(String.format("id: {%s} 에 해당하는 advertise 가 없습니다.", id), ErrorCode.ENTITY_NOT_FOUND);
-
-        }
-        Optional<ProductDoc> productDoc = productDocRepository.findById(requestDto.getProductId()).blockOptional();
-        if (!productDoc.isPresent()) {
-            throw new GlobalException(String.format("id: {%s} 에 해당하는 product 가 없습니다.", requestDto.getProductId()), ErrorCode.ENTITY_NOT_FOUND);
-        }
-        AdvertisementDoc advertisement = advertisementDocOptional.get();
-        advertisement.update(requestDto, productDoc.get());
-        return AdvertisementResponseDto.entityToDto(advertisement);
+    public Mono<AdvertisementResponseDto> update(AdvertisementUpdateRequestDto requestDto, String id) {
+        return advertisementDocRepository.findById(id)
+                .switchIfEmpty(
+                        Mono.error(new GlobalException(String.format("id: {%s} 에 해당하는 광고가 없습니다.", id), ErrorCode.ENTITY_NOT_FOUND)))
+                .log()
+                .flatMap(ad -> {
+                    ad.update(requestDto);
+                    return advertisementDocRepository.save(ad)
+                            .map(AdvertisementResponseDto::entityToDto);
+                });
     }
 
     @Transactional

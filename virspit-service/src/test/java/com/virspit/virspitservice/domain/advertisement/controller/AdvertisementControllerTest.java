@@ -2,6 +2,7 @@ package com.virspit.virspitservice.domain.advertisement.controller;
 
 import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementDocRepository;
@@ -83,7 +84,7 @@ class AdvertisementControllerTest {
         Flux<AdvertisementResponseDto> advertisementResponseDtoFlux = Flux.just(dto);
         Mono<Long> count = Mono.empty();
         Pageable pageable = PageRequest.of(0, 3, Sort.by("createdDate").descending());
-        WebfluxPagingResponseDto result = WebfluxPagingResponseDto.of(count, advertisementResponseDtoFlux);
+        WebfluxPagingResponseDto result = WebfluxPagingResponseDto.of(count.block(), advertisementResponseDtoFlux);
 
         // when
         when(service.getAll(pageable)).thenReturn(result);
@@ -94,7 +95,7 @@ class AdvertisementControllerTest {
                         uriBuilder
                                 .path("/advertisements")
                                 .queryParam("size", 1)
-                                .queryParam("page",1)
+                                .queryParam("page", 1)
                                 .build()
                 )
                 .accept(MediaType.APPLICATION_JSON)
@@ -130,15 +131,15 @@ class AdvertisementControllerTest {
     @Test
     void update() {
         // given
-        AdvertisementRequestDto dto = AdvertisementRequestDto.builder()
-                .description("description")
+        AdvertisementUpdateRequestDto dto = AdvertisementUpdateRequestDto.builder()
+                .description("update")
                 .build();
         AdvertisementDoc advertisement = AdvertisementDoc.builder()
                 .id("1")
                 .description("description")
                 .build();
         // when
-        when(service.update(dto, String.valueOf(1))).thenReturn(AdvertisementResponseDto.entityToDto(advertisement));
+        when(service.update(dto, String.valueOf(1))).thenReturn(Mono.just(AdvertisementResponseDto.entityToDto(advertisement)));
 
         // assert
         client.put()
@@ -174,7 +175,7 @@ class AdvertisementControllerTest {
 
     @DisplayName("error handler 테스트 - url 잘못 입력")
     @Test
-    void error(){
+    void error() {
         client.get()
                 .uri(uriBuilder ->
                         uriBuilder
