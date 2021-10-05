@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 
 @Api("주문 관련 API")
 @RequestMapping("/orders")
@@ -40,7 +41,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class, responseContainer = "List")
     })
     @GetMapping("/members/{memberId}")
-    public ResponseEntity<?> memberOrderList(@PageableDefault(sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity memberOrderList(@PageableDefault(sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable,
                                              @RequestParam(value = "startDate", required = false) String startDate,
                                              @RequestParam(value = "endDate", required = false) String endDate,
                                              @PathVariable("memberId") Long memberId) {
@@ -49,9 +50,12 @@ public class OrderController {
     }
 
     @ApiOperation("유저 상품 주문")
-    @GetMapping("/req")
-    public ResponseEntity<?> getOrder(@RequestParam Long memberId, @RequestParam Long productId) {
-        return ResponseEntity.ok(SuccessResponse.of(orderService.getOrder(memberId, productId)));
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class, responseContainer = "List")
+    })
+    @PostMapping
+    public ResponseEntity order(@RequestParam Long memberId, @RequestParam Long productId) throws ApiException {
+        return ResponseEntity.ok(SuccessResponse.of(orderService.order(memberId, productId)));
     }
 
     @ApiOperation("결제관리 - 메모 수정")
