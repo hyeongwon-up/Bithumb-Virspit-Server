@@ -13,19 +13,11 @@ import java.time.LocalDate;
 @Setter
 public class MemberSignUpRequestDto {
 
-    @NotNull
     private String memberName;
-
-    @NotNull
     private String email;
-
-    @NotNull
+    private String phoneNumber;
     private String password;
-
-    @NotNull
     private Gender gender;
-
-    @NotNull
     private LocalDate birthdayDate;
 
 }
