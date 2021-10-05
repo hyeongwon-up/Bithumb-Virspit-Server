@@ -34,6 +34,7 @@ public class MemberService {
         Member member = Member.builder()
                 .memberName(memberSignUpRequestDto.getMemberName())
                 .email(memberSignUpRequestDto.getEmail())
+                .phoneNumber(memberSignUpRequestDto.getPhoneNumber())
                 .password(memberSignUpRequestDto.getPassword())
                 .gender(memberSignUpRequestDto.getGender())
                 .birthdayDate(memberSignUpRequestDto.getBirthdayDate())
@@ -59,7 +60,6 @@ public class MemberService {
     }
 
 
-
     public Member findByEmail(String memberEmail) {
         return memberRepository.findByEmail(memberEmail);
     }
@@ -79,7 +79,6 @@ public class MemberService {
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {
-
         Member member = memberRepository.findById(memberId).get();
         member.editInfo(memberEditInfoRequestDto);
         memberRepository.save(member);

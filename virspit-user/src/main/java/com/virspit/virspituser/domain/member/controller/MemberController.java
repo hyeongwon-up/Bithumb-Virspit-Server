@@ -34,7 +34,7 @@ public class MemberController {
         return memberService.findById(id);
     }
 
-    @ApiOperation("회원 정보 수정 (이름, 성별, 생년월일)")
+    @ApiOperation("회원 정보 수정 (이름, 성별, 생년월일, 핸드폰번호)")
     @PutMapping("/info/{id}")
     public SuccessResponse<String> changeMemberInfo(@PathVariable("id") Long memberId,
                                                    @RequestBody MemberEditInfoRequestDto memberEditInfoRequestDto) {

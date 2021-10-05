@@ -4,11 +4,9 @@ package com.virspit.virspituser.domain.member.dto.response;
 import com.virspit.virspituser.domain.member.entity.Gender;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.entity.Role;
-import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -18,6 +16,7 @@ import java.time.LocalDate;
 public class MemberSignUpResponseDto {
     private String memberName;
     private String email;
+    private String phoneNumber;
     private Gender gender;
     private LocalDate birthdayDate;
     private Role role;
@@ -28,6 +27,7 @@ public class MemberSignUpResponseDto {
         email = member.getEmail();
         gender = member.getGender();
         birthdayDate = member.getBirthdayDate();
+        phoneNumber = member.getPhoneNumber();
         role = member.getRole();
     }
 

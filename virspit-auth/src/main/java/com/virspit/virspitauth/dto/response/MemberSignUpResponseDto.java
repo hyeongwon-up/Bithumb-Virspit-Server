@@ -16,6 +16,7 @@ public class MemberSignUpResponseDto {
     private String memberName;
     private String email;
     private Gender gender;
+    private String phoneNumber;
     private LocalDate birthdayDate;
     private Role role;
 
