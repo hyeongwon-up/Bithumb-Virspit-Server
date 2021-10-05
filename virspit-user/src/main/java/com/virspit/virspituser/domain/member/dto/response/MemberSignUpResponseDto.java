@@ -27,6 +27,7 @@ public class MemberSignUpResponseDto {
         email = member.getEmail();
         gender = member.getGender();
         birthdayDate = member.getBirthdayDate();
+        phoneNumber = member.getPhoneNumber();
         role = member.getRole();
     }
 
