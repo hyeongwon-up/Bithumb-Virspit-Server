@@ -35,7 +35,7 @@ public class AdviceController {
     @ExceptionHandler({
             IllegalArgumentException.class, MissingServletRequestParameterException.class})
     public Map<String, Object> paramsEx(Exception e) {
-        logger.warn("params ex: "+ e);
+        logger.warn("params ex: " + e);
         Map<String, Object> map = new HashMap<>();
         map.put("errorCode", 51);
         return map;
