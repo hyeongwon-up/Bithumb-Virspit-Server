@@ -16,6 +16,7 @@ import java.time.LocalDate;
 public class MemberSignUpResponseDto {
     private String memberName;
     private String email;
+    private String phoneNumber;
     private Gender gender;
     private LocalDate birthdayDate;
     private Role role;
