@@ -22,6 +22,8 @@ spring:
   cloud:
     gateway:
       routes:
+
+
         - id: virspit-user
           uri: lb://VIRSPIT-USER
           predicates:
@@ -34,17 +36,66 @@ spring:
           predicates:
             - Path=/auth/**
 
-        - id: virspit-product
+
+        - id: virspit-listing-user
             uri: lb://VIRSPIT-PRODUCT
             predicates:
-              - Path=/product/**
+              - Path=/products/list/**
+              - Path=/advertisements/**
+              - Mehton = GET
             filters:
               - JwtUserRequestFilter
 
-        - id: virspit-order
+        - id: virspit-listing-admin
+            uri: lb://VIRSPIT-PRODUCT
+            predicates:
+              - Path=/advertises/**
+              - Path=/advertisements/**
+            filters:
+              - JwtAdminRequestFilter
+
+        - id: virspit-product-user
+            uri: lb://VIRSPIT-PRODUCT
+            predicates:
+              - Path=/sports/**
+              - Path=/team-playes/**
+              - Path=/products/**
+              - Method = GET
+            filters:
+              - JwtUserRequestFilter
+
+        - id: virspit-product-admin
+            uri: lb://VIRSPIT-PRODUCT
+            predicates:
+              - Path=/sports/**
+              - Path=/team-playes/**
+              - Path=/products/**
+              - Method = GET
+            filters:
+              - JwtAdminRequestFilter
+
+        - id: virspit-order-user
           uri: lb://VIRSPIT-ORDER
           predicates:
-            - Path=/order/**
+            - Path=/orders
+            - Method = Post
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-order-user2
+            uri: lb://VIRSPIT-ORDER
+            predicates:
+              - Path=/orders/members/**
+            filters:
+              - JwtUserRequestFilter
+
+        - id: virspit-order-admin
+            uri: lb://VIRSPIT-ORDER
+            predicates:
+              - Path=/orders/**
+            filters:
+              - JwtAdminRequestFilter
+
 
 jwt:
   secret: temp
