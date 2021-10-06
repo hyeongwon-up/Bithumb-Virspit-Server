@@ -6,6 +6,7 @@ eureka:
   instance:
     instance-id: gateway-instance
     prefer-ip-address: true
+    non-secure-port: ${server.port}
 
   client:
     fetch-registry: true
@@ -14,7 +15,6 @@ eureka:
       defaultZone: http://3.38.44.130:8761/eureka
 
 ---
-
 spring:
 
   application:
@@ -28,7 +28,7 @@ spring:
         - id: virspit-user
           uri: lb://VIRSPIT-USER
           predicates:
-            - Path=/member/**
+            - Path=/member/**,/favorite/**,/wallet/**
           filters:
             - JwtUserRequestFilter
 
@@ -37,63 +37,19 @@ spring:
           predicates:
             - Path=/auth/**
 
-
-        - id: virspit-listing-user
-          uri: lb://VIRSPIT-PRODUCT
-          predicates:
-            - Path=/products/list/**
-            - Path=/advertisements/**
-            - Method=GET
-          filters:
-            - JwtUserRequestFilter
-
-        - id: virspit-listing-admin
-          uri: lb://VIRSPIT-PRODUCT
-          predicates:
-            - Path=/advertises/**
-            - Path=/advertisements/**
-          filters:
-            - JwtAdminRequestFilter
-
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
             - Path=/sports/**,/team-playes/**,/products/**
-            - Method=GET
-          filters:
-            - JwtUserRequestFilter
 
-        - id: virspit-product-admin
-          uri: lb://VIRSPIT-PRODUCT
-          predicates:
-            - Path=/sports/**
-            - Path=/team-playes/**
-            - Path=/products/**
-            - Method=GET
-          filters:
-            - JwtAdminRequestFilter
+      httpclient:
+        wiretap: true
 
-        - id: virspit-order-user
-          uri: lb://VIRSPIT-ORDER
-          predicates:
-            - Path=/orders
-            - Method=Post
-          filters:
-            - JwtUserRequestFilter
 
-        - id: virspit-order-user2
-          uri: lb://VIRSPIT-ORDER
-          predicates:
-            - Path=/orders/members/**
-          filters:
-            - JwtUserRequestFilter
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
 
-        - id: virspit-order-admin
-          uri: lb://VIRSPIT-ORDER
-          predicates:
-            - Path=/orders/**
-          filters:
-            - JwtAdminRequestFilter
 
 
 jwt:
