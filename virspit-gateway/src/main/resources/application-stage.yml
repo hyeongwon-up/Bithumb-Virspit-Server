@@ -37,10 +37,63 @@ spring:
           predicates:
             - Path=/auth/**
 
+        - id: virspit-listing-user
+          uri: lb://VIRSPIT-LISTING
+          predicates:
+            - Path=/products/list/**,/advertisements/**
+            - Method=GET
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-listing-admin
+          uri: lb://VIRSPIT-LISTING
+          predicates:
+            - Path=/advertises/**,/advertisements/**
+          filters:
+            - JwtAdminRequestFilter
+
+
+
+
+
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
             - Path=/sports/**,/team-playes/**,/products/**
+            - Method=GET
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-product-admin
+          uri: lb://VIRSPIT-PRODUCT
+          predicates:
+            - Path=/sports/**,/team-playes/**,/products/**
+          filters:
+            - JwtAdminRequestFilter
+
+
+
+        - id: virspit-order-user
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders
+            - Method=Post
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-order-user2
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders/members/**
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-order-admin
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders/**
+          filters:
+            - JwtAdminRequestFilter
 
       httpclient:
         wiretap: true
