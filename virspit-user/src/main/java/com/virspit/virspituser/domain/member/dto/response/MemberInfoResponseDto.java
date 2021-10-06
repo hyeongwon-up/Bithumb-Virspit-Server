@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class MemberSignUpResponseDto {
+public class MemberInfoResponseDto {
     private String memberName;
     private String email;
     private String phoneNumber;
@@ -22,7 +22,7 @@ public class MemberSignUpResponseDto {
     private Role role;
 
 
-    MemberSignUpResponseDto(Member member) {
+    MemberInfoResponseDto(Member member) {
         memberName = member.getMemberName();
         email = member.getEmail();
         gender = member.getGender();
@@ -31,7 +31,7 @@ public class MemberSignUpResponseDto {
         role = member.getRole();
     }
 
-    public static MemberSignUpResponseDto of(Member member) {
-        return new MemberSignUpResponseDto(member);
+    public static MemberInfoResponseDto of(Member member) {
+        return new MemberInfoResponseDto(member);
     }
 }

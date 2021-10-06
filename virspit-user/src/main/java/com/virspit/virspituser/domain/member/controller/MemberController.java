@@ -2,22 +2,13 @@ package com.virspit.virspituser.domain.member.controller;
 
 import com.virspit.virspituser.domain.member.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
-import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
-import com.virspit.virspituser.domain.member.dto.response.MemberSignUpResponseDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.service.MemberService;
 import com.virspit.virspituser.global.common.SuccessResponse;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jnr.a64asm.Mem;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
-
-import javax.ws.rs.Path;
 
 @RestController
 @RequiredArgsConstructor

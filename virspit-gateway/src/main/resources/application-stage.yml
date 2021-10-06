@@ -58,9 +58,7 @@ spring:
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
-            - Path=/sports/**
-            - Path=/team-playes/**
-            - Path=/products/**
+            - Path=/sports/**,/team-playes/**,/products/**
             - Method=GET
           filters:
             - JwtUserRequestFilter

@@ -1,13 +1,13 @@
 package com.virspit.virspitauth.service;
 
 
+import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.request.InitPwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.dto.model.Member;
-import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
+import com.virspit.virspitauth.dto.response.MemberInfoResponseDto;
 import com.virspit.virspitauth.error.ErrorCode;
 import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +50,7 @@ public class MemberService {
     @Value("${my.ip}")
     private String myIp;
 
-    public MemberSignUpResponseDto register(MemberSignUpRequestDto memberSignUpRequestDto) {
+    public MemberInfoResponseDto register(MemberSignUpRequestDto memberSignUpRequestDto) {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
 
@@ -60,22 +59,31 @@ public class MemberService {
 
 
     public MemberSignInResponseDto login(MemberSignInRequestDto memberSignInRequestDto) throws Exception {
+        log.info("login 시도 email : " + memberSignInRequestDto.getEmail());
         final String userEmail = memberSignInRequestDto.getEmail();
 
         //블랙리스트 검증
         if (stringRedisTemplate.opsForValue().get("email-" + userEmail) != null) {
             throw new InvalidValueException(userEmail, ErrorCode.BLACKLIST_MEMBER);
         }
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
 
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, memberSignInRequestDto.getPassword()));
+        log.info("인증 성공");
+
+        Member member = memberServiceFeignClient.findByEmail(userEmail);
+        log.info("login member : " +member.toString());
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
         final String refreshToken = jwtGenerator.generateRefreshToken(userEmail);
 
+
         //generate Token and save in redis
         stringRedisTemplate.opsForValue().set("refresh-" + userEmail, refreshToken);
-        return new MemberSignInResponseDto(userEmail, accessToken, refreshToken);
+
+        log.info("login 성공 email : " + userEmail);
+        return new MemberSignInResponseDto(MemberInfoResponseDto.of(member), accessToken, refreshToken);
     }
 
     public String verifyUserEmail(String userEmail) throws Exception {
