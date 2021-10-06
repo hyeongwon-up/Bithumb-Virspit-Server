@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Setter
 @RequiredArgsConstructor
 public class MemberInfoResponseDto {
+    private Long id;
     private String memberName;
     private String email;
     private Gender gender;
@@ -20,6 +21,7 @@ public class MemberInfoResponseDto {
     private Role role;
 
     MemberInfoResponseDto(Member member) {
+        id = member.getId();
         memberName = member.getMemberName();
         email = member.getEmail();
         gender = member.getGender();
