@@ -2,7 +2,7 @@ package com.virspit.virspituser.domain.member.controller;
 
 import com.virspit.virspituser.domain.member.dto.request.InitPwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
-import com.virspit.virspituser.domain.member.dto.response.MemberSignUpResponseDto;
+import com.virspit.virspituser.domain.member.dto.response.MemberInfoResponseDto;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
@@ -19,15 +19,10 @@ public class MemberFeignController {
 
     private final MemberService memberService;
 
-    @ApiOperation("feign - call feign check")
-    @GetMapping("/feign")
-    public String check() {
-        return "check feign from";
-    }
 
     @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")
-    public MemberSignUpResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
+    public MemberInfoResponseDto save(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws ApiException {
         return memberService.registry(memberSignUpRequestDto);
     }
 

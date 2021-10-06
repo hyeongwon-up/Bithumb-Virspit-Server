@@ -4,30 +4,31 @@ package com.virspit.virspitauth.dto.response;
 import com.virspit.virspitauth.dto.model.Gender;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.model.Role;
-import com.virspit.virspitauth.dto.model.Wallet;
 import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class MemberSignUpResponseDto {
+@RequiredArgsConstructor
+public class MemberInfoResponseDto {
     private String memberName;
     private String email;
     private Gender gender;
+    private String phoneNumber;
     private LocalDate birthdayDate;
     private Role role;
 
-    MemberSignUpResponseDto(Member member) {
+    MemberInfoResponseDto(Member member) {
         memberName = member.getMemberName();
         email = member.getEmail();
         gender = member.getGender();
         birthdayDate = member.getBirthdayDate();
+        phoneNumber = member.getPhoneNumber();
         role = member.getRole();
     }
 
-    public static MemberSignUpResponseDto of(Member member) {
-        return new MemberSignUpResponseDto(member);
+    public static MemberInfoResponseDto of(Member member) {
+        return new MemberInfoResponseDto(member);
     }
 }

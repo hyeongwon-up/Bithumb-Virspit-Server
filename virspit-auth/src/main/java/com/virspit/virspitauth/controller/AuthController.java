@@ -1,18 +1,15 @@
 package com.virspit.virspitauth.controller;
 
 import com.virspit.virspitauth.common.SuccessResponse;
-import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.request.MemberChangePwdRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
+import com.virspit.virspitauth.dto.response.MemberInfoResponseDto;
 import com.virspit.virspitauth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +19,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MemberService memberService;
 
-
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    public SuccessResponse<MemberSignUpResponseDto> addNewUser(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+    public SuccessResponse<MemberInfoResponseDto> addAdmin(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
         return SuccessResponse.of(memberService.register(memberSignUpRequestDto));
     }
 

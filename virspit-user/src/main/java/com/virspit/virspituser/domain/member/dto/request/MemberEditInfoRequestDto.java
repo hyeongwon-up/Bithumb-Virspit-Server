@@ -10,4 +10,5 @@ public class MemberEditInfoRequestDto {
     private String memberName;
     private Gender gender;
     private LocalDate birthdayDate;
+    private String phoneNumber;
 }

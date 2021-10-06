@@ -1,6 +1,9 @@
 server:
   port: 8080
 spring:
+
+  application:
+    name: virspit-listing
   data:
     mongodb:
       uri: mongodb://localhost:27017/listing # local
@@ -15,4 +18,22 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 kafka-topic: product
+
+
+
+eureka:
+  instance:
+    instance-id: listing-microservice-instance
+    prefer-ip-address: true
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://3.38.44.130:8761/eureka
+
+
+
+
+
 

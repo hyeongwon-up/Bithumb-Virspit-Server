@@ -1,15 +1,14 @@
 package com.virspit.virspitauth.dto.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
 @Getter
 @Setter
+@ToString
+@RequiredArgsConstructor
 public class Member {
 
     private Long id;
@@ -19,6 +18,8 @@ public class Member {
     private String email;
 
     private String password;
+
+    private String phoneNumber;
 
     private Gender gender;
 

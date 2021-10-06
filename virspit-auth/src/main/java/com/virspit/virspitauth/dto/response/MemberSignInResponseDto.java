@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MemberSignInResponseDto {
-    private String email;
+    private MemberInfoResponseDto memberInfo;
     private String accessToken;
     private String refreshToken;
 }

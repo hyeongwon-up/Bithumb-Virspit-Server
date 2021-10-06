@@ -1,5 +1,7 @@
 package com.virspit.gateway.filter;
 
+import com.virspit.gateway.error.ErrorCode;
+import com.virspit.gateway.error.exception.InvalidValueException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -93,7 +95,7 @@ public class JwtAdminRequestFilter extends
             Map<String, Object> userInfo = jwtValidator.getUserParseInfo(token);
             ArrayList<String> arr = (ArrayList<String>) userInfo.get("role");
             if (!arr.contains(config.getRole())) {
-                throw new IllegalArgumentException();
+                throw new InvalidValueException(token, ErrorCode.TOKEN_NOT_VALID);
             }
             return chain.filter(exchange);
         };
