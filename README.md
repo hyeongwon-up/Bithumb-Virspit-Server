@@ -24,9 +24,3 @@
 
 
 ---
-
-## 서버 환경
-
-### spring eureka : 8761
-### spring cloud gateway : 8080
-### spring user : 8081
