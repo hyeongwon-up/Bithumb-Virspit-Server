@@ -1,20 +1,25 @@
 version: "3"
 services:
-  mongodb:
-    image: mongo:latest
+  mongo:
+    image: "mongo"
+    container_name: mongodb
+    hostname: mongo
     environment:
       - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+
     volumes:
       - ./data/db:/data/db
-    container_name: "mongodb2"
-    ports:
-      - 27018:27017
-    command: --smallfiles
 
-  virspit-listing:
+  app:
     image: song22an/virspit-listing:latest
     container_name: virspit-listing
     ports:
       - 8081:8080
-    volumes:
-      - ./config/listing.yml:/myapp/application.yml
+    build: .
+    depends_on:
+      - mongo
+#    links:
+#      - mongodb
+#    volumes:
+#      - ./config/listing.yml:/app/application.yml
