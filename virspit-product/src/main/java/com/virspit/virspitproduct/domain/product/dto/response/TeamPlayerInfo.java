@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@ApiModel("팀/플레이어 정보")
+@ApiModel(description = "팀/플레이어 정보")
 @AllArgsConstructor
 @Getter
 public class TeamPlayerInfo {

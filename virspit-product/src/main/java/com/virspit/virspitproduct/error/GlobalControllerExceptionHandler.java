@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintViolationException;
 import java.io.FileNotFoundException;
 
 @ControllerAdvice
@@ -26,6 +27,15 @@ public class GlobalControllerExceptionHandler {
         final ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
         return new ResponseEntity<>(
                 ErrorResponse.of(errorCode, exception.getBindingResult()),
+                HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception) {
+        log.error("handleConstraintViolationException", exception);
+        final ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
+        return new ResponseEntity<>(
+                ErrorResponse.of(errorCode, exception),
                 HttpStatus.valueOf(errorCode.getStatus()));
     }
 

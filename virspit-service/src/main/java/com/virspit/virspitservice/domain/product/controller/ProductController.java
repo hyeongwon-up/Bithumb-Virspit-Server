@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
+import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RequestMapping("/products/list")
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class ProductController {
 
     @ApiOperation("전체 상품 조회")
     @GetMapping
-    public WebfluxPagingResponseDto getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public Mono<PageSupport> getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
         return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
     }
 

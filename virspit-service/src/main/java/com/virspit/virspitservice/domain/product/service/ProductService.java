@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.service;
 
-import com.virspit.virspitservice.domain.advertisement.common.WebfluxPagingResponseDto;
+import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,12 +39,17 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public WebfluxPagingResponseDto getAllProducts(Pageable pageable) {
-        return WebfluxPagingResponseDto.of(
-                productRepository.count(),
-                productRepository
-                        .findAll(pageable)
-                        .map(ProductDto::entityToDto));
+    public Mono<PageSupport> getAllProducts(Pageable pageable) {
+        return productRepository.findAllByOrderByCreatedDateTimeDesc()
+                .collectList()
+                .map(list -> new PageSupport<>(
+                        list
+                                .stream()
+                                .map(p -> ProductDto.entityToDto((ProductDoc) p))
+                                .skip(pageable.getPageNumber() * pageable.getPageSize())
+                                .limit(pageable.getPageSize())
+                                .collect(Collectors.toList()),
+                        pageable.getPageNumber(), pageable.getPageSize(), list.size()));
     }
 
     @Transactional(readOnly = true)

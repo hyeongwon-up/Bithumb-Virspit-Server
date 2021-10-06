@@ -1,6 +1,7 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
+import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.entity.AdvertisementDoc;
 import com.virspit.virspitservice.domain.advertisement.repository.AdvertisementDocRepository;
@@ -87,7 +88,7 @@ class AdvertisementServiceSpringBootTest {
         }
         Pageable pageable = PageRequest.of(1, 1, Sort.by("createdDate").descending());
 
-        StepVerifier.create(advertisementService.getAll(pageable).getData())
+        StepVerifier.create(advertisementService.getAll(pageable))
                 .expectNextCount(1)
                 .verifyComplete();
     }
@@ -106,9 +107,9 @@ class AdvertisementServiceSpringBootTest {
     @Test
     void update() {
         AdvertisementDoc saved = repository.save(generate("123")).block();
-        AdvertisementRequestDto requestDto = AdvertisementRequestDto.builder().productId(productDoc.getId()).build();
+        AdvertisementUpdateRequestDto requestDto = AdvertisementUpdateRequestDto.builder().build();
 
-        assertThat(advertisementService.update(requestDto,"123").getId()).isEqualTo(saved.getId());
+        assertThat(advertisementService.update(requestDto,"123").block().getId()).isEqualTo(saved.getId());
     }
 
     @DisplayName("광고 삭제")

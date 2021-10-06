@@ -48,6 +48,8 @@ cloud.aws:
 eureka:
   instance:
     instance-id: product-microservice-instance
+    prefer-ip-address: true
+    ip-address: 15.165.34.36
 
   client:
     register-with-eureka: true

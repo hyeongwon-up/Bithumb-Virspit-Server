@@ -6,8 +6,10 @@ import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.global.entity.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.web3j.protocol.admin.Admin;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +25,17 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable=false, unique=true, length=20)
+    @Column(nullable = false, length = 20)
+    @NotNull(message = "이름을 입력해주세요.")
     private String memberName;
 
-    @Column(nullable=false, unique=true, length=50)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Length(min=8, max=200)
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -49,13 +55,15 @@ public class Member extends BaseTimeEntity {
     private List<Favorite> favoriteList = new ArrayList<>();
 
     @Builder
-    public Member(String memberName, String email, String password, Gender gender, LocalDate birthdayDate, Wallet wallet) {
+    public Member(String memberName, String email, String phoneNumber,
+                  String password, Gender gender, LocalDate birthdayDate, Role role, Wallet wallet) {
         this.memberName = memberName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.gender = gender;
         this.birthdayDate = birthdayDate;
-        this.role = Role.USER;
+        this.role = role;
         this.wallet = wallet;
     }
 
@@ -63,10 +71,12 @@ public class Member extends BaseTimeEntity {
         this.memberName = memberEditInfoRequestDto.getMemberName();
         this.gender = memberEditInfoRequestDto.getGender();
         this.birthdayDate = memberEditInfoRequestDto.getBirthdayDate();
+        this.phoneNumber = memberEditInfoRequestDto.getPhoneNumber();
     }
 
     public void changePwd(final String password) {
         this.password = password;
     }
+
 }
 

@@ -16,13 +16,11 @@ public enum ErrorCode {
     NOT_FOUND(404, "C007", "요청을 찾을 수 없습니다"),
     INVALID_CONTENT_TYPE(415, "C008", "Content Type이 올바르지 않습니다"),
     FILE_NOT_FOUND(400, "C009", "파일을 찾을 수 없습니다"),
+    FILE_NOT_SUPPORT(400, "C010", "지원하지 않는 파일입니다"),
 
-    // TODO: 각 도메인에서 발생할 오류에 대한 코드 추가
     // Sports
     ICON_FILE_NOT_FOUND(400,"S001","업로드된 아이콘 파일이 없습니다"),
-
     DUPLICATED_SPORTS_NAME(400,"S002","이미 등록된 종목입니다"),
-
     TEAM_PLAYER_EXIST(400,"S003","종목에 소속된 팀/플레이어가 존재합니다"),
 
     // TeamPlayer

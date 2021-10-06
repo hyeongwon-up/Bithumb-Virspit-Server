@@ -40,7 +40,7 @@ public class ProductStoreRequestDto {
     @ApiModelProperty("상품 수량")
     @NotNull
     @DecimalMin("0")
-    @DecimalMax("100")
+    @DecimalMax("9999")
     private Integer remainedCount;
 
     @ApiModelProperty("판매 시작 일 ex) 2021-09-26 18:00:00")

@@ -14,6 +14,10 @@ configurations {
     }
 }
 
+ext {
+    set('springCloudVersion', "2020.0.3")
+}
+
 repositories {
     mavenCentral()
 }
@@ -40,7 +44,18 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.+'
     //swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    //eureka
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
+
 }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 
 test {
     useJUnitPlatform()
