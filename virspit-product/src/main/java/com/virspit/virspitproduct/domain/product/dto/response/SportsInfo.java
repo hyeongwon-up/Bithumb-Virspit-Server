@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@ApiModel("종목 정보")
+@ApiModel(description = "종목 정보")
 @AllArgsConstructor
 @Getter
 public class SportsInfo {

@@ -9,15 +9,6 @@ import com.virspit.virspitproduct.domain.product.dto.response.ProductResponseDto
 import com.virspit.virspitproduct.domain.product.entity.NftInfo;
 import com.virspit.virspitproduct.domain.product.entity.Product;
 import com.virspit.virspitproduct.domain.product.exception.ProductNotFoundException;
-import com.virspit.virspitproduct.domain.product.feign.contract.KasContractFeignClient;
-import com.virspit.virspitproduct.domain.product.feign.contract.request.DeployKip17ContractRequest;
-import com.virspit.virspitproduct.domain.product.feign.contract.request.Kip17FeePayerOption;
-import com.virspit.virspitproduct.domain.product.feign.contract.request.UserFeePayer;
-import com.virspit.virspitproduct.domain.product.feign.metadata.KasMetadataFeignClient;
-import com.virspit.virspitproduct.domain.product.feign.metadata.request.Metadata;
-import com.virspit.virspitproduct.domain.product.feign.metadata.request.UploadMetadataRequest;
-import com.virspit.virspitproduct.domain.product.feign.metadata.response.UploadAssetResponse;
-import com.virspit.virspitproduct.domain.product.feign.metadata.response.UploadMetadataResponse;
 import com.virspit.virspitproduct.domain.product.kafka.KafkaProductProducer;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepository;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepositorySupport;
@@ -27,7 +18,6 @@ import com.virspit.virspitproduct.domain.teamplayer.repository.TeamPlayerReposit
 import com.virspit.virspitproduct.util.file.ContentType;
 import com.virspit.virspitproduct.util.file.FileStore;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,28 +29,15 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private static final String TOKEN_NAME = "VIRSPIT";
-    private static final String TOKEN_SYMBOL = "VIRSPIT";
-
     private final ProductRepository productRepository;
     private final ProductRepositorySupport productRepositorySupport;
     private final TeamPlayerRepository teamPlayerRepository;
-
-    private final KasContractFeignClient kasContractFeignClient;
-    private final KasMetadataFeignClient kasMetadataFeignClient;
-
+    private final KasService kasService;
     private final KafkaProductProducer kafkaProductProducer;
-
     private final FileStore awsS3FileStore;
 
-    @Value("${kas.fee-payer.krn}")
-    private String feePayerKrn;
-
-    @Value("${kas.fee-payer.address}")
-    private String feePayerAddress;
-
-    public PagingResponseDto<ProductResponseDto> getProducts(String keyword, Long teamPlayerId, Long sportsId, final Pageable pageable) {
-        QueryResults<Product> queryResults = productRepositorySupport.findAll(keyword, teamPlayerId, sportsId, pageable);
+    public PagingResponseDto<ProductResponseDto> getProducts(String keyword, Long teamPlayerId, Long sportsId, Boolean isTeam, final Pageable pageable) {
+        QueryResults<Product> queryResults = productRepositorySupport.findAll(keyword, teamPlayerId, sportsId, isTeam, pageable);
         return new PagingResponseDto<>(queryResults.getTotal(), ProductResponseDto.of(queryResults.getResults()));
     }
 
@@ -75,9 +52,8 @@ public class ProductService {
         TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
                 .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
 
-        String contractAlias = "product-" + teamPlayer.getId() + "-" + System.currentTimeMillis(); // TODO alias 이름 지정 방법 찾기
-        deployContract(contractAlias, false);
-        String metadataUri = createNftMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
+        String contractAlias = kasService.deployNftContract(teamPlayerId);
+        String metadataUri = kasService.uploadMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
         NftInfo nftInfo = new NftInfo(contractAlias, metadataUri);
 
         String nftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
@@ -89,41 +65,6 @@ public class ProductService {
         kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
 
         return ProductResponseDto.of(product);
-    }
-
-    private void deployContract(final String alias, final Boolean enableGlobalFeePayer) {
-        UserFeePayer userFeePayer = UserFeePayer.builder()
-                .krn(feePayerKrn)
-                .address(feePayerAddress)
-                .build();
-
-        Kip17FeePayerOption kip17FeePayerOption = Kip17FeePayerOption.builder()
-                .enableGlobalFeePayer(enableGlobalFeePayer)
-                .userFeePayer(userFeePayer)
-                .build();
-
-        DeployKip17ContractRequest deployKip17ContractRequest = DeployKip17ContractRequest.builder()
-                .alias(alias)
-                .name(TOKEN_NAME)
-                .symbol(TOKEN_SYMBOL)
-                .options(kip17FeePayerOption)
-                .build();
-
-        kasContractFeignClient.deployContract(deployKip17ContractRequest);
-    }
-
-    private String createNftMetadata(final String name, final String description, final MultipartFile nftImageFile) {
-        UploadAssetResponse uploadAssetResponse = kasMetadataFeignClient.uploadAsset(nftImageFile);
-
-        UploadMetadataRequest uploadMetadataRequest = new UploadMetadataRequest(Metadata.builder()
-                .name(name)
-                .description(description)
-                .image(uploadAssetResponse.getUri())
-                .build());
-
-        UploadMetadataResponse uploadMetadataResponse = kasMetadataFeignClient.uploadMetadata(uploadMetadataRequest);
-
-        return uploadMetadataResponse.getUri();
     }
 
     @Transactional

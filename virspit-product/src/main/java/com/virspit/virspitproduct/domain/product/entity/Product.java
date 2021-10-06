@@ -41,7 +41,7 @@ public class Product extends BaseEntity {
 
     @NotNull
     @Min(0)
-    @Max(100)
+    @Max(9999)
     @Column(nullable = false)
     private Integer remainedCount;
 
