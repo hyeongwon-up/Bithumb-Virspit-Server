@@ -6,7 +6,6 @@ eureka:
   instance:
     instance-id: gateway-instance
     prefer-ip-address: true
-    non-secure-port: ${server.port}
 
   client:
     fetch-registry: true
@@ -28,7 +27,7 @@ spring:
         - id: virspit-user
           uri: lb://VIRSPIT-USER
           predicates:
-            - Path=/member/**,/favorite/**,/wallet/**
+            - Path=/member/**
           filters:
             - JwtUserRequestFilter
 
@@ -55,12 +54,50 @@ spring:
           filters:
             - JwtAdminRequestFilter
 
+
+
+
+
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
             - Path=/sports/**,/team-playes/**,/products/**
+            - Method=GET
+          filters:
+            - JwtUserRequestFilter
 
 
+
+        - id: virspit-product-admin
+          uri: lb://VIRSPIT-PRODUCT
+          predicates:
+            - Path=/sports/**,/team-playes/**,/products/**
+          filters:
+            - JwtAdminRequestFilter
+
+
+
+        - id: virspit-order-user
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders
+            - Method=Post
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-order-user2
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders/members/**
+          filters:
+            - JwtUserRequestFilter
+
+        - id: virspit-order-admin
+          uri: lb://VIRSPIT-ORDER
+          predicates:
+            - Path=/orders/**
+          filters:
+            - JwtAdminRequestFilter
 
 jwt:
   secret: temp
