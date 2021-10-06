@@ -24,5 +24,5 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
 
     Flux<ProductDoc> findByPriceBetween(Range<Integer> priceRange);
 
-    Flux<ProductDoc> findAllByOrderByCreatedDateDesc();
+    Flux<ProductDoc> findAllByOrderByCreatedDateTimeDesc();
 }

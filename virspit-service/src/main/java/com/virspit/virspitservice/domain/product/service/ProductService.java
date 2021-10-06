@@ -40,7 +40,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Mono<PageSupport> getAllProducts(Pageable pageable) {
-        return productRepository.findAllByOrderByCreatedDateDesc()
+        return productRepository.findAllByOrderByCreatedDateTimeDesc()
                 .collectList()
                 .map(list -> new PageSupport<>(
                         list
