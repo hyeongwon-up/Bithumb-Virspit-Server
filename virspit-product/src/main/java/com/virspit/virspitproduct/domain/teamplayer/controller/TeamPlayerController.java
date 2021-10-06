@@ -19,7 +19,7 @@ import java.util.List;
 @Api("팀/플레이어 관련 API")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/team-player")
+@RequestMapping("/team-players")
 public class TeamPlayerController {
 
     private final TeamPlayerService teamPlayerService;

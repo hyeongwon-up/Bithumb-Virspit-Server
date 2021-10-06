@@ -3,6 +3,7 @@ package com.virspit.virspitproduct.util.file;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.virspit.virspitproduct.error.exception.FileNotSupportException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,9 @@ public class AwsS3FileStore implements FileStore {
 
     @Override
     public String uploadFile(MultipartFile multipartFile, ContentType contentType) throws IOException {
-        if (multipartFile.isEmpty()) {
-            return null;
+        String fileType = multipartFile.getContentType();
+        if (fileType == null || !fileType.startsWith(contentType.getType())) {
+            throw new FileNotSupportException();
         }
 
         String filename = createFilename(multipartFile.getOriginalFilename());
@@ -46,16 +48,6 @@ public class AwsS3FileStore implements FileStore {
         return amazonS3Client.getUrl(bucket, uploadPath).toString();
     }
 
-    private String createFilename(final String originalFilename) {
-        String filename = UUID.randomUUID().toString().replace("-", "");
-        String extension = StringUtils.getFilenameExtension(originalFilename);
-        if (extension != null) {
-            filename = filename + "." + extension;
-        }
-
-        return filename;
-    }
-
     @Override
     public boolean deleteFile(String fileUrl, ContentType contentType) {
         String filename = StringUtils.getFilename(fileUrl);
@@ -66,5 +58,15 @@ public class AwsS3FileStore implements FileStore {
         amazonS3Client.deleteObject(bucket, contentType.getPath() + filename);
 
         return true;
+    }
+
+    private String createFilename(final String originalFilename) {
+        String filename = UUID.randomUUID().toString().replace("-", "");
+        String extension = StringUtils.getFilenameExtension(originalFilename);
+        if (extension != null) {
+            filename = filename + "." + extension;
+        }
+
+        return filename;
     }
 }

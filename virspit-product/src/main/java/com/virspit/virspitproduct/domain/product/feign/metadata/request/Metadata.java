@@ -4,7 +4,6 @@ import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 @Getter
 public class Metadata {
     private String name;

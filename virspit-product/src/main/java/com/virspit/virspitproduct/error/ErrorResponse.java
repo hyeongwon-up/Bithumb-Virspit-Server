@@ -8,8 +8,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ApiModel(value = "ErrorResponse", description = "오류")
@@ -18,13 +21,13 @@ import java.util.stream.Collectors;
 public class ErrorResponse {
     @ApiModelProperty("오류 메시지")
     private String message;
-    
+
     @ApiModelProperty("HTTP 상태 코드")
     private int status;
-    
+
     @ApiModelProperty("오류 상세 정보")
     private List<FieldError> errors;
-    
+
     @ApiModelProperty("서비스 오류 코드")
     private String code;
 
@@ -65,6 +68,10 @@ public class ErrorResponse {
         return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, errors);
     }
 
+    public static ErrorResponse of(final ErrorCode errorCode, final ConstraintViolationException e) {
+        return new ErrorResponse(errorCode, FieldError.of(e.getConstraintViolations()));
+    }
+
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FieldError {
@@ -95,6 +102,15 @@ public class ErrorResponse {
                             error.getField(),
                             error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
                             error.getDefaultMessage()))
+                    .collect(Collectors.toList());
+        }
+
+        private static List<FieldError> of(final Set<ConstraintViolation<?>> violations) {
+            return violations.stream()
+                    .map(violation -> new FieldError(
+                            violation.getPropertyPath().toString(),
+                            violation.getInvalidValue() == null ? "" : violation.getInvalidValue().toString(),
+                            violation.getMessage()))
                     .collect(Collectors.toList());
         }
     }

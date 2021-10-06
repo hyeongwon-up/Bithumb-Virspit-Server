@@ -24,7 +24,7 @@ import java.io.IOException;
 @Api("상품 관련 API")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
 
@@ -32,15 +32,17 @@ public class ProductController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "title", value = "상품 제목", paramType = "query"),
             @ApiImplicitParam(name = "teamPlayerId", value = "팀/플레이어 ID", paramType = "query"),
-            @ApiImplicitParam(name = "sportsId", value = "종목 ID", paramType = "query")
+            @ApiImplicitParam(name = "sportsId", value = "종목 ID", paramType = "query"),
+            @ApiImplicitParam(name = "isTeam", value = "팀/플레이어 여부", paramType = "query")
     })
     @GetMapping
     public SuccessResponse<PagingResponseDto<ProductResponseDto>> getProducts(
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) final Pageable pageable,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "teamPlayerId", required = false) Long teamPlayerId,
-            @RequestParam(value = "sportsId", required = false) Long sportsId) {
-        return SuccessResponse.of(productService.getProducts(title, teamPlayerId, sportsId, pageable));
+            @RequestParam(value = "sportsId", required = false) Long sportsId,
+            @RequestParam(value = "isTeam", required = false) Boolean isTeam) {
+        return SuccessResponse.of(productService.getProducts(title, teamPlayerId, sportsId, isTeam, pageable));
     }
 
     @ApiOperation("상품 ID에 해당하는 상품 조회")

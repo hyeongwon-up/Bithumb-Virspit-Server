@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 public class DeployKip17ContractRequest {
     private String alias;

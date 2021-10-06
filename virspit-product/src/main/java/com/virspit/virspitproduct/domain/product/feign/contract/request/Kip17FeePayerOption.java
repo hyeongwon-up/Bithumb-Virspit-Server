@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 public class Kip17FeePayerOption {
     private Boolean enableGlobalFeePayer;
