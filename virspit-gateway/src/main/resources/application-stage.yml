@@ -37,28 +37,18 @@ spring:
           predicates:
             - Path=/auth/**
 
-
-
-
-        - id: virspit-listing-user
-          uri: lb://VIRSPIT-LISTING
-          predicates:
-            - Path=/products/list/**,/advertisements/**
-            - Method=GET
-          filters:
-            - JwtUserRequestFilter
-
-        - id: virspit-listing-admin
-          uri: lb://VIRSPIT-LISTING
-          predicates:
-            - Path=/advertises/**,/advertisements/**
-          filters:
-            - JwtAdminRequestFilter
-
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
             - Path=/sports/**,/team-playes/**,/products/**
+
+      httpclient:
+        wiretap: true
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
 
 
 

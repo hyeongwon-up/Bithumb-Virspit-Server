@@ -15,9 +15,14 @@ spring:
 
   cloud:
     gateway:
+      default-filters:
+        - name: DefaultFilter # 글로벌 설정
+          args:
+            baseMessage: Virspit Spring Cloud Gateway
+            preLogger: true
+            postLogger: true
+
       routes:
-
-
         - id: virspit-user
           uri: lb://VIRSPIT-USER
           predicates:
@@ -44,5 +49,13 @@ spring:
           predicates:
             - Path=/orders/**
           filters:
+
+      httpclient:
+        wiretap: true
 jwt:
   secret: temp
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
