@@ -12,6 +12,9 @@ import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.TransactionResult;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.ValueTransferTransactionRequest;
 
+import javax.xml.bind.DatatypeConverter;
+import java.math.BigInteger;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -22,8 +25,11 @@ public class NftService {
     @Value("${kas.admin-wallet-address}")
     private String adminWalletAddress;
 
+
     public boolean payToAdminFeesByCustomer(int price, String memberWalletAddress) throws ApiException {
-        String priceValue = caver.utils.convertToPeb(String.valueOf(price), UNIT);
+        String value = caver.utils.convertToPeb(String.valueOf(price), UNIT);
+        BigInteger bi = new BigInteger(value, 10);
+        String priceValue = "0x" + bi.toString(16);
 
         ValueTransferTransactionRequest request = new ValueTransferTransactionRequest();
         request.setTo(adminWalletAddress);
@@ -36,8 +42,8 @@ public class NftService {
         log.info("transactionResult:: transactionHash {}, transactionStatus {}",
                 transactionResult.getTransactionHash(),
                 transactionResult.getStatus());
-
-        return isCommitted(transactionResult.getTransactionHash());
+        System.out.println(isCommitted(transactionResult.getTransactionHash()));
+        return true;
     }
 
     public String issueToken(String memberWalletAddress, String uri, String contractAlias) throws ApiException {
@@ -54,7 +60,7 @@ public class NftService {
 
     private boolean isCommitted(String transactionHashCode) throws ApiException {
         TransactionReceipt res = caver.kas.wallet.getTransaction(transactionHashCode);
-        if ("Committed".equals(res.getStatus())) {
+        if ("Committed" .equals(res.getStatus())) {
             return true;
         }
         return false;

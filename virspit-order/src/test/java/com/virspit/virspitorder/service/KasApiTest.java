@@ -1,5 +1,7 @@
 package com.virspit.virspitorder.service;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,10 @@ import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.K
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.kip17.model.Kip17TransactionStatusResponse;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.tokenhistory.model.PageableNfts;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.api.wallet.model.*;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 
 @DisplayName("Kas API 테스트")
 class KasApiTest {
@@ -66,7 +72,7 @@ class KasApiTest {
     void nft_정보_조회() throws ApiException {
         String contractAddress = "0xaa1453a5234b892284bd64aee484fb3f9cbf0fe9";
         TokenHistoryQueryOptions options = new TokenHistoryQueryOptions();
-        options.setSize((long)10); // max size
+        options.setSize((long) 10); // max size
 
         PageableNfts nfts = caver.kas.tokenHistory.getNFTList(contractAddress, options);
         System.out.println(nfts);
@@ -132,6 +138,33 @@ class KasApiTest {
     void getTransaction() throws ApiException {
         TransactionReceipt res = caver.kas.wallet.getTransaction("0x968ac3eeb0036bffd343f20971c437f79215499a581dbe905b33a7585296cc68");
         System.out.println(res);
+    }
+
+    @Test
+    void hexa() throws UnsupportedEncodingException, DecoderException {
+        String s = "100000000000000000000";
+
+        String result = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            result += String.format("0x%02X", (int) s.charAt(i));
+        }
+        System.out.println(result);
+
+        byte[] testBytes = s.getBytes();
+        String hex =  DatatypeConverter.printHexBinary(testBytes);
+
+        System.out.println(hex);
+
+        Hex.decodeHex(hex.toCharArray());
+        String ret =  new String(testBytes, "UTF-8");
+        System.out.println(ret);
+
+
+        BigInteger bi = new BigInteger(s, 10);
+        String str = "0x"+bi.toString(10);
+
+        System.out.println(str);
     }
 
 }

@@ -4,10 +4,7 @@ import com.virspit.virspitorder.dto.request.OrderMemoRequestDto;
 import com.virspit.virspitorder.response.result.SuccessResponse;
 import com.virspit.virspitorder.dto.response.OrdersResponseDto;
 import com.virspit.virspitorder.service.OrderService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +23,10 @@ public class OrderController {
     private final OrderService orderService;
 
     @ApiOperation(value = "전체 주문 목록")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "시작 날짜 (yyyy-MM-dd HH:mm:ss) ", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "마지막 날짜 (yyyy-MM-dd HH:mm:ss)", paramType = "query")
+    })
     @ApiResponses({
             @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class, responseContainer = "List")
     })
