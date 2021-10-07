@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.virspit.virspituser.domain.favorite.entity.Favorite;
 import com.virspit.virspituser.domain.member.dto.request.MemberEditInfoRequestDto;
 import com.virspit.virspituser.domain.wallet.entity.Wallet;
@@ -51,6 +52,7 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Favorite> favoriteList = new ArrayList<>();
 
