@@ -53,29 +53,29 @@ public class JwtAdminRequestFilter extends
     }
 
     @Bean
-    public ErrorWebExceptionHandler gatewayExceptionHandler() {
-        return new GatewayExceptionHandler();
+    public ErrorWebExceptionHandler gatewayAdminExceptionHandler() {
+        return new GatewayAdminExceptionHandler();
     }
 
-    public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
+    public class GatewayAdminExceptionHandler implements ErrorWebExceptionHandler {
 
         private String errorCodeMaker(String errorMessage) {
-            return "{\"errorMessage\":" + errorMessage + "}";
+            return "{\"Gateway ErrorMessage\":" + errorMessage + "}";
         }
 
         @Override
         public Mono<Void> handle(
                 ServerWebExchange exchange, Throwable ex) {
             logger.warn("in GATEWAY Exeptionhandler : " + ex);
-            String errorMessage = "Gateway Exception 입니다. 백엔드 파트에 문의해주세요.";
+            String errorMessage = "Gateway 내부 Exception 입니다. 백엔드 파트에 문의해주세요.";
             if (ex.getClass() == NullPointerException.class) {
-                errorMessage = "GatewayException : NullPointerException";
+                errorMessage = "NullPointerException";
             } else if (ex.getClass() == ExpiredJwtException.class) {
-                errorMessage = "GatewayException : 만료된 AccessToken 입니다.";
+                errorMessage = "만료된 AccessToken 입니다.";
             } else if (ex.getClass() == MalformedJwtException.class || ex.getClass() == SignatureException.class || ex.getClass() == UnsupportedJwtException.class) {
-                errorMessage = "GatewayException : 올바르지 않은 형식의 토큰입니다.";
+                errorMessage = "올바르지 않은 형식의 토큰입니다.";
             } else if (ex.getClass() == IllegalArgumentException.class) {
-                errorMessage = "GatewayException : 부적절한 요청입니다.";
+                errorMessage = "부적절한 요청입니다.";
             }
 
             byte[] bytes = errorCodeMaker(errorMessage).getBytes(StandardCharsets.UTF_8);
