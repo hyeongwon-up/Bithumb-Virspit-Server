@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.favorite.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.virspit.virspituser.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class Favorite {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "member_id")
     private Member member;
 
