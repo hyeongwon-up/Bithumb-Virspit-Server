@@ -141,30 +141,8 @@ class KasApiTest {
     }
 
     @Test
-    void hexa() throws UnsupportedEncodingException, DecoderException {
-        String s = "100000000000000000000";
+    void hex(){
 
-        String result = "";
-
-        for (int i = 0; i < s.length(); i++) {
-            result += String.format("0x%02X", (int) s.charAt(i));
-        }
-        System.out.println(result);
-
-        byte[] testBytes = s.getBytes();
-        String hex =  DatatypeConverter.printHexBinary(testBytes);
-
-        System.out.println(hex);
-
-        Hex.decodeHex(hex.toCharArray());
-        String ret =  new String(testBytes, "UTF-8");
-        System.out.println(ret);
-
-
-        BigInteger bi = new BigInteger(s, 10);
-        String str = "0x"+bi.toString(10);
-
-        System.out.println(str);
+        System.out.println(String.format("%#x", 1));
     }
-
 }

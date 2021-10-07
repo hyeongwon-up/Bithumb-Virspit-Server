@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: stage
   datasource:
     url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
@@ -14,11 +16,15 @@ spring:
       pageable:
         one-indexed-parameters: true # 페이징 1번 부터 시작
 
+  kafka:
+    producer:
+      bootstrap-servers: 3.34.250.136:9092
+
 kas:
   chainId: 1001 #baobab
   accessKeyId: accessKeyId
   secretAccessKey: secretAccessKey
-  admin-wallet-address: 0x5C48744aC9500933c0168DBD9d4847Da1d3A3505
+  admin-wallet-address: "0x7Bb6e87dd9BC43Af1AB7F4d2A762920A840C4aBA"
 
 server:
   port: 8080
@@ -28,15 +34,16 @@ server:
 ---
 
 eureka:
-
   instance:
-    instance-id: order-microservice-instance
+    instance-id: product-microservice-instance
+    prefer-ip-address: true
+    ip-address: 3.35.71.218
 
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://3.37.16.78:8761/eureka
 
 
 ---

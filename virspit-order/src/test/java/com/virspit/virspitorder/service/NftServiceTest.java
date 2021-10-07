@@ -18,7 +18,7 @@ class NftServiceTest {
 
     @Autowired
     private CaverExtKAS caver;
-    private String adminWalletAddress = "0x6ce57F9BF9c7C38560Ed27bddae6a3b5091B56cB";
+    private String adminWalletAddress = "0x7Bb6e87dd9BC43Af1AB7F4d2A762920A840C4aBA";
     private String memberWalletAddress = "0xcEE008b6860Ba562e9ddba2A774842581fB74e95";
 
     @Test

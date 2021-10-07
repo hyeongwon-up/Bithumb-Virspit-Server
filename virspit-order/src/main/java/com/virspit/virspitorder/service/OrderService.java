@@ -108,14 +108,17 @@ public class OrderService {
             throw new BusinessException("product 정보를 가져오지 못했습니다.", ErrorCode.ENTITY_NOT_FOUND);
         }
 
-        if (!nftService.payToAdminFeesByCustomer(product.getPrice(), memberWalletAddress)) {
+        if (!nftService.payToAdminFeesByCustomer(product.getPrice(), memberWalletAddress)) { // todo
             throw new BusinessException("클레이 지불 과정에서 오류가 발생했습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
         }
         String tokenId = nftService.issueToken(memberWalletAddress, product.getNftInfo().getMetadataUri(), product.getNftInfo().getContractAlias());
         Orders orders = new Orders(memberId, productId, memberWalletAddress, tokenId);
 
         kafkaTemplate.send(TOPIC_NAME, productId);
-        return OrdersResponseDto.entityToDto(orderRepository.save(orders));
+
+        Orders saved = orderRepository.save(orders);
+
+        return OrdersResponseDto.entityToDto(saved);
     }
 
     @Transactional

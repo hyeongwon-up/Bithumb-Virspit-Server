@@ -42,13 +42,14 @@ public class NftService {
         log.info("transactionResult:: transactionHash {}, transactionStatus {}",
                 transactionResult.getTransactionHash(),
                 transactionResult.getStatus());
-        System.out.println(isCommitted(transactionResult.getTransactionHash()));
+
+        log.info("klay result : {}", isCommitted(transactionResult.getTransactionHash()));
         return true;
     }
 
     public String issueToken(String memberWalletAddress, String uri, String contractAlias) throws ApiException {
         Kip17TokenListResponse tokenList = caver.kas.kip17.getTokenList(contractAlias);
-        String id = Integer.toHexString(tokenList.getItems().size() + 1);
+        String id = String.format("%#x", (tokenList.getItems().size() + 1));
 
         Kip17TransactionStatusResponse response = caver.kas.kip17.mint(contractAlias, memberWalletAddress, id, uri);
         log.info("issueToken :: transactionHash {}, transactionStatus{}", response.getTransactionHash(), response.getStatus());
