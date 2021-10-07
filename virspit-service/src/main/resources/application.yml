@@ -23,14 +23,16 @@ kafka-topic: product
 
 eureka:
   instance:
-    instance-id: listing-microservice-instance
+    instance-id: product-microservice-instance
     prefer-ip-address: true
+    ip-address: 3.35.78.136
+
 
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://3.38.44.130:8761/eureka
+      defaultZone: http://3.37.16.78:8761/eureka
 
 
 

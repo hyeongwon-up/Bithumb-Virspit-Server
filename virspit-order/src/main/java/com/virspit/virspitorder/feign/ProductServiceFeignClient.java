@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "virspit-product", url = "http://15.165.34.36:8081")
 public interface ProductServiceFeignClient {
 
-    @GetMapping(value = "/product/{productId}", consumes = "application/json")
+    @GetMapping(value = "/products/{productId}", consumes = "application/json")
     SuccessResponse<ProductResponseDto> findByProductId(@PathVariable(name = "productId") Long productId);
 }
