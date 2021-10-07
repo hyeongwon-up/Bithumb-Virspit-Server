@@ -19,7 +19,8 @@ public enum ErrorCode {
 
     // TODO: 각 도메인에서 발생할 오류에 대한 코드 추가
 
-    TOKEN_NOT_VALID(500, "G001", "권한 없는 토큰입니다.")
+    TOKEN_NOT_VALID(500, "G001", "권한 없는 토큰입니다."),
+    EXPIRED_ACCESS_TOKEN(501, "G002", "만료된 accessToken 입니다.")
     ;
 
 

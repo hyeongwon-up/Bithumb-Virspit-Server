@@ -2,6 +2,7 @@ package com.virspit.gateway.filter;
 
 import com.virspit.gateway.error.ErrorCode;
 import com.virspit.gateway.error.exception.InvalidValueException;
+import com.virspit.gateway.error.exception.TokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -52,31 +53,32 @@ public class JwtAdminRequestFilter extends
     }
 
     @Bean
-    public ErrorWebExceptionHandler adminExceptionHandler() {
-        return new MyWebExceptionHandler();
+    public ErrorWebExceptionHandler gatewayExceptionHandler() {
+        return new GatewayExceptionHandler();
     }
 
-    public class MyWebExceptionHandler implements ErrorWebExceptionHandler {
-        private String errorCodeMaker(int errorCode) {
-            return "{\"errorCode\":" + errorCode + "}";
+    public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
+
+        private String errorCodeMaker(String errorMessage) {
+            return "{\"errorMessage\":" + errorMessage + "}";
         }
 
         @Override
         public Mono<Void> handle(
                 ServerWebExchange exchange, Throwable ex) {
             logger.warn("in GATEWAY Exeptionhandler : " + ex);
-            int errorCode = 999;
+            String errorMessage = "Gateway Exception 입니다. 백엔드 파트에 문의해주세요.";
             if (ex.getClass() == NullPointerException.class) {
-                errorCode = 61;
+                errorMessage = "GatewayException : NullPointerException";
             } else if (ex.getClass() == ExpiredJwtException.class) {
-                errorCode = 56;
+                errorMessage = "GatewayException : 만료된 AccessToken 입니다.";
             } else if (ex.getClass() == MalformedJwtException.class || ex.getClass() == SignatureException.class || ex.getClass() == UnsupportedJwtException.class) {
-                errorCode = 55;
+                errorMessage = "GatewayException : 올바르지 않은 형식의 토큰입니다.";
             } else if (ex.getClass() == IllegalArgumentException.class) {
-                errorCode = 51;
+                errorMessage = "GatewayException : 부적절한 요청입니다.";
             }
 
-            byte[] bytes = errorCodeMaker(errorCode).getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = errorCodeMaker(errorMessage).getBytes(StandardCharsets.UTF_8);
             DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
             return exchange.getResponse().writeWith(Flux.just(buffer));
         }
