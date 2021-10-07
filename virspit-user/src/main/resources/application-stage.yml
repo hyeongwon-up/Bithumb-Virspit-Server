@@ -8,12 +8,14 @@ eureka:
   instance:
     instance-id: user-microservice-instance
     prefer-ip-address: true
+    ip-address: 3.38.42.161
+
 
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://3.38.44.130:8761/eureka
+      defaultZone: http://3.37.16.78:8761/eureka
 
 feign:
   httpclient:
