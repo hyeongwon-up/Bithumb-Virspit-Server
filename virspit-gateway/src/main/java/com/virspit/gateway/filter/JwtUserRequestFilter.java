@@ -2,6 +2,7 @@ package com.virspit.gateway.filter;
 
 import com.virspit.gateway.error.ErrorCode;
 import com.virspit.gateway.error.exception.InvalidValueException;
+import com.virspit.gateway.error.exception.TokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -22,7 +23,6 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -92,7 +92,6 @@ public class JwtUserRequestFilter extends
         super(Config.class);
     }
 
-    // public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
