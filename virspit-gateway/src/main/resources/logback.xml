@@ -4,7 +4,7 @@
     <springProfile name="local">
         <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <Pattern>%-5level %d{HH:mm:ss.SSS} %highlight([%-5level]) [%thread] %logger{36} - %msg%n</Pattern>
+                <Pattern> %highlight([%-5level]) %d{HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</Pattern>
             </encoder>
         </appender>
 
@@ -20,7 +20,7 @@
 
         <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <Pattern>%-5level %d{HH:mm:ss.SSS} %highlight([%-5level]) [%thread] %logger{36} - %msg%n</Pattern>
+                <Pattern>%-5level %d{HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</Pattern>
             </encoder>
         </appender>
 
