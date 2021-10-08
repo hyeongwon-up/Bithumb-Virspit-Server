@@ -1,4 +1,3 @@
-
 server:
   port: 8070
 ---
@@ -94,6 +93,7 @@ spring:
             - Path=/orders/**
           filters:
             - JwtAdminRequestFilter
+
 
 
 jwt:

@@ -55,6 +55,10 @@ dependencies {
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //logstash
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.6'
+
 }
 
 dependencyManagement {

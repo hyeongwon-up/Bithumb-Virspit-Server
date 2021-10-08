@@ -45,6 +45,9 @@ dependencies {
     implementation 'xyz.groundx.caver:caver-java-ext-kas:1.4.0'
     implementation group: 'org.springframework', name: 'spring-tx', version: '5.3.10'
 
+    //logstash
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.6'
+
 
 
 }

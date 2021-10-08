@@ -17,9 +17,13 @@ eureka:
 ---
 
 spring:
+
   application:
     name: virspit-user
 
+
+  profiles:
+    active: local
 
   jpa:
     generate-ddl: true
