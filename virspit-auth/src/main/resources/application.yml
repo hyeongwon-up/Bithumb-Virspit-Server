@@ -22,7 +22,8 @@ eureka:
 spring:
   application:
     name: virspit-auth
-
+  profiles:
+    active: local
 
   jpa:
     generate-ddl: true
