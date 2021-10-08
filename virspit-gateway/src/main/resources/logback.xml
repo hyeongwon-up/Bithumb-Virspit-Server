@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProfile name="local">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%-5level %d{HH:mm:ss.SSS} %highlight([%-5level]) [%thread] %logger{36} - %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+
+    </springProfile>
+
+
+    <springProfile name="stage">
+
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%-5level %d{HH:mm:ss.SSS} %highlight([%-5level]) [%thread] %logger{36} - %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+        <appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
+            <destination>54.180.108.224:5000</destination>
+
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        </appender>
+
+
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="stash"/>
+        </root>
+
+    </springProfile>
+
+</configuration>
