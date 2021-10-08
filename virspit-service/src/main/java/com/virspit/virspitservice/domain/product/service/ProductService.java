@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,5 +73,11 @@ public class ProductService {
     @Transactional
     public Mono<Void> deleteProduct(final String id) {
         return productRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<ProductDto> getFavorites(List<String> ids) {
+        return productRepository.findAllById(ids)
+                .map(ProductDto::entityToDto);
     }
 }

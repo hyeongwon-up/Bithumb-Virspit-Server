@@ -61,10 +61,20 @@ public class NftService {
 
     private boolean isCommitted(String transactionHashCode) throws ApiException {
         TransactionReceipt res = caver.kas.wallet.getTransaction(transactionHashCode);
-        if ("Committed" .equals(res.getStatus())) {
-            return true;
+        while (true) {
+            if ("Committed" .equals(res.getStatus())) {
+                return true;
+            } else if ("Pending" .equals(res.getStatus())) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    log.warn(e.getMessage());
+                }
+            } else {
+                // fail
+                return false;
+            }
         }
-        return false;
     }
 
 }

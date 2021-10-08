@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: stage
+  #  profiles:
+  #    active: stage
   datasource:
     url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
@@ -22,14 +22,13 @@ spring:
 
 kas:
   chainId: 1001 #baobab
-  accessKeyId: accessKeyId
-  secretAccessKey: secretAccessKey
+  accessKeyId:
+  secretAccessKey:
   admin-wallet-address: "0x7Bb6e87dd9BC43Af1AB7F4d2A762920A840C4aBA"
 
 server:
   port: 8080
-  servlet:
-    context-path: /order
+
 
 ---
 
@@ -45,12 +44,7 @@ eureka:
     service-url:
       defaultZone: http://3.37.16.78:8761/eureka
 
-
 ---
-
-spring:
-  application:
-    name: virspit-order
 
 logging:
   level:

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Repository
 public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc, String> {
     Mono<ProductDoc> findByTitle(String title);
@@ -25,4 +27,5 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
     Flux<ProductDoc> findByPriceBetween(Range<Integer> priceRange);
 
     Flux<ProductDoc> findAllByOrderByCreatedDateTimeDesc();
+
 }
