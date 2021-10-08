@@ -10,6 +10,9 @@ eureka:
 
 spring:
 
+  profiles:
+    active: local
+
   application:
     name: virspit-gateway
 
@@ -58,4 +61,4 @@ jwt:
 
 logging:
   level:
-    org.springframework.cloud.gateway: trace
+    org.springframework.cloud.gateway: INFO
