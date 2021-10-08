@@ -6,8 +6,8 @@ spring:
     name: virspit-listing
   data:
     mongodb:
-      uri: mongodb://localhost:27017/listing # local
-#        uri: mongodb://mongo:27017/listing # docker app
+#      uri: mongodb://localhost:27017/listing # local
+        uri: mongodb://mongo:27017/listing # docker app
 
   kafka:
     consumer:
