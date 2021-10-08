@@ -1,5 +1,6 @@
 package com.virspit.virspitproduct.domain.product.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.QueryResults;
 import com.virspit.virspitproduct.domain.common.PagingResponseDto;
 import com.virspit.virspitproduct.domain.product.dto.request.ProductStoreRequestDto;
@@ -9,6 +10,7 @@ import com.virspit.virspitproduct.domain.product.dto.response.ProductResponseDto
 import com.virspit.virspitproduct.domain.product.entity.NftInfo;
 import com.virspit.virspitproduct.domain.product.entity.Product;
 import com.virspit.virspitproduct.domain.product.exception.ProductNotFoundException;
+import com.virspit.virspitproduct.domain.product.feign.metadata.request.Metadata;
 import com.virspit.virspitproduct.domain.product.kafka.KafkaProductProducer;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepository;
 import com.virspit.virspitproduct.domain.product.repository.ProductRepositorySupport;
@@ -35,6 +37,8 @@ public class ProductService {
     private final KasService kasService;
     private final KafkaProductProducer kafkaProductProducer;
     private final FileStore awsS3FileStore;
+    private final IpfsService ipfsService;
+    private final ObjectMapper objectMapper;
 
     public PagingResponseDto<ProductResponseDto> getProducts(String keyword, Long teamPlayerId, Long sportsId, Boolean isTeam, final Pageable pageable) {
         QueryResults<Product> queryResults = productRepositorySupport.findAll(keyword, teamPlayerId, sportsId, isTeam, pageable);
@@ -53,13 +57,17 @@ public class ProductService {
                 .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
 
         String contractAlias = kasService.deployNftContract(teamPlayerId);
-        String metadataUri = kasService.uploadMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
+        String nftImageUrl = ipfsService.upload(productStoreRequestDto.getNftImageFile());
+        Metadata metadata = new Metadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), nftImageUrl);
+        String metadataJsonString = objectMapper.writeValueAsString(metadata);
+        String metadataUri = ipfsService.uploadJson(metadataJsonString);
+
         NftInfo nftInfo = new NftInfo(contractAlias, metadataUri);
 
-        String nftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
+        String s3NftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
         String detailImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getDetailImageFile(), ContentType.PRODUCT_DETAIL_IMAGE);
 
-        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo, nftImageUrl, detailImageUrl);
+        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo, s3NftImageUrl, detailImageUrl);
         productRepository.save(product);
 
         kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
@@ -100,4 +108,6 @@ public class ProductService {
 
         return ProductResponseDto.of(product);
     }
+
+
 }

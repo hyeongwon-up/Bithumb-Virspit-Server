@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @Slf4j
@@ -54,13 +55,13 @@ public class ProductController {
     @ApiOperation("상품 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public SuccessResponse<ProductResponseDto> createProduct(@ModelAttribute ProductStoreRequestDto productStoreRequestDto) throws IOException {
+    public SuccessResponse<ProductResponseDto> createProduct(@Valid @ModelAttribute ProductStoreRequestDto productStoreRequestDto) throws IOException {
         return SuccessResponse.of(productService.createProduct(productStoreRequestDto), HttpStatus.CREATED);
     }
 
     @ApiOperation("상품 수정")
     @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public SuccessResponse<ProductResponseDto> updateProduct(@PathVariable Long productId, @ModelAttribute ProductStoreRequestDto productStoreRequestDto) throws IOException {
+    public SuccessResponse<ProductResponseDto> updateProduct(@PathVariable Long productId, @Valid @ModelAttribute ProductStoreRequestDto productStoreRequestDto) throws IOException {
         return SuccessResponse.of(productService.updateProduct(productId, productStoreRequestDto), SuccessResponse.UPDATED_MESSAGE);
     }
 
