@@ -94,8 +94,7 @@ class AdvertisementServiceTest {
     @Test
     void getAll() {
         StepVerifier.create(advertisementService.getAll(
-                PageRequest.of(0, 4, Sort.by("createdDate").descending()))
-                .getData())
+                PageRequest.of(0, 4, Sort.by("createdDate").descending())))
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();

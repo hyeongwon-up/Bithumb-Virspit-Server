@@ -19,8 +19,6 @@ spring:
 
 kafka-topic: product
 
-
-
 eureka:
   instance:
     instance-id: product-microservice-instance
@@ -33,9 +31,3 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://3.37.16.78:8761/eureka
-
-
-
-
-
-

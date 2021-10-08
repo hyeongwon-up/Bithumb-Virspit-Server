@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RequestMapping("/products/list")
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +30,13 @@ public class ProductController {
     @GetMapping("/search")
     public Flux<ProductDto> searchProducts(@RequestParam("word") String word) {
         return productService.getProductsBy(word);
+    }
+
+
+    @ApiOperation("좋아요 상품 목록")
+    @GetMapping("/favorite")
+    public Flux<ProductDto> getFavorites(@RequestParam("ids") List<String> ids) {
+        return productService.getFavorites(ids);
     }
 
 }

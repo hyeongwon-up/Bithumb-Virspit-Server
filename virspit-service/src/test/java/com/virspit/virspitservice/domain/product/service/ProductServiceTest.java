@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @DisplayName("서비스 유닛 테스트 (mock)")
 @ExtendWith(SpringExtension.class)
@@ -32,7 +33,7 @@ class ProductServiceTest {
     private ProductKafkaDto kafkaDto = ProductKafkaDto.builder()
             .title("title")
             .description("test")
-            .id("1234")
+            .id("1")
             .detailImageUrl("")
             .exhibition(false)
             .event(Event.UPDATE)
@@ -48,6 +49,9 @@ class ProductServiceTest {
             .build();
     private ProductDoc product = ProductDoc.kafkaToEntity(kafkaDto);
     private ProductDto dto = ProductDto.entityToDto(product);
+    private ProductDoc product2 = ProductDoc.builder()
+            .id("2")
+            .build();
 
     @BeforeEach
     void setUp() {
@@ -65,6 +69,9 @@ class ProductServiceTest {
 
         BDDMockito.when(repositoryMock.count())
                 .thenReturn(Mono.just(20l));
+
+        BDDMockito.when(repositoryMock.findAllById(List.of("1","2")))
+                .thenReturn(Flux.just(product, product2));
     }
 
     @DisplayName("카프카에서 받은 데이터를 mongoDB에 저장한다.")
@@ -105,4 +112,12 @@ class ProductServiceTest {
                 .verifyComplete();
     }
 
+    @DisplayName("좋아요한 목록 Id 프로덕트 정보를 가져온다.")
+    @Test
+    void getFavorites(){
+        StepVerifier.create(productService.getFavorites(List.of("1","2")))
+                .expectSubscription()
+                .expectNextCount(2)
+                .verifyComplete();
+    }
 }

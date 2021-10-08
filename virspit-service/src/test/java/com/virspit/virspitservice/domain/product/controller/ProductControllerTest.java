@@ -1,5 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
+import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,6 @@ class ProductControllerTest {
                 .build();
     }
 
-
     @DisplayName("전체 상품 가져오기")
     @Test
     void allProducts() {
@@ -51,9 +51,10 @@ class ProductControllerTest {
                 .createdDateTime(LocalDateTime.now())
                 .build();
         Flux<ProductDto> productMono = Flux.just(dto);
+        Mono<PageSupport> result = Mono.just(new PageSupport(List.of(), 0 ,1,1));
 
         // when
-        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(productMono);
+        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(result);
 
         // assert
         client.get()
@@ -87,6 +88,30 @@ class ProductControllerTest {
                         uriBuilder
                                 .path("/products/list/search")
                                 .queryParam("word", "product")
+                                .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @DisplayName("좋아요한 상품 목록 가져오기")
+    @Test
+    void getFavorites() {
+        // given
+        List<ProductDto> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(generateDocument("product" + i));
+        }
+
+        // when
+        when(service.getProductsBy("product")).thenReturn(Flux.fromIterable(list));
+
+        // assert
+        client.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/products/list/favorite")
+                                .queryParam("ids", "1,2,3")
                                 .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
