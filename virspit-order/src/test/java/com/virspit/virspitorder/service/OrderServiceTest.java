@@ -23,8 +23,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-    // TODO : mock unit test error
-
     @InjectMocks
     private OrderService orderService;
 
@@ -61,11 +59,5 @@ class OrderServiceTest {
                 pageable).get())
                 .willReturn(List.of(orders.get(1), orders.get(2), orders.get(3)).stream());
 
-        // when
-//        List<OrdersResponseDto> result = orderService.getAll(startDate, endDate, pageable);
-        // then
-//        assertThat(result).contains(OrdersResponseDto.entityToDto(orders.get(1)));
-//        assertThat(result).contains(OrdersResponseDto.entityToDto(orders.get(2)));
-//        assertThat(result).contains(OrdersResponseDto.entityToDto(orders.get(3)));
     }
 }
