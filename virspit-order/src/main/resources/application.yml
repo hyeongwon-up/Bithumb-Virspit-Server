@@ -1,6 +1,7 @@
 spring:
-#    profiles:
-#      active: stage
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
