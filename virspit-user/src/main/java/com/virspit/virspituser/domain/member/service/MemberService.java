@@ -10,6 +10,8 @@ import com.virspit.virspituser.domain.member.entity.Role;
 import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import com.virspit.virspituser.domain.wallet.service.WalletService;
+import com.virspit.virspituser.global.error.ErrorCode;
+import com.virspit.virspituser.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,5 +79,12 @@ public class MemberService {
 
     public Member findById(Long id) {
         return memberRepository.findById(id).get();
+    }
+
+    public MemberInfoResponseDto MemberInfofindById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+
+        return MemberInfoResponseDto.of(member);
     }
 }
