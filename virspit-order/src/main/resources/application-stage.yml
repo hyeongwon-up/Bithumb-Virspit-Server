@@ -17,6 +17,8 @@ spring:
   kafka:
     producer:
       bootstrap-servers: 3.34.250.136:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 kas:
   chainId: 1001 #baobab

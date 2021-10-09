@@ -14,7 +14,6 @@ import com.virspit.virspitorder.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
@@ -35,7 +34,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberServiceFeignClient memberServiceFeignClient;
     private final ProductServiceFeignClient productServiceFeignClient;
-    private final KafkaTemplate<String, Long> kafkaTemplate;
+    private final KafkaOrderProducer kafkaOrderProducer;
 
     @Transactional(readOnly = true)
     public List<OrdersResponseDto> getAll(String startDate, String endDate, Pageable pageable) {
@@ -114,11 +113,11 @@ public class OrderService {
         String tokenId = nftService.issueToken(memberWalletAddress, product.getNftInfo().getMetadataUri(), product.getNftInfo().getContractAlias());
         Orders orders = new Orders(memberId, productId, memberWalletAddress, tokenId);
 
-        kafkaTemplate.send(TOPIC_NAME, productId);
-
         Orders saved = orderRepository.save(orders);
+        OrdersResponseDto dto = OrdersResponseDto.entityToDto(saved);
 
-        return OrdersResponseDto.entityToDto(saved);
+        kafkaOrderProducer.sendOrder(TOPIC_NAME, dto);
+        return dto;
     }
 
     @Transactional
