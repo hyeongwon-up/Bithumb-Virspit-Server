@@ -1,5 +1,6 @@
 package com.virspit.virspitauth.service;
 
+import com.virspit.virspitauth.dto.request.CheckTokenRequestDto;
 import com.virspit.virspitauth.dto.request.NewAccessTokenRequestDto;
 import com.virspit.virspitauth.dto.response.NewAccessTokenResponseDto;
 import com.virspit.virspitauth.error.ErrorCode;
@@ -23,11 +24,11 @@ public class TokenService {
 
 
 
-    public Boolean checkAccessToken(String accessToken) {
+    public Boolean checkAccessToken(CheckTokenRequestDto checkTokenRequestDto) {
         String username = null;
 
         try {
-            username = jwtGenerator.getUsernameFromToken(accessToken);
+            username = jwtGenerator.getUsernameFromToken(checkTokenRequestDto.getToken());
             log.info("AccesToken 검증 성공 UserName : " + username);
         } catch (ExpiredJwtException e) {
             username = e.getClaims().getSubject();
@@ -39,22 +40,25 @@ public class TokenService {
 
 
     public Object requestForNewAccessToken(NewAccessTokenRequestDto newAccessTokenRequestDto) {
-        String username = null;
+        String userEmail = null;
 
         String expiredAccessToken = newAccessTokenRequestDto.getAccessToken();
         String refreshToken = newAccessTokenRequestDto.getRefreshToken();
 
+
+
         try {
-            username = jwtGenerator.getUsernameFromToken(expiredAccessToken);
+            userEmail = jwtGenerator.getUsernameFromToken(expiredAccessToken);
+            log.info("Refresh AccessTokne 요청한 Member Email :" + userEmail);
         } catch (ExpiredJwtException e) {
-            username = e.getClaims().getSubject();
-            log.info("username from expired access token: " + username);
+            userEmail = e.getClaims().getSubject();
+            log.warn("username from expired access token: " + userEmail);
         }
 
-        if (username == null) throw new IllegalArgumentException();
+        if (userEmail == null) throw new IllegalArgumentException();
 
-        String refreshTokenFromDb = stringRedisTemplate.opsForValue().get("refresh-"+username);
-        log.info("refreshToken from redis: " + refreshTokenFromDb);
+        String refreshTokenFromDb = stringRedisTemplate.opsForValue().get("refresh-"+userEmail);
+        log.warn("refreshToken from redis: " + refreshTokenFromDb);
 
         //user refresh token doesn't match with cache
         if (!refreshToken.equals(refreshTokenFromDb)) {
@@ -66,7 +70,7 @@ public class TokenService {
         }
 
         //generate access token if valid refresh token
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         String newAccessToken =  jwtGenerator.generateAccessToken(userDetails);
 
         return new NewAccessTokenResponseDto(newAccessToken);
