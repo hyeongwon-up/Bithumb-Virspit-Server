@@ -27,12 +27,16 @@ public class OrdersResponseDto {
     @ApiModelProperty("주문한 날짜")
     private LocalDateTime orderDate;
 
+    @ApiModelProperty("메모")
+    private String memo;
+
     public static OrdersResponseDto entityToDto(Orders orders, ProductResponseDto productResponseDto, MemberResponseDto member) {
         return OrdersResponseDto.builder()
                 .id(orders.getId())
                 .member(member)
                 .product(productResponseDto)
                 .orderDate(orders.getOrderDate())
+                .memo(orders.getMemo())
                 .build();
     }
 }
