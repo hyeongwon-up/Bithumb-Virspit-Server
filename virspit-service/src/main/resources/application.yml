@@ -1,7 +1,8 @@
 server:
   port: 8080
 spring:
-
+  profiles:
+    active: local
   application:
     name: virspit-listing
   data:
@@ -21,7 +22,7 @@ kafka-topic: product
 
 eureka:
   instance:
-    instance-id: product-microservice-instance
+    instance-id: listing-microservice-instance
     prefer-ip-address: true
     ip-address: 3.35.78.136
 
