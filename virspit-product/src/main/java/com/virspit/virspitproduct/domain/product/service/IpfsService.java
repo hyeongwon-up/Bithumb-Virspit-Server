@@ -1,5 +1,6 @@
 package com.virspit.virspitproduct.domain.product.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
@@ -13,14 +14,20 @@ import java.util.List;
 @Service
 public class IpfsService {
     private static final String BASE_URL = "https://ipfs.io/ipfs/";
-
-    private final IPFS ipfs = new IPFS("/ip4/127.0.0.1/tcp/5001");
+    private final IPFS ipfs;
+    private final ObjectMapper objectMapper;
 
     @Value("${file.dir.root-path}")
     private String tmpDir;
 
-    public String uploadJson(final String jsonString) throws IOException {
-        List<MerkleNode> merkleNodes = ipfs.add(new NamedStreamable.ByteArrayWrapper(jsonString.getBytes()));
+    public IpfsService(@Value("${ipfs.server}") String serverUrl, @Value("${ipfs.port}") String port, ObjectMapper objectMapper) {
+        ipfs = new IPFS("/ip4/" + serverUrl + "/tcp/" + port);
+        this.objectMapper = objectMapper;
+    }
+
+    public String upload(final Object object) throws IOException {
+        String objectJson = objectMapper.writeValueAsString(object);
+        List<MerkleNode> merkleNodes = ipfs.add(new NamedStreamable.ByteArrayWrapper(objectJson.getBytes()));
         if (merkleNodes.isEmpty()) {
             // TODO IPFS 파일 업로드 실패
         }
