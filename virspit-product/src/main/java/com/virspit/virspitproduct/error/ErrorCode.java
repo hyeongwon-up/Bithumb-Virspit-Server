@@ -19,16 +19,15 @@ public enum ErrorCode {
     FILE_NOT_SUPPORT(400, "C010", "지원하지 않는 파일입니다"),
 
     // Sports
-    ICON_FILE_NOT_FOUND(400,"S001","업로드된 아이콘 파일이 없습니다"),
-    DUPLICATED_SPORTS_NAME(400,"S002","이미 등록된 종목입니다"),
-    TEAM_PLAYER_EXIST(400,"S003","종목에 소속된 팀/플레이어가 존재합니다"),
+    ICON_FILE_NOT_FOUND(400, "S001", "업로드된 아이콘 파일이 없습니다"),
+    DUPLICATED_SPORTS_NAME(400, "S002", "이미 등록된 종목입니다"),
+    TEAM_PLAYER_EXIST(400, "S003", "종목에 소속된 팀/플레이어가 존재합니다"),
 
     // TeamPlayer
-    PRODUCT_EXIST(400,"T001","팀/플레이어에 관련된 상품이 존재합니다")
-
+    PRODUCT_EXIST(400, "T001", "팀/플레이어에 관련된 상품이 존재합니다"),
 
     // Product
-    ;
+    NFT_CONTRACT_TRANSACTION_FAILED(500, "P001", "컨트랙트 배포 실패. 관리자에게 문의하세요");
 
 
     @Getter
