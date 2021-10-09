@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Bithumb-Virspit-Server.iml" filepath="$PROJECT_DIR$/.idea/Bithumb-Virspit-Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/virspit-order.iml" filepath="$PROJECT_DIR$/.idea/modules/virspit-order.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/virspit-order.main.iml" filepath="$PROJECT_DIR$/.idea/modules/virspit-order.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/virspit-order.test.iml" filepath="$PROJECT_DIR$/.idea/modules/virspit-order.test.iml" />
     </modules>
   </component>
 </project>

@@ -14,7 +14,6 @@ import com.virspit.virspitorder.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
@@ -35,7 +34,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberServiceFeignClient memberServiceFeignClient;
     private final ProductServiceFeignClient productServiceFeignClient;
-    private final KafkaTemplate<String, Long> kafkaTemplate;
+    private final KafkaOrderProducer kafkaOrderProducer;
 
     @Transactional(readOnly = true)
     public List<OrdersResponseDto> getAll(String startDate, String endDate, Pageable pageable) {
@@ -60,14 +59,24 @@ public class OrderService {
                 endDateTime,
                 pageable)
                 .stream()
-                .map(OrdersResponseDto::entityToDto)
+                .map(doc -> OrdersResponseDto.entityToDto(doc,
+                        Optional.ofNullable(productServiceFeignClient.findByProductId(doc.getProductId()))
+                                .map(SuccessResponse::getData)
+                                .orElse(null),
+                        Optional.ofNullable(memberServiceFeignClient.findByMemberId(doc.getMemberId()))
+                                .orElse(null)))
                 .collect(Collectors.toList());
     }
 
     private List<OrdersResponseDto> findAll(Pageable pageable) {
         return orderRepository.findAll(pageable)
                 .stream()
-                .map(OrdersResponseDto::entityToDto)
+                .map(doc -> OrdersResponseDto.entityToDto(doc,
+                        Optional.ofNullable(productServiceFeignClient.findByProductId(doc.getProductId()))
+                                .map(SuccessResponse::getData)
+                                .orElse(null),
+                        Optional.ofNullable(memberServiceFeignClient.findByMemberId(doc.getMemberId()))
+                                .orElse(null)))
                 .collect(Collectors.toList());
     }
 
@@ -78,7 +87,12 @@ public class OrderService {
         if (startDate == null && endDate == null) {
             return orderRepository.findByMemberId(memberId, pageable)
                     .stream()
-                    .map(OrdersResponseDto::entityToDto)
+                    .map(doc -> OrdersResponseDto.entityToDto(doc,
+                            Optional.ofNullable(productServiceFeignClient.findByProductId(doc.getProductId()))
+                                    .map(SuccessResponse::getData)
+                                    .orElse(null),
+                            Optional.ofNullable(memberServiceFeignClient.findByMemberId(doc.getMemberId()))
+                                    .orElse(null)))
                     .collect(Collectors.toList());
         }
         if (startDate == null || endDate == null) {
@@ -90,13 +104,18 @@ public class OrderService {
                 LocalDateTime.parse(endDate, StringUtils.FORMATTER),
                 pageable)
                 .stream()
-                .map(OrdersResponseDto::entityToDto)
+                .map(doc -> OrdersResponseDto.entityToDto(doc,
+                        Optional.ofNullable(productServiceFeignClient.findByProductId(doc.getProductId()))
+                                .map(SuccessResponse::getData)
+                                .orElse(null),
+                        Optional.ofNullable(memberServiceFeignClient.findByMemberId(doc.getMemberId()))
+                                .orElse(null)))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public OrdersResponseDto order(Long memberId, Long productId) throws ApiException {
-        String memberWalletAddress = memberServiceFeignClient.findByMemberId(memberId);
+        String memberWalletAddress = memberServiceFeignClient.findWalletByMemberId(memberId);
         if (memberWalletAddress.isBlank() || memberWalletAddress == null) {
             throw new BusinessException("member wallet 정보를 가져오지 못했습니다.", ErrorCode.ENTITY_NOT_FOUND);
         }
@@ -114,11 +133,15 @@ public class OrderService {
         String tokenId = nftService.issueToken(memberWalletAddress, product.getNftInfo().getMetadataUri(), product.getNftInfo().getContractAlias());
         Orders orders = new Orders(memberId, productId, memberWalletAddress, tokenId);
 
-        kafkaTemplate.send(TOPIC_NAME, productId);
-
         Orders saved = orderRepository.save(orders);
+        OrdersResponseDto dto = OrdersResponseDto.entityToDto(
+                saved,
+                product,
+                Optional.ofNullable(memberServiceFeignClient.findByMemberId(saved.getMemberId())).
+                        orElse(null));
 
-        return OrdersResponseDto.entityToDto(saved);
+        kafkaOrderProducer.sendOrder(TOPIC_NAME, dto);
+        return dto;
     }
 
     @Transactional
@@ -126,6 +149,10 @@ public class OrderService {
         Orders orders = orderRepository.findById(requestDto.getOrderId())
                 .orElseThrow(() -> new BusinessException("해당 orderId가 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
         orders.updateMemo(requestDto.getMemo());
-        return OrdersResponseDto.entityToDto(orders);
+        return OrdersResponseDto.entityToDto(orders, Optional.ofNullable(productServiceFeignClient.findByProductId(orders.getProductId()))
+                .map(SuccessResponse::getData)
+                .orElse(null),
+                Optional.ofNullable(memberServiceFeignClient.findByMemberId(orders.getMemberId()))
+                        .orElse(null));
     }
 }

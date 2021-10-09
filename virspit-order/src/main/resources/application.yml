@@ -1,6 +1,7 @@
 spring:
-  #  profiles:
-  #    active: stage
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
@@ -19,6 +20,10 @@ spring:
   kafka:
     producer:
       bootstrap-servers: 3.34.250.136:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      order: order
 
 kas:
   chainId: 1001 #baobab
@@ -32,9 +37,13 @@ server:
 
 ---
 
+spring:
+  application:
+    name: virspit-order
+
 eureka:
   instance:
-    instance-id: product-microservice-instance
+    instance-id: order-microservice-instance
     prefer-ip-address: true
     ip-address: 3.35.71.218
 
