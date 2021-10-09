@@ -1,6 +1,6 @@
 spring:
-  #  profiles:
-  #    active: stage
+#    profiles:
+#      active: stage
   datasource:
     url: jdbc:mariadb://virspit-order.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/virspit_order
     driver-class-name: org.mariadb.jdbc.Driver
@@ -36,9 +36,13 @@ server:
 
 ---
 
+spring:
+  application:
+    name: virspit-order
+
 eureka:
   instance:
-    instance-id: product-microservice-instance
+    instance-id: order-microservice-instance
     prefer-ip-address: true
     ip-address: 3.35.71.218
 
