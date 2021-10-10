@@ -31,9 +31,11 @@ public class ProductResponseDto {
     @NotBlank
     private String description;
 
+    private SportsInfo sportsInfo;
+
     @ApiModelProperty("팀/플레이어 ID")
     @NotNull
-    private Long teamPlayerId;
+    private TeamPlayerInfo teamPlayerInfo;
 
     @ApiModelProperty("상품 가격(Klay)")
     @NotNull
@@ -54,6 +56,9 @@ public class ProductResponseDto {
     @ApiModelProperty("상품 진열 여부")
     @NotNull
     private Boolean exhibition;
+
+    @ApiModelProperty("상품 디테일 이미지 Url")
+    private String detailImageUrl;
 
     @ApiModelProperty("상품 NFT 정보")
     @NotNull
