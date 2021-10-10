@@ -2,6 +2,7 @@ package com.virspit.virspitservice.domain.product.controller;
 
 import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -39,4 +40,9 @@ public class ProductController {
         return productService.getFavorites(ids);
     }
 
+    @ApiOperation("product 서버와 맞춤용 controller")
+    @PostMapping("/add")
+    public Mono<ProductDto> insertProduct(@RequestBody ProductKafkaDto productDto) {
+        return productService.insert(productDto);
+    }
 }
