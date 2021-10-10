@@ -1,6 +1,7 @@
 package com.virspit.virspituser.domain.member.service;
 
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
+import com.virspit.virspituser.domain.member.dto.response.MemberInfoResponseDto;
 import com.virspit.virspituser.domain.member.entity.Gender;
 import com.virspit.virspituser.domain.member.entity.Member;
 import com.virspit.virspituser.domain.member.entity.Role;
@@ -8,6 +9,7 @@ import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import com.virspit.virspituser.domain.wallet.entity.Wallet;
 import com.virspit.virspituser.domain.wallet.service.WalletService;
+import com.virspit.virspituser.global.error.exception.EntityNotFoundException;
 import jnr.a64asm.Mem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +21,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import xyz.groundx.caver_ext_kas.rest_client.io.swagger.client.ApiException;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,11 +52,12 @@ class MemberServiceTest {
     void setUp() {
 
         member = Member.builder()
-                .memberName("testName")
-                .email("testEmail")
-                .password("testPassword")
+                .memberName("testMember")
+                .email("test@test.com")
+                .password("password")
                 .gender(Gender.ETC)
                 .birthdayDate(LocalDate.now())
+                .role(Role.USER)
                 .wallet(wallet)
                 .build();
     }
@@ -64,27 +69,48 @@ class MemberServiceTest {
         //given
         MemberSignUpRequestDto memberSignUpRequestDto =
                 new MemberSignUpRequestDto();
+        memberSignUpRequestDto.setMemberName("testMember");
+        memberSignUpRequestDto.setEmail("test@test.com");
+        memberSignUpRequestDto.setBirthdayDate(LocalDate.of(1996, 12, 28));
+        memberSignUpRequestDto.setPassword("password");
+        memberSignUpRequestDto.setGender(Gender.ETC);
+        memberSignUpRequestDto.setPhoneNumber("01096394624");
 
         given(walletService.createWallet()).willReturn(wallet);
         given(memberRepository.save(any())).willReturn(member);
 
         //when
 
+        MemberInfoResponseDto result = memberService.registry(memberSignUpRequestDto);
+
         //then
+        assertThat(result.getMemberName()).isEqualTo(member.getMemberName());
+        assertThat(result.getRole()).isEqualTo(Role.USER);
 
     }
 
     @Test
-    void findByEmail() {
+    void findByEmail_성공() {
         //given
-        given(memberRepository.findByEmail("testEmail")).willReturn(member);
+        given(memberRepository.findByEmail("testEmail")).willReturn(java.util.Optional.ofNullable(member));
 
         //when
         Member result = memberService.findByEmail("testEmail");
 
         //then
-        assertThat(result.getMemberName()).isEqualTo("testName");
+        assertThat(result.getMemberName()).isEqualTo("testMember");
         assertThat(result.getRole()).isEqualTo(Role.USER);
+    }
+
+    @Test
+    void findByEmail_실패() {
+        //given
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> {
+            memberService.findByEmail("test@test.com");
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -107,7 +133,6 @@ class MemberServiceTest {
 
         //then
         assertThat(result).isEqualTo("저장하였습니다.");
-
     }
 
 
