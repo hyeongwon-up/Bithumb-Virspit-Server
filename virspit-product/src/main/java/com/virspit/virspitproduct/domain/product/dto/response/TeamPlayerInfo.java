@@ -1,5 +1,6 @@
 package com.virspit.virspitproduct.domain.product.dto.response;
 
+import com.virspit.virspitproduct.domain.teamplayer.entity.TeamPlayerType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,4 +15,6 @@ public class TeamPlayerInfo {
 
     @ApiModelProperty("팀/플레이어 이름")
     private String name;
+
+    private TeamPlayerType type;
 }
