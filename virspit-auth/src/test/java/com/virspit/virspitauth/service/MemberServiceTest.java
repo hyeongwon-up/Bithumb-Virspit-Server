@@ -10,16 +10,25 @@ import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
+import io.swagger.models.auth.In;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,11 +37,16 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
+
+    private Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
+
+    @Mock
+    private ValueOperations<String, Integer> verifyValueOperations;
 
     @Mock
     private JwtUserDetailsService jwtUserDetailsService;
@@ -42,6 +56,8 @@ class MemberServiceTest {
     private AuthenticationManager authenticationManager;
     @Mock
     private RedisTemplate<String, Integer> verifyRedisTemplate;
+    RedisTemplate<String, Integer> myTemplate = new RedisTemplate<>();
+
     @Mock
     private JwtGenerator jwtGenerator;
     @Mock
@@ -61,6 +77,9 @@ class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
+
+        System.out.println("setup");
+
         memberSignUpRequestDto.setMemberName("testMember");
         memberSignUpRequestDto.setPhoneNumber("01096394624");
         memberSignUpRequestDto.setEmail("test@test.com");
@@ -136,6 +155,29 @@ class MemberServiceTest {
 
 
     }
+
+    @Test
+    void verifyNumber_실패() {
+
+        assertThatThrownBy(() -> {
+            memberService.verifyNumber(anyString(), anyInt());
+        }).isInstanceOf(Exception.class);
+
+    }
+
+    @Test
+    void verifyNumber() {
+        //given
+        Mockito.when(verifyRedisTemplate.opsForValue()).thenReturn(null);
+        //when
+
+        //then
+        assertThatThrownBy(() -> {
+            memberService.verifyNumber(anyString(), anyInt());
+        }).isInstanceOf(Exception.class);
+
+    }
+
 
 
 }
