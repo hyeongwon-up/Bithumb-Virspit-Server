@@ -6,6 +6,7 @@ import com.virspit.virspitauth.dto.model.Role;
 import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberInfoResponseDto;
+import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
 import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -109,21 +111,31 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(() -> {
-           memberService.login(memberSignInRequestDto);
+            memberService.login(memberSignInRequestDto);
         }).isInstanceOf(InvalidValueException.class);
 
     }
 
-//    @Test
-//    void login_실패_비밀번호틀림(){
-//        //given
-//        MemberSignInRequestDto memberSignInRequestDto =
-//                new MemberSignInRequestDto("test@test.com",  "password");
-//
-//        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
-//        Mockito.doReturn("").when(valueOperations).get(any());
-//
-//    }
+    @Test
+    void login_성공() throws Exception {
+        //given
+        MemberSignInRequestDto memberSignInRequestDto = new MemberSignInRequestDto();
+        memberSignInRequestDto.setEmail("test@test.com");
+        memberSignInRequestDto.setPassword("password");
+
+        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
+        Mockito.doReturn(null).when(valueOperations).get(anyString());
+
+        given(memberServiceFeignClient.findByEmail(anyString())).willReturn(member);
+
+        //when
+        MemberSignInResponseDto result = memberService.login(memberSignInRequestDto);
+
+        //then
+        assertThat(result.getMemberInfo().getMemberName()).isEqualTo(member.getMemberName());
+
+
+    }
 
 
 }
