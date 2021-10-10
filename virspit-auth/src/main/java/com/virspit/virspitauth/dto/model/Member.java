@@ -33,5 +33,20 @@ public class Member {
 
     private LocalDateTime updatedAt;
 
+    @Builder
+    public Member(Long id, String memberName, String email, String password, String phoneNumber, Gender gender, LocalDate birthdayDate, Wallet wallet) {
+        this.id = id;
+        this.memberName = memberName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.birthdayDate = birthdayDate;
+        this.role = Role.USER;
+        this.wallet = wallet;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
 
 }
