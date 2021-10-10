@@ -19,6 +19,12 @@ public class MemberFeignController {
 
     private final MemberService memberService;
 
+    @ApiOperation("feign = MemberId 로 사용자 정보 조회")
+    @GetMapping("/{id}")
+    public MemberInfoResponseDto findById(@PathVariable Long id) {
+        return memberService.MemberInfofindById(id);
+    }
+
 
     @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")

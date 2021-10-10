@@ -18,12 +18,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @ApiOperation("memberId로 member 찾기")
-    @GetMapping("/{id}")
-    @Deprecated
-    public Member findById(@PathVariable Long id) {
-        return memberService.findById(id);
-    }
+//    @ApiOperation("memberId로 memberInfo 찾기")
+//    @GetMapping("/{id}")
+//    @Deprecated
+//    public Member findById(@PathVariable Long id) {
+//        return memberService.findById(id);
+//    }
 
     @ApiOperation("회원 정보 수정 (이름, 성별, 생년월일, 핸드폰번호)")
     @PutMapping("/info/{id}")

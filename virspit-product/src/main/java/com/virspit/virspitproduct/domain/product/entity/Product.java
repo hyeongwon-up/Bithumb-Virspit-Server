@@ -98,4 +98,10 @@ public class Product extends BaseEntity {
         this.startDateTime = productStoreRequestDto.getStartDateTime();
         this.exhibition = productStoreRequestDto.getExhibition();
     }
+
+    public void decreaseRemainedCount() {
+        if (remainedCount > 0) {
+            --remainedCount;
+        }
+    }
 }

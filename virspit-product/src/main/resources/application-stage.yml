@@ -18,8 +18,6 @@ spring:
       order: order
 
     consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       bootstrap-servers: 15.164.129.26:9092
       group-id: product_group
       auto-offset-reset: earliest
