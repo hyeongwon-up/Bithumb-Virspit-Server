@@ -51,11 +51,11 @@ public class OrderService {
         LocalDateTime endDateTime = LocalDateTime.now();
 
         if (endDate != null) {
-            endDateTime = LocalDateTime.parse(endDate, StringUtils.FORMATTER);
+            endDateTime = StringUtils.parse(endDate);
         }
 
         return orderRepository.findByOrderDateBetween(
-                LocalDateTime.parse(startDate, StringUtils.FORMATTER),
+                StringUtils.parse(startDate),
                 endDateTime,
                 pageable)
                 .stream()
@@ -100,8 +100,8 @@ public class OrderService {
         }
         return orderRepository.findByMemberIdAndOrderDateBetween(
                 memberId,
-                LocalDateTime.parse(startDate, StringUtils.FORMATTER),
-                LocalDateTime.parse(endDate, StringUtils.FORMATTER),
+                StringUtils.parse(startDate),
+                StringUtils.parse(endDate),
                 pageable)
                 .stream()
                 .map(doc -> OrdersResponseDto.entityToDto(doc,

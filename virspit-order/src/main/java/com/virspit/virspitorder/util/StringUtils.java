@@ -11,13 +11,14 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtils {
 
-    public static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String TIME = " 00:00:00";
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void validateInputDate(final String startDate, final String endDate) {
-        if(startDate == null || endDate == null) return;
+        if (startDate == null || endDate == null) return;
 
-        LocalDateTime startDateTime = LocalDateTime.parse(startDate, FORMATTER);
-        LocalDateTime endDateTime = LocalDateTime.parse(endDate, FORMATTER);
+        LocalDateTime startDateTime = LocalDateTime.parse(startDate + TIME, FORMATTER);
+        LocalDateTime endDateTime = LocalDateTime.parse(endDate + TIME, FORMATTER);
 
         if (!startDateTime.isBefore(endDateTime)) {
             throw new BusinessException(
@@ -25,5 +26,9 @@ public class StringUtils {
                     ErrorCode.INVALID_INPUT_VALUE);
         }
 
+    }
+
+    public static LocalDateTime parse(String date) {
+        return LocalDateTime.parse(date + TIME, FORMATTER);
     }
 }

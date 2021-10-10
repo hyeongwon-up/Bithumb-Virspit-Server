@@ -24,8 +24,8 @@ public class OrderController {
 
     @ApiOperation(value = "전체 주문 목록")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "시작 날짜 (yyyy-MM-dd HH:mm:ss) ", paramType = "query"),
-            @ApiImplicitParam(name = "endDate", value = "마지막 날짜 (yyyy-MM-dd HH:mm:ss)", paramType = "query")
+            @ApiImplicitParam(name = "startDate", value = "시작 날짜 (yyyy-MM-dd) ", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "마지막 날짜 (yyyy-MM-dd)", paramType = "query")
     })
     @ApiResponses({
             @ApiResponse(code = 200, message = "success", response = OrdersResponseDto.class, responseContainer = "List")
