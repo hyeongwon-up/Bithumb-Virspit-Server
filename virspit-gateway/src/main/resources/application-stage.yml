@@ -42,7 +42,6 @@ spring:
             - Path=/products/list/**,/advertisements/**
             - Method=GET
           filters:
-            - JwtUserRequestFilter
 
         - id: virspit-listing-admin
           uri: lb://VIRSPIT-LISTING
@@ -58,15 +57,14 @@ spring:
         - id: virspit-product-user
           uri: lb://VIRSPIT-PRODUCT
           predicates:
-            - Path=/sports/**,/team-playes/**,/products/**
+            - Path=/sports/**,/team-players/**,/products/**
             - Method=GET
-          filters:
-            - JwtUserRequestFilter
+
 
         - id: virspit-product-admin
           uri: lb://VIRSPIT-PRODUCT
           predicates:
-            - Path=/sports/**,/team-playes/**,/products/**
+            - Path=/sports/**,/team-players/**,/products/**
           filters:
             - JwtAdminRequestFilter
 
