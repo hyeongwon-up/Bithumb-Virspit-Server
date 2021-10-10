@@ -40,8 +40,21 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<PageSupport> getAllProducts(Pageable pageable) {
-        return productRepository.findAllByOrderByCreatedDateTimeDesc()
+    public Mono<PageSupport> getAllProducts(Pageable pageable, String type) {
+        if (type == null || type.isBlank()) {
+            return productRepository.findAllByOrderByCreatedDateTimeDesc()
+                    .collectList()
+                    .map(list -> new PageSupport<>(
+                            list
+                                    .stream()
+                                    .map(p -> ProductDto.entityToDto((ProductDoc) p))
+                                    .skip(pageable.getPageNumber() * pageable.getPageSize())
+                                    .limit(pageable.getPageSize())
+                                    .collect(Collectors.toList()),
+                            pageable.getPageNumber(), pageable.getPageSize(), list.size()));
+        }
+
+        return productRepository.findByTeamPlayerTypeLikeOrderByCreatedDateTimeDesc(type)
                 .collectList()
                 .map(list -> new PageSupport<>(
                         list
