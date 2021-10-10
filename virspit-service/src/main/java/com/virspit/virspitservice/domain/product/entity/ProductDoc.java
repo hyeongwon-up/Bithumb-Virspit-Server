@@ -29,6 +29,8 @@ public class ProductDoc {
 
     private String teamPlayerName;
 
+    private String teamPlayerType;
+
     private Long sportsId;
 
     private String sportsName;
@@ -72,6 +74,8 @@ public class ProductDoc {
                         .map(TeamPlayerInfo::getId).orElse(null))
                 .teamPlayerName(Optional.ofNullable(productDto.getTeamPlayerInfo())
                         .map(TeamPlayerInfo::getName).orElse(null))
+                .teamPlayerType(Optional.ofNullable(productDto.getTeamPlayerInfo())
+                        .map(TeamPlayerInfo::getType).orElse(null))
                 .sportsId(Optional.ofNullable(productDto.getSportsInfo())
                         .map(SportsInfo::getId).orElse(null))
                 .sportsName(Optional.ofNullable(productDto.getSportsInfo())

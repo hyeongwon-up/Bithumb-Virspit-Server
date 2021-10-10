@@ -16,4 +16,7 @@ public class TeamPlayerInfo {
 
     @ApiModelProperty("팀/플레이어 이름")
     private String name;
+
+    @ApiModelProperty("팀/플레이어 타입")
+    private String type;
 }
