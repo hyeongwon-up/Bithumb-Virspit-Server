@@ -1,17 +1,13 @@
 package com.virspit.virspitauth.service;
 
 import com.virspit.virspitauth.dto.model.Gender;
+import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.model.Role;
-import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
-import com.virspit.virspitauth.dto.response.MemberSignInResponseDto;
-import com.virspit.virspitauth.dto.response.MemberSignUpResponseDto;
-import com.virspit.virspitauth.error.exception.InvalidValueException;
+import com.virspit.virspitauth.dto.response.MemberInfoResponseDto;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,8 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,38 +52,46 @@ class MemberServiceTest {
 
 
     MemberSignUpRequestDto memberSignUpRequestDto = new MemberSignUpRequestDto();
-
+    Member member = new Member();
 
     @BeforeEach
     void setUp() {
         memberSignUpRequestDto.setMemberName("testMember");
+        memberSignUpRequestDto.setPhoneNumber("01096394624");
         memberSignUpRequestDto.setEmail("test@test.com");
         memberSignUpRequestDto.setPassword("password");
         memberSignUpRequestDto.setGender(Gender.ETC);
         memberSignUpRequestDto.setBirthdayDate(LocalDate.of(1996, 12, 28));
 
+        member = Member.builder()
+                .id(1L)
+                .memberName("testMember")
+                .email("test@test.com")
+                .password("password")
+                .phoneNumber("01096394624")
+                .gender(Gender.ETC)
+                .birthdayDate(LocalDate.of(1996, 12, 28))
+                .wallet(null)
+                .build();
+
 
         Mockito.clearInvocations();
     }
 
-//    @Test
-//    void register_성공() {
-//        //given
-////        MemberSignUpResponseDto memberSignUpResponseDto =
-////                new MemberSignUpResponseDto(
-////                        "testMember","test@test.com",Gender.ETC,
-////                        LocalDate.of(1996,12,28), Role.USER);
-//
-//        given(memberServiceFeignClient.save(memberSignUpRequestDto)).willReturn(memberSignUpResponseDto);
-//
-//        //when
-//        MemberSignUpResponseDto result = memberService.register(memberSignUpRequestDto);
-//
-//        //then
-//        assertThat(result.getMemberName()).isEqualTo(memberSignUpRequestDto.getMemberName());
-//        assertThat(result.getRole()).isEqualTo(Role.USER);
-//
-//    }
+    @Test
+    void register_성공() {
+        //given
+        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.of(member);
+        given(memberServiceFeignClient.save(memberSignUpRequestDto)).willReturn(memberInfoResponseDto);
+
+        //when
+        MemberInfoResponseDto result = memberService.register(memberSignUpRequestDto);
+
+        //then
+        assertThat(result.getMemberName()).isEqualTo(memberSignUpRequestDto.getMemberName());
+        assertThat(result.getRole()).isEqualTo(Role.USER);
+
+    }
 
 //    @Test
 //    void login_실패_블랙리스트() {
@@ -117,8 +120,6 @@ class MemberServiceTest {
 //        Mockito.doReturn("").when(valueOperations).get(any());
 //
 //    }
-
-
 
 
 }
