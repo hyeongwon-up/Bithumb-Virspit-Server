@@ -3,8 +3,10 @@ package com.virspit.virspitauth.service;
 import com.virspit.virspitauth.dto.model.Gender;
 import com.virspit.virspitauth.dto.model.Member;
 import com.virspit.virspitauth.dto.model.Role;
+import com.virspit.virspitauth.dto.request.MemberSignInRequestDto;
 import com.virspit.virspitauth.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspitauth.dto.response.MemberInfoResponseDto;
+import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,22 +96,23 @@ class MemberServiceTest {
 
     }
 
-//    @Test
-//    void login_실패_블랙리스트() {
-//        //given
-//        MemberSignInRequestDto memberSignInRequestDto =
-//                new MemberSignInRequestDto("test@test.com",  "password");
-//
-//        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
-//        Mockito.doReturn("aa").when(valueOperations).get(Mockito.any());
-//
-//
-//        //when, then
-//        assertThatThrownBy(() -> {
-//           memberService.login(memberSignInRequestDto);
-//        }).isInstanceOf(InvalidValueException.class);
+    @Test
+    void login_실패_블랙리스트() {
+        //given
+        MemberSignInRequestDto memberSignInRequestDto = new MemberSignInRequestDto();
+        memberSignInRequestDto.setEmail("test@test.com");
+        memberSignInRequestDto.setPassword("password");
 
-//    }
+        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
+        Mockito.doReturn("aa").when(valueOperations).get(Mockito.any());
+
+
+        //when, then
+        assertThatThrownBy(() -> {
+           memberService.login(memberSignInRequestDto);
+        }).isInstanceOf(InvalidValueException.class);
+
+    }
 
 //    @Test
 //    void login_실패_비밀번호틀림(){
