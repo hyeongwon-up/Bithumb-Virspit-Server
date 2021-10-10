@@ -1,5 +1,6 @@
 package com.virspit.virspituser.domain.member.service;
 
+import com.virspit.virspituser.domain.member.dto.request.InitPwdRequestDto;
 import com.virspit.virspituser.domain.member.dto.request.MemberSignUpRequestDto;
 import com.virspit.virspituser.domain.member.dto.response.MemberInfoResponseDto;
 import com.virspit.virspituser.domain.member.entity.Gender;
@@ -134,6 +135,25 @@ class MemberServiceTest {
         //then
         assertThat(result).isEqualTo("저장하였습니다.");
     }
+
+
+    @Test
+    void initPwd() {
+        //given
+        InitPwdRequestDto initPwdRequestDto = new InitPwdRequestDto();
+        initPwdRequestDto.setEmail("test@test.com");
+        initPwdRequestDto.setPassword("password");
+
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.ofNullable(member));
+
+        //when
+        Boolean result = memberService.initPwd(initPwdRequestDto);
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+
 
 
 }
