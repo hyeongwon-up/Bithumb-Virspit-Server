@@ -46,7 +46,8 @@ public class MemberService {
     }
 
     public Member findByEmail(String memberEmail) {
-        Member member =  memberRepository.findByEmail(memberEmail);
+        Member member =  memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() ->new EntityNotFoundException(memberEmail));
         log.info("member : " + member.toString());
         return member;
     }
@@ -58,7 +59,8 @@ public class MemberService {
 
     public Boolean initPwd(InitPwdRequestDto initPwdRequestDto) {
 
-        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail());
+        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail())
+                .orElseThrow(() ->new EntityNotFoundException(initPwdRequestDto.getEmail()));;
         member.changePwd(initPwdRequestDto.getPassword());
         memberRepository.save(member);
 
