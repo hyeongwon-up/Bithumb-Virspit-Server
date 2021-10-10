@@ -44,7 +44,7 @@ public class ProductResponseDto {
     @NotNull
     @DecimalMin("0")
     @DecimalMax("100")
-    private Integer count;
+    private Integer remainedCount;
 
     @ApiModelProperty(value = "상품 판매 시작 일", example = "2021-09-26 17:00:00")
     @NotNull
