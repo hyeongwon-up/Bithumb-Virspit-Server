@@ -130,16 +130,21 @@ public class OrderService {
         if (!nftService.payToAdminFeesByCustomer(product.getPrice(), memberWalletAddress)) {
             throw new BusinessException("클레이 지불 과정에서 오류가 발생했습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        String tokenId = nftService.issueToken(memberWalletAddress, product.getNftInfo().getMetadataUri(), product.getNftInfo().getContractAlias());
-        Orders orders = new Orders(memberId, productId, memberWalletAddress, tokenId);
 
+        String tokenId = nftService.issueToken(memberWalletAddress, product.getNftInfo().getMetadataUri(), product.getNftInfo().getContractAlias());
+        if (tokenId == null) {
+            nftService.rollBackSendKlay(product.getPrice(), memberWalletAddress);
+            throw new BusinessException("KAS API - 토큰 발행이 되지 않았습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        Orders orders = new Orders(memberId, productId, memberWalletAddress, tokenId);
         Orders saved = orderRepository.save(orders);
         OrdersResponseDto dto = OrdersResponseDto.entityToDto(
                 saved,
                 product,
                 Optional.ofNullable(memberServiceFeignClient.findByMemberId(saved.getMemberId())).
                         orElse(null));
-
+        // kafka send
         kafkaOrderProducer.sendOrder(TOPIC_NAME, dto);
         return dto;
     }
