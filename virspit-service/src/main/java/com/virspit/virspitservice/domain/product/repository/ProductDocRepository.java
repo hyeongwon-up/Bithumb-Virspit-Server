@@ -28,7 +28,10 @@ public interface ProductDocRepository extends ReactiveMongoRepository<ProductDoc
 
     Flux<ProductDoc> findAllByOrderByCreatedDateTimeDesc();
 
-    @Query("{teamPlayerType :{$regex: ?0}}")
-    Flux<ProductDoc> findByTeamPlayerTypeLikeOrderByCreatedDateTimeDesc(String teamPlayerType);
+    Flux<ProductDoc> findByTeamPlayerTypeOrderByCreatedDateTimeDesc(String teamPlayerType);
+
+    Flux<ProductDoc> findBySportsIdAndTeamPlayerTypeOrderByCreatedDateTimeDesc(Long sportsId, String teamPlayerType);
+
+    Flux<ProductDoc> findBySportsIdOrderByCreatedDateTimeDesc(Long sportsId);
 
 }

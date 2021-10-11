@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class ProductControllerTest {
         Mono<PageSupport> result = Mono.just(new PageSupport(List.of(), 0 ,1,1));
 
         // when
-        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()))).thenReturn(result);
+        when(service.getAllProducts(PageRequest.of(0, 1, Sort.by("createdDate").descending()), "TEAM", 1l)).thenReturn(result);
 
         // assert
         client.get()

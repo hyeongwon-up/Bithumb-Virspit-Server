@@ -65,6 +65,7 @@ public class ProductDto {
                 .id(productDoc.getId())
                 .title(productDoc.getTitle())
                 .price(productDoc.getPrice())
+                .description(productDoc.getDescription())
                 .remainedCount(productDoc.getRemainedCount())
                 .startDateTime(productDoc.getStartDateTime())
                 .exhibition(productDoc.getExhibition())

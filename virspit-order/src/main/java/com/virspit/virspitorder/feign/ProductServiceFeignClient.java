@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "virspit-product", url = "http://3.35.69.49:8081")
+@FeignClient(name = "virspit-product")
 public interface ProductServiceFeignClient {
 
     @GetMapping(value = "/products/{productId}", consumes = "application/json")

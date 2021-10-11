@@ -41,7 +41,7 @@ class ProductServiceTest {
             .nftInfo(new NftInfo("", ""))
             .price(1)
             .sportsInfo(new SportsInfo(1l, "name"))
-            .teamPlayerInfo(new TeamPlayerInfo(1l, "name"))
+            .teamPlayerInfo(new TeamPlayerInfo(1l, "name","TEAM"))
             .remainedCount(4)
             .startDateTime(LocalDateTime.now())
             .updateDateTime(LocalDateTime.now())
@@ -106,7 +106,7 @@ class ProductServiceTest {
     @DisplayName("전체 상품 목록을 페이징 처리해서 가져온다.")
     @Test
     void getAllPaging() {
-        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending())))
+        StepVerifier.create(productService.getAllProducts(PageRequest.of(0, 4, Sort.by("createdDate").descending()),"TEAM",1l))
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();
