@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.advertisement.service;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementUpdateRequestDto;
 import com.virspit.virspitservice.domain.advertisement.dto.response.AdvertisementResponseDto;
 import com.virspit.virspitservice.domain.advertisement.dto.request.AdvertisementRequestDto;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.stream.Collectors;
 

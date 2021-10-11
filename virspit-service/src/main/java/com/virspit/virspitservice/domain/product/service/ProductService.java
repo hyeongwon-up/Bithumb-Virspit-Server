@@ -1,9 +1,10 @@
 package com.virspit.virspitservice.domain.product.service;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
+
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,21 +41,18 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<PageSupport> getAllProducts(Pageable pageable, String type) {
-        if (type == null || type.isBlank()) {
-            return productRepository.findAllByOrderByCreatedDateTimeDesc()
-                    .collectList()
-                    .map(list -> new PageSupport<>(
-                            list
-                                    .stream()
-                                    .map(p -> ProductDto.entityToDto((ProductDoc) p))
-                                    .skip(pageable.getPageNumber() * pageable.getPageSize())
-                                    .limit(pageable.getPageSize())
-                                    .collect(Collectors.toList()),
-                            pageable.getPageNumber(), pageable.getPageSize(), list.size()));
+    public Mono<PageSupport> getAllProducts(Pageable pageable, String type, Long sportsId) {
+        Flux<ProductDoc> result;
+        if ((type == null || type.isBlank()) && sportsId == null) {
+            result = productRepository.findAllByOrderByCreatedDateTimeDesc();
+        } else if (type != null && sportsId != null) {
+            result = productRepository.findBySportsIdAndTeamPlayerTypeOrderByCreatedDateTimeDesc(sportsId, type);
+        } else if (type == null) {
+            result = productRepository.findBySportsIdOrderByCreatedDateTimeDesc(sportsId);
+        } else {
+            result = productRepository.findByTeamPlayerTypeOrderByCreatedDateTimeDesc(type);
         }
-
-        return productRepository.findByTeamPlayerTypeLikeOrderByCreatedDateTimeDesc(type)
+        return result
                 .collectList()
                 .map(list -> new PageSupport<>(
                         list

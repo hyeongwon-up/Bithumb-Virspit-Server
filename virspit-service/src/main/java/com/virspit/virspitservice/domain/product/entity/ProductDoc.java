@@ -6,7 +6,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -53,7 +52,7 @@ public class ProductDoc {
 
     private LocalDateTime createdDateTime;
 
-    private LocalDateTime updateDateTime;
+    private LocalDateTime updatedDateTime;
 
     public static ProductDoc kafkaToEntity(final ProductKafkaDto productDto) {
         return ProductDoc.builder()
@@ -81,7 +80,7 @@ public class ProductDoc {
                 .sportsName(Optional.ofNullable(productDto.getSportsInfo())
                         .map(SportsInfo::getName).orElse(null))
                 .createdDateTime(productDto.getCreatedDateTime())
-                .updateDateTime(productDto.getUpdateDateTime())
+                .updatedDateTime(productDto.getUpdatedDateTime())
                 .build();
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -54,7 +53,7 @@ public class ProductDto {
 
     @ApiModelProperty(value = "상품 업데이트 일", example = "2021-09-26 17:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateDateTime;
+    private LocalDateTime updatedDateTime;
 
     @ApiModelProperty(value = "상품 등록 일", example = "2021-09-26 17:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -65,6 +64,7 @@ public class ProductDto {
                 .id(productDoc.getId())
                 .title(productDoc.getTitle())
                 .price(productDoc.getPrice())
+                .description(productDoc.getDescription())
                 .remainedCount(productDoc.getRemainedCount())
                 .startDateTime(productDoc.getStartDateTime())
                 .exhibition(productDoc.getExhibition())
@@ -74,7 +74,7 @@ public class ProductDto {
                         productDoc.getMetadataUri()))
                 .sportsInfo(new SportsInfo(productDoc.getSportsId(), productDoc.getSportsName()))
                 .teamPlayerInfo(new TeamPlayerInfo(productDoc.getTeamPlayerId(), productDoc.getTeamPlayerName(), productDoc.getTeamPlayerType()))
-                .updateDateTime(productDoc.getUpdateDateTime())
+                .updatedDateTime(productDoc.getUpdatedDateTime())
                 .createdDateTime(productDoc.getCreatedDateTime())
                 .build();
     }

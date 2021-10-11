@@ -13,10 +13,12 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: 3.34.250.136:9092
+#      group-id: listing4
       group-id: listing
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 
 kafka-topic: product
 

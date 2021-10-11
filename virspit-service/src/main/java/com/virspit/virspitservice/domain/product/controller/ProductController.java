@@ -1,6 +1,6 @@
 package com.virspit.virspitservice.domain.product.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
@@ -25,8 +25,9 @@ public class ProductController {
     @GetMapping
     public Mono<PageSupport> getAll(@RequestParam("page") int page,
                                     @RequestParam("size") int size,
-                                    @RequestParam(required = false, name = "teamPlayerType") String type) {
-        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()), type);
+                                    @RequestParam(required = false, name = "teamPlayerType") String type,
+                                    @RequestParam(required = false, name = "sportsId")Long sportsId) {
+        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()), type, sportsId);
     }
 
     @ApiOperation("상품 이름 검색")

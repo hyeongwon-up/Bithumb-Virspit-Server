@@ -33,6 +33,8 @@ public class ProductResponseDto {
 
     private SportsInfo sportsInfo;
 
+    private String nftImageUrl;
+
     @ApiModelProperty("팀/플레이어 ID")
     @NotNull
     private TeamPlayerInfo teamPlayerInfo;
