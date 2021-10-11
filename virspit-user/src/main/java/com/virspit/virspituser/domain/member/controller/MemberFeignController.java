@@ -39,6 +39,12 @@ public class MemberFeignController {
         return memberService.findByEmail(memberEmail);
     }
 
+    @ApiOperation("feign - email 중복 검사")
+    @GetMapping("/check")
+    public boolean checkByEmail(@RequestParam String memberEmail) {
+        return memberService.checkByEmail(memberEmail);
+    }
+
     @ApiOperation("feign - Member 비밀번호 변경 저장")
     @PostMapping("/pwd")
     public Boolean initPwd(@RequestBody InitPwdRequestDto initPwdRequestDto) {

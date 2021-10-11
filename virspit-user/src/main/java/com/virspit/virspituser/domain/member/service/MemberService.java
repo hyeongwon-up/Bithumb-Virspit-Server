@@ -60,7 +60,7 @@ public class MemberService {
     public Boolean initPwd(InitPwdRequestDto initPwdRequestDto) {
 
         Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail())
-                .orElseThrow(() ->new EntityNotFoundException(initPwdRequestDto.getEmail()));;
+                .orElseThrow(() ->new EntityNotFoundException(initPwdRequestDto.getEmail()));
         member.changePwd(initPwdRequestDto.getPassword());
         memberRepository.save(member);
 
@@ -89,5 +89,16 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException(id.toString()));
 
         return MemberInfoResponseDto.of(member);
+    }
+
+    public boolean checkByEmail(String memberEmail) {
+        log.info("이메일 중복 체크 : " + memberEmail);
+
+        if(memberRepository.findByEmail(memberEmail).isEmpty()) {
+            return true;
+        } else {
+            log.warn("이미 가입한 계정으로 가입요청 : " + memberEmail);
+            return false;
+        }
     }
 }
