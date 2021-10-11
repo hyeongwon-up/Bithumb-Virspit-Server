@@ -22,7 +22,7 @@ public class MemberFeignController {
     @ApiOperation("feign = MemberId 로 사용자 정보 조회")
     @GetMapping("/{id}")
     public MemberInfoResponseDto findById(@PathVariable Long id) {
-        return memberService.MemberInfofindById(id);
+        return memberService.MemberInfoFindById(id);
     }
 
 
