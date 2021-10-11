@@ -12,6 +12,7 @@ import com.virspit.virspitauth.error.ErrorCode;
 import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
+import feign.FeignException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,10 @@ public class MemberService {
     public MemberInfoResponseDto register(MemberSignUpRequestDto memberSignUpRequestDto) {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
+        log.info("? " + memberServiceFeignClient.checkByEmail(memberSignUpRequestDto.getEmail()));
+        if(memberServiceFeignClient.checkByEmail(memberSignUpRequestDto.getEmail()) == false) {
+            throw new InvalidValueException(ErrorCode.EMAIL_ALREADY_EXIST);
+        }
 
         return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
