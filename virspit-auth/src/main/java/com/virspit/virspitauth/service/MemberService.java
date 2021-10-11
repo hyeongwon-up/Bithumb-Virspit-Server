@@ -54,10 +54,7 @@ public class MemberService {
     public MemberInfoResponseDto register(MemberSignUpRequestDto memberSignUpRequestDto) {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
-        log.info("? " + memberServiceFeignClient.checkByEmail(memberSignUpRequestDto.getEmail()));
-        if(memberServiceFeignClient.checkByEmail(memberSignUpRequestDto.getEmail()) == false) {
-            throw new InvalidValueException(ErrorCode.EMAIL_ALREADY_EXIST);
-        }
+
 
         return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
@@ -77,7 +74,7 @@ public class MemberService {
         log.info("인증 성공");
 
         Member member = memberServiceFeignClient.findByEmail(userEmail);
-        log.info("login member : " +member.toString());
+        log.info("login member : " + member.toString());
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
@@ -92,6 +89,12 @@ public class MemberService {
     }
 
     public String verifyUserEmail(String userEmail) throws Exception {
+
+        if (memberServiceFeignClient.checkByEmail(userEmail) == false) {
+            log.warn("이미 가입한 이메일 입니다.");
+            throw new InvalidValueException(ErrorCode.EMAIL_ALREADY_EXIST);
+        }
+
         log.info("verify email 동작");
         int rand = new Random().nextInt(999999);
         verifyRedisTemplate.opsForValue().set("verify-" + userEmail, rand);
