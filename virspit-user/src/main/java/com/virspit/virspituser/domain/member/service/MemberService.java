@@ -81,10 +81,10 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberRepository.findById(id).get();
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
     }
 
-    public MemberInfoResponseDto MemberInfofindById(Long id) {
+    public MemberInfoResponseDto MemberInfoFindById(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(id.toString()));
 
