@@ -68,7 +68,8 @@ public class MemberService {
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(memberId.toString()));
         member.editInfo(memberEditInfoRequestDto);
         memberRepository.save(member);
         return "성공";
