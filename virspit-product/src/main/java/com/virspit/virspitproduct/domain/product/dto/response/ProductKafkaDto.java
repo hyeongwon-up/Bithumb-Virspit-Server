@@ -80,7 +80,7 @@ public class ProductKafkaDto {
         createdDateTime = product.getCreatedDateTime();
 
         TeamPlayer teamPlayer = product.getTeamPlayer();
-        teamPlayerInfo = new TeamPlayerInfo(teamPlayer.getId(), teamPlayer.getName());
+        teamPlayerInfo = new TeamPlayerInfo(teamPlayer.getId(), teamPlayer.getName(),teamPlayer.getType());
 
         Sports sports = teamPlayer.getSports();
         sportsInfo = new SportsInfo(sports.getId(), sports.getName());

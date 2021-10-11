@@ -168,7 +168,7 @@ class MemberServiceTest {
     @Test
     void verifyNumber() {
         //given
-        Mockito.when(verifyRedisTemplate.opsForValue()).thenReturn(null);
+        Mockito.when(verifyRedisTemplate.opsForValue().get(Mockito.anyString())).thenReturn(null);
         //when
 
         //then

@@ -10,5 +10,12 @@ import lombok.ToString;
 @ToString
 public class OrderDto {
     private Long id;
-    private Long productId;
+    private OrderProduct product;
+
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @Getter
+    @ToString
+    static class OrderProduct {
+        private Long id;
+    }
 }

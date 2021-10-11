@@ -46,7 +46,8 @@ public class MemberService {
     }
 
     public Member findByEmail(String memberEmail) {
-        Member member =  memberRepository.findByEmail(memberEmail);
+        Member member =  memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() ->new EntityNotFoundException(memberEmail));
         log.info("member : " + member.toString());
         return member;
     }
@@ -58,7 +59,8 @@ public class MemberService {
 
     public Boolean initPwd(InitPwdRequestDto initPwdRequestDto) {
 
-        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail());
+        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail())
+                .orElseThrow(() ->new EntityNotFoundException(initPwdRequestDto.getEmail()));;
         member.changePwd(initPwdRequestDto.getPassword());
         memberRepository.save(member);
 
@@ -66,7 +68,8 @@ public class MemberService {
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(memberId.toString()));
         member.editInfo(memberEditInfoRequestDto);
         memberRepository.save(member);
         return "성공";
@@ -78,10 +81,10 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberRepository.findById(id).get();
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
     }
 
-    public MemberInfoResponseDto MemberInfofindById(Long id) {
+    public MemberInfoResponseDto MemberInfoFindById(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(id.toString()));
 
