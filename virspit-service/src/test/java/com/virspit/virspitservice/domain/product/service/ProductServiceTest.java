@@ -44,7 +44,7 @@ class ProductServiceTest {
             .teamPlayerInfo(new TeamPlayerInfo(1l, "name","TEAM"))
             .remainedCount(4)
             .startDateTime(LocalDateTime.now())
-            .updateDateTime(LocalDateTime.now())
+            .updatedDateTime(LocalDateTime.now())
             .createdDateTime(LocalDateTime.now())
             .build();
     private ProductDoc product = ProductDoc.kafkaToEntity(kafkaDto);

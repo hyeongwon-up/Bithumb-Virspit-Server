@@ -53,7 +53,7 @@ public class ProductKafkaDto {
 
     @ApiModelProperty(value = "상품 업데이트 일", example = "2021-09-26 17:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateDateTime;
+    private LocalDateTime updatedDateTime;
 
     @ApiModelProperty(value = "상품 등록 일", example = "2021-09-26 17:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
