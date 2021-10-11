@@ -14,12 +14,9 @@ public class KafkaOrderConsumer {
 
     private final ProductService productService;
 
-    @Value("${spring.kafka.consumer.group-id}")
-    private String groupId;
-
-    @KafkaListener(topics = "${spring.kafka.topic.order}", containerFactory = "orderFactory")
+    @KafkaListener(topics = "${spring.kafka.topic.order}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "orderFactory")
     public void consumeOrder(OrderDto orderDto) {
         log.info("Ordered product id={}", orderDto);
-        productService.decreaseRemainedCount(orderDto.getProductId());
+        productService.decreaseRemainedCount(orderDto.getProduct().getId());
     }
 }
