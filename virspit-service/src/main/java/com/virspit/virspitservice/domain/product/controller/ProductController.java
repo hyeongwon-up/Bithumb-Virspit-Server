@@ -23,8 +23,10 @@ public class ProductController {
 
     @ApiOperation("전체 상품 조회")
     @GetMapping
-    public Mono<PageSupport> getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
-        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
+    public Mono<PageSupport> getAll(@RequestParam("page") int page,
+                                    @RequestParam("size") int size,
+                                    @RequestParam(required = false, name = "teamPlayerType") String type) {
+        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()), type);
     }
 
     @ApiOperation("상품 이름 검색")

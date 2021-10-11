@@ -73,7 +73,7 @@ public class ProductDto {
                 .nftInfo(new NftInfo(productDoc.getContractAlias(),
                         productDoc.getMetadataUri()))
                 .sportsInfo(new SportsInfo(productDoc.getSportsId(), productDoc.getSportsName()))
-                .teamPlayerInfo(new TeamPlayerInfo(productDoc.getTeamPlayerId(), productDoc.getTeamPlayerName()))
+                .teamPlayerInfo(new TeamPlayerInfo(productDoc.getTeamPlayerId(), productDoc.getTeamPlayerName(), productDoc.getTeamPlayerType()))
                 .updateDateTime(productDoc.getUpdateDateTime())
                 .createdDateTime(productDoc.getCreatedDateTime())
                 .build();

@@ -51,11 +51,11 @@ public class OrderService {
         LocalDateTime endDateTime = LocalDateTime.now();
 
         if (endDate != null) {
-            endDateTime = StringUtils.parse(endDate);
+            endDateTime = StringUtils.parse(endDate, false);
         }
 
         return orderRepository.findByOrderDateBetween(
-                StringUtils.parse(startDate),
+                StringUtils.parse(startDate, true),
                 endDateTime,
                 pageable)
                 .stream()
@@ -100,8 +100,8 @@ public class OrderService {
         }
         return orderRepository.findByMemberIdAndOrderDateBetween(
                 memberId,
-                StringUtils.parse(startDate),
-                StringUtils.parse(endDate),
+                StringUtils.parse(startDate, true),
+                StringUtils.parse(endDate, false),
                 pageable)
                 .stream()
                 .map(doc -> OrdersResponseDto.entityToDto(doc,
@@ -150,8 +150,8 @@ public class OrderService {
                 .orElseThrow(() -> new BusinessException("해당 orderId가 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
         orders.updateMemo(requestDto.getMemo());
         return OrdersResponseDto.entityToDto(orders, Optional.ofNullable(productServiceFeignClient.findByProductId(orders.getProductId()))
-                .map(SuccessResponse::getData)
-                .orElse(null),
+                        .map(SuccessResponse::getData)
+                        .orElse(null),
                 Optional.ofNullable(memberServiceFeignClient.findByMemberId(orders.getMemberId()))
                         .orElse(null));
     }
