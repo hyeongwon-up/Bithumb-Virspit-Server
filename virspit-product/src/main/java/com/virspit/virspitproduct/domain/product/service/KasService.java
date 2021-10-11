@@ -9,11 +9,18 @@ import com.virspit.virspitproduct.domain.product.feign.metadata.request.Metadata
 import com.virspit.virspitproduct.domain.product.feign.metadata.request.UploadMetadataRequest;
 import com.virspit.virspitproduct.domain.product.feign.metadata.response.UploadAssetResponse;
 import com.virspit.virspitproduct.domain.product.feign.metadata.response.UploadMetadataResponse;
+import com.virspit.virspitproduct.domain.product.feign.wallet.KasWalletFeignClient;
+import com.virspit.virspitproduct.error.ErrorCode;
+import com.virspit.virspitproduct.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.virspit.virspitproduct.domain.product.feign.wallet.TransactionReceipt.TransactionStatus;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KasService {
@@ -22,6 +29,7 @@ public class KasService {
 
     private final KasContractFeignClient kasContractFeignClient;
     private final KasMetadataFeignClient kasMetadataFeignClient;
+    private final KasWalletFeignClient kasWalletFeignClient;
 
     @Value("${kas.fee-payer.krn}")
     private String feePayerKrn;
@@ -39,16 +47,32 @@ public class KasService {
         return uploadMetadataResponse.getUri();
     }
 
-    public String deployNftContract(final long id) {
-        String contractAlias = "product-" + id + "-" + System.currentTimeMillis(); // TODO alias 이름 지정 방법 찾기
+    public void deployNftContract(final String contractAlias) {
 
         UserFeePayer userFeePayer = new UserFeePayer(feePayerKrn, feePayerAddress);
         Kip17FeePayerOption kip17FeePayerOption = new Kip17FeePayerOption(false, userFeePayer);
         DeployKip17ContractRequest deployKip17ContractRequest = new DeployKip17ContractRequest(contractAlias, TOKEN_SYMBOL, TOKEN_NAME, kip17FeePayerOption);
 
-        kasContractFeignClient.deployContract(deployKip17ContractRequest);
-        
-        return contractAlias;
+        String transactionHash = kasContractFeignClient.deployContract(deployKip17ContractRequest).getTransactionHash();
+
+        while (true) {
+            TransactionStatus status = kasWalletFeignClient.getTransactionReceipt(transactionHash).getStatus();
+
+            switch (status) {
+                case Committed:
+                    return;
+                case CommitError: {
+                    log.error("Deploy contract transaction failed");
+                    throw new BusinessException(ErrorCode.NFT_CONTRACT_TRANSACTION_FAILED);
+                }
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.warn(e.getMessage());
+            }
+        }
     }
 
 }

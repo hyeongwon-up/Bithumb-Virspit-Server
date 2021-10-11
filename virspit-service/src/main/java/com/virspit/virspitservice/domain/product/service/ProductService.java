@@ -1,9 +1,10 @@
 package com.virspit.virspitservice.domain.product.service;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
 import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.entity.ProductDoc;
+
 import com.virspit.virspitservice.domain.product.repository.ProductDocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,8 +41,18 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<PageSupport> getAllProducts(Pageable pageable) {
-        return productRepository.findAllByOrderByCreatedDateTimeDesc()
+    public Mono<PageSupport> getAllProducts(Pageable pageable, String type, Long sportsId) {
+        Flux<ProductDoc> result;
+        if ((type == null || type.isBlank()) && sportsId == null) {
+            result = productRepository.findAllByOrderByCreatedDateTimeDesc();
+        } else if (type != null && sportsId != null) {
+            result = productRepository.findBySportsIdAndTeamPlayerTypeOrderByCreatedDateTimeDesc(sportsId, type);
+        } else if (type == null) {
+            result = productRepository.findBySportsIdOrderByCreatedDateTimeDesc(sportsId);
+        } else {
+            result = productRepository.findByTeamPlayerTypeOrderByCreatedDateTimeDesc(type);
+        }
+        return result
                 .collectList()
                 .map(list -> new PageSupport<>(
                         list
@@ -72,5 +84,11 @@ public class ProductService {
     @Transactional
     public Mono<Void> deleteProduct(final String id) {
         return productRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<ProductDto> getFavorites(List<String> ids) {
+        return productRepository.findAllById(ids)
+                .map(ProductDto::entityToDto);
     }
 }

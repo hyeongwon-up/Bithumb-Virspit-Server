@@ -12,6 +12,7 @@ import com.virspit.virspitauth.error.ErrorCode;
 import com.virspit.virspitauth.error.exception.InvalidValueException;
 import com.virspit.virspitauth.feign.MemberServiceFeignClient;
 import com.virspit.virspitauth.jwt.JwtGenerator;
+import feign.FeignException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,7 @@ public class MemberService {
         String pwd = memberSignUpRequestDto.getPassword();
         memberSignUpRequestDto.setPassword(passwordEncoder.encode(pwd));
 
+
         return memberServiceFeignClient.save(memberSignUpRequestDto);
     }
 
@@ -72,7 +74,7 @@ public class MemberService {
         log.info("인증 성공");
 
         Member member = memberServiceFeignClient.findByEmail(userEmail);
-        log.info("login member : " +member.toString());
+        log.info("login member : " + member.toString());
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEmail);
         final String accessToken = jwtGenerator.generateAccessToken(userDetails);
@@ -87,6 +89,12 @@ public class MemberService {
     }
 
     public String verifyUserEmail(String userEmail) throws Exception {
+
+        if (memberServiceFeignClient.checkByEmail(userEmail) == false) {
+            log.warn("이미 가입한 이메일 입니다.");
+            throw new InvalidValueException(ErrorCode.EMAIL_ALREADY_EXIST);
+        }
+
         log.info("verify email 동작");
         int rand = new Random().nextInt(999999);
         verifyRedisTemplate.opsForValue().set("verify-" + userEmail, rand);

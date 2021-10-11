@@ -1,4 +1,4 @@
-package com.virspit.virspitservice.domain.advertisement.common;
+package com.virspit.virspitservice.domain.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;

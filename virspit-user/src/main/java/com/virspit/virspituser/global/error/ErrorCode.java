@@ -15,8 +15,10 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", "타입이 일치하지 않습니다"),
     ACCESS_DENIED(403, "C006", "접근 거부"),
     NOT_FOUND(404, "C007", "요청을 찾을 수 없습니다"),
-    INVALID_CONTENT_TYPE(415, "C008", "Content Type이 올바르지 않습니다");
+    INVALID_CONTENT_TYPE(415, "C008", "Content Type이 올바르지 않습니다"),
 
+    //favorite
+    FAVORITE_ALREADY_EXIST(501, "F001", "이미 좋아요 한 상품입니다");
 
     @Getter
     private final int status;

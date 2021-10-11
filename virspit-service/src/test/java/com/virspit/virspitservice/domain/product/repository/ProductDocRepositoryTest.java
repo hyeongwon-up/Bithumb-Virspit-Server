@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ExtendWith(SpringExtension.class)
@@ -37,7 +38,7 @@ class ProductDocRepositoryTest {
     ProductDoc generateDocument(String name) {
         return template.insert(
                 ProductDoc.builder()
-                        .id(null)
+                        .id(name)
                         .title(name)
                         .createdDateTime(LocalDateTime.now())
                         .remainedCount(4)
@@ -146,6 +147,21 @@ class ProductDocRepositoryTest {
         StepVerifier
                 .create(result)
                 .expectNextCount(10)
+                .verifyComplete();
+    }
+
+    @DisplayName("아이디 리스트로 조회")
+    @Test
+    void findAllByIds(){
+        // given
+        for (int i = 0; i < 10; i++) {
+            generateDocument(String.valueOf(i + 1));
+        }
+
+        Flux<ProductDoc> result =repository.findAllById(List.of("1","2","3")).log();
+
+        StepVerifier.create(result)
+                .expectNextCount(3)
                 .verifyComplete();
     }
 }

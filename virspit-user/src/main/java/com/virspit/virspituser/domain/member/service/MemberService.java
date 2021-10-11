@@ -10,6 +10,8 @@ import com.virspit.virspituser.domain.member.entity.Role;
 import com.virspit.virspituser.domain.member.feign.AuthServiceFeignClient;
 import com.virspit.virspituser.domain.member.repository.MemberRepository;
 import com.virspit.virspituser.domain.wallet.service.WalletService;
+import com.virspit.virspituser.global.error.ErrorCode;
+import com.virspit.virspituser.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +46,8 @@ public class MemberService {
     }
 
     public Member findByEmail(String memberEmail) {
-        Member member =  memberRepository.findByEmail(memberEmail);
+        Member member =  memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() ->new EntityNotFoundException(memberEmail));
         log.info("member : " + member.toString());
         return member;
     }
@@ -56,7 +59,8 @@ public class MemberService {
 
     public Boolean initPwd(InitPwdRequestDto initPwdRequestDto) {
 
-        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail());
+        Member member = memberRepository.findByEmail(initPwdRequestDto.getEmail())
+                .orElseThrow(() ->new EntityNotFoundException(initPwdRequestDto.getEmail()));
         member.changePwd(initPwdRequestDto.getPassword());
         memberRepository.save(member);
 
@@ -64,7 +68,8 @@ public class MemberService {
     }
 
     public String changeMemberInfo(Long memberId, MemberEditInfoRequestDto memberEditInfoRequestDto) {
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(memberId.toString()));
         member.editInfo(memberEditInfoRequestDto);
         memberRepository.save(member);
         return "성공";
@@ -76,6 +81,24 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberRepository.findById(id).get();
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
+    }
+
+    public MemberInfoResponseDto MemberInfoFindById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+
+        return MemberInfoResponseDto.of(member);
+    }
+
+    public boolean checkByEmail(String memberEmail) {
+        log.info("이메일 중복 체크 : " + memberEmail);
+
+        if(memberRepository.findByEmail(memberEmail).isEmpty()) {
+            return true;
+        } else {
+            log.warn("이미 가입한 계정으로 가입요청 : " + memberEmail);
+            return false;
+        }
     }
 }

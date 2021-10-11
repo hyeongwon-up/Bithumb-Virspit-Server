@@ -51,11 +51,11 @@ dependencies {
 	//feign
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
 	//kafka
-	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	implementation group: 'org.apache.kafka', name: 'kafka-clients'
-
+	//logstash
+	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.6'
 
 }
 

@@ -19,6 +19,12 @@ public class MemberFeignController {
 
     private final MemberService memberService;
 
+    @ApiOperation("feign = MemberId 로 사용자 정보 조회")
+    @GetMapping("/{id}")
+    public MemberInfoResponseDto findById(@PathVariable Long id) {
+        return memberService.MemberInfoFindById(id);
+    }
+
 
     @ApiOperation("feign - 회원가입 요청한 Member를 db에 저장")
     @PostMapping("/save")
@@ -31,6 +37,12 @@ public class MemberFeignController {
     public Member findByEmail(@RequestParam String memberEmail) {
         log.info("find email controller start");
         return memberService.findByEmail(memberEmail);
+    }
+
+    @ApiOperation("feign - email 중복 검사")
+    @GetMapping("/check")
+    public boolean checkByEmail(@RequestParam String memberEmail) {
+        return memberService.checkByEmail(memberEmail);
     }
 
     @ApiOperation("feign - Member 비밀번호 변경 저장")

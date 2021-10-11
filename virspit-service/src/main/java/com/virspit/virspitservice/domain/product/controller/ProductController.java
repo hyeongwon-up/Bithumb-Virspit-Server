@@ -1,7 +1,8 @@
 package com.virspit.virspitservice.domain.product.controller;
 
-import com.virspit.virspitservice.domain.advertisement.common.PageSupport;
+import com.virspit.virspitservice.domain.common.PageSupport;
 import com.virspit.virspitservice.domain.product.dto.ProductDto;
+import com.virspit.virspitservice.domain.product.dto.ProductKafkaDto;
 import com.virspit.virspitservice.domain.product.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RequestMapping("/products/list")
 @RequiredArgsConstructor
@@ -20,8 +23,11 @@ public class ProductController {
 
     @ApiOperation("전체 상품 조회")
     @GetMapping
-    public Mono<PageSupport> getAll(@RequestParam("page") int page, @RequestParam("size") int size) {
-        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()));
+    public Mono<PageSupport> getAll(@RequestParam("page") int page,
+                                    @RequestParam("size") int size,
+                                    @RequestParam(required = false, name = "teamPlayerType") String type,
+                                    @RequestParam(required = false, name = "sportsId")Long sportsId) {
+        return productService.getAllProducts(PageRequest.of(page - 1, size, Sort.by("createdDate").descending()), type, sportsId);
     }
 
     @ApiOperation("상품 이름 검색")
@@ -30,4 +36,16 @@ public class ProductController {
         return productService.getProductsBy(word);
     }
 
+
+    @ApiOperation("좋아요 상품 목록")
+    @GetMapping("/favorite")
+    public Flux<ProductDto> getFavorites(@RequestParam("ids") List<String> ids) {
+        return productService.getFavorites(ids);
+    }
+
+    @ApiOperation("product 서버와 맞춤용 controller")
+    @PostMapping("/add")
+    public Mono<ProductDto> insertProduct(@RequestBody ProductKafkaDto productDto) {
+        return productService.insert(productDto);
+    }
 }

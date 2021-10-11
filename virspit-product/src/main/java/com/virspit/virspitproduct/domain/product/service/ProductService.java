@@ -31,8 +31,10 @@ import java.io.IOException;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductRepositorySupport productRepositorySupport;
+
+    private final NftService nftService;
+
     private final TeamPlayerRepository teamPlayerRepository;
-    private final KasService kasService;
     private final KafkaProductProducer kafkaProductProducer;
     private final FileStore awsS3FileStore;
 
@@ -52,14 +54,17 @@ public class ProductService {
         TeamPlayer teamPlayer = teamPlayerRepository.findById(teamPlayerId)
                 .orElseThrow(() -> new TeamPlayerNotFoundException(teamPlayerId));
 
-        String contractAlias = kasService.deployNftContract(teamPlayerId);
-        String metadataUri = kasService.uploadMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
-        NftInfo nftInfo = new NftInfo(contractAlias, metadataUri);
+        String contractAlias = "product-" + teamPlayerId + "-" + System.currentTimeMillis(); // TODO alias 이름 지정 방법 찾기
 
-        String nftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
+        nftService.deployNftContract(contractAlias);
+        String metadataUri = nftService.uploadMetadata(productStoreRequestDto.getTitle(), productStoreRequestDto.getDescription(), productStoreRequestDto.getNftImageFile());
+
+        String s3NftImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getNftImageFile(), ContentType.PRODUCT_NFT_IMAGE);
         String detailImageUrl = awsS3FileStore.uploadFile(productStoreRequestDto.getDetailImageFile(), ContentType.PRODUCT_DETAIL_IMAGE);
 
-        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo, nftImageUrl, detailImageUrl);
+        NftInfo nftInfo = new NftInfo(contractAlias, metadataUri);
+
+        Product product = productStoreRequestDto.toProduct(teamPlayer, nftInfo, s3NftImageUrl, detailImageUrl);
         productRepository.save(product);
 
         kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
@@ -99,5 +104,13 @@ public class ProductService {
         kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.DELETE));
 
         return ProductResponseDto.of(product);
+    }
+
+    @Transactional
+    public void decreaseRemainedCount(final Long productId) {
+        productRepository.findById(productId).ifPresent(product -> {
+            product.decreaseRemainedCount();
+            kafkaProductProducer.sendProduct(new ProductKafkaDto(product, KafkaEvent.UPDATE));
+        });
     }
 }
