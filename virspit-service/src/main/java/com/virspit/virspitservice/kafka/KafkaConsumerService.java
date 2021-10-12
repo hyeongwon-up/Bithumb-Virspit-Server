@@ -24,9 +24,10 @@ public class KafkaConsumerService {
         log.info("Consumer Message is : {}", productKafkaDto);
         if(Event.DELETE.equals(productKafkaDto.getEvent())) {
             productService.deleteProduct(productKafkaDto.getId());
-            return;
+
+        }else {
+            productService.insert(productKafkaDto);
         }
-        productService.insert(productKafkaDto);
     }
 
 }
