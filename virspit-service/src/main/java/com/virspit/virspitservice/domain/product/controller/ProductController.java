@@ -48,4 +48,8 @@ public class ProductController {
     public Mono<ProductDto> insertProduct(@RequestBody ProductKafkaDto productDto) {
         return productService.insert(productDto);
     }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable String id){ return productService.deleteProduct(id);
+    }
 }
