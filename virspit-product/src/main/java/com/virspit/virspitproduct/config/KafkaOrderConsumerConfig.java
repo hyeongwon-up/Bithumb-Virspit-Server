@@ -33,7 +33,12 @@ public class KafkaOrderConsumerConfig {
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
 
-        return new DefaultKafkaConsumerFactory<>(configs, new StringDeserializer(), new ErrorHandlingDeserializer<>(new JsonDeserializer<>(OrderDto.class)));
+        JsonDeserializer<OrderDto> deserializer = new JsonDeserializer<>(OrderDto.class);
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(true);
+
+        return new DefaultKafkaConsumerFactory<>(configs, new StringDeserializer(), new ErrorHandlingDeserializer<>(deserializer));
     }
 
     @Bean
