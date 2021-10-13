@@ -28,14 +28,18 @@ public class SportsController {
     private final SportsService sportsService;
 
     @ApiOperation(value = "전체 종목 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "종목 이름"),
+    })
     @ApiResponses({
             @ApiResponse(code = 200, message = "success")
     })
     @GetMapping
     public SuccessResponse<List<SportsResponseDto>> getAllSports(
+            @RequestParam(required = false) String name,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("pageable:{}", pageable);
-        return SuccessResponse.of(sportsService.getAllSports(pageable));
+        return SuccessResponse.of(sportsService.getAllSports(name, pageable));
     }
 
     @ApiOperation("ID로 종목 조회")

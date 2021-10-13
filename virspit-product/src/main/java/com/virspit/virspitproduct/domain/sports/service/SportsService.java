@@ -7,6 +7,7 @@ import com.virspit.virspitproduct.domain.sports.exception.IconFileNotFoundExcept
 import com.virspit.virspitproduct.domain.sports.exception.NameDuplicatedException;
 import com.virspit.virspitproduct.domain.sports.exception.SportsNotFoundException;
 import com.virspit.virspitproduct.domain.sports.repository.SportsRepository;
+import com.virspit.virspitproduct.domain.sports.repository.SportsRepositorySupport;
 import com.virspit.virspitproduct.error.ErrorCode;
 import com.virspit.virspitproduct.error.exception.BusinessException;
 import com.virspit.virspitproduct.util.file.ContentType;
@@ -26,10 +27,11 @@ import java.util.List;
 @Service
 public class SportsService {
     private final SportsRepository sportsRepository;
+    private final SportsRepositorySupport sportsRepositorySupport;
     private final FileStore awsS3FileStore;
 
-    public List<SportsResponseDto> getAllSports(Pageable pageable) {
-        return SportsResponseDto.of(sportsRepository.findAll(pageable).toList());
+    public List<SportsResponseDto> getAllSports(String name, Pageable pageable) {
+        return SportsResponseDto.of(sportsRepositorySupport.findAll(name, pageable));
     }
 
     public SportsResponseDto getSportsById(final Long sportsId) {

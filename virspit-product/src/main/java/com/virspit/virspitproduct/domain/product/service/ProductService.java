@@ -44,7 +44,7 @@ public class ProductService {
     }
 
     public ProductResponseDto getProduct(final Long productId) {
-        return ProductResponseDto.of(productRepository.findById(productId).orElseThrow(EntityNotFoundException::new));
+        return ProductResponseDto.of(productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId)));
     }
 
     @Transactional
@@ -74,7 +74,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto updateProduct(final Long productId, final ProductStoreRequestDto productStoreRequestDto) throws IOException {
-        Product product = productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 
         if (!product.getTeamPlayer().getId().equals(productStoreRequestDto.getTeamPlayerId())) {
             TeamPlayer teamPlayer = teamPlayerRepository.findById(productStoreRequestDto.getTeamPlayerId()).orElseThrow(EntityNotFoundException::new);

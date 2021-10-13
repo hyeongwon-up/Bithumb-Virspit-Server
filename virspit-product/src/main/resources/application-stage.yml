@@ -47,7 +47,7 @@ eureka:
   instance:
     instance-id: product-microservice-instance
     prefer-ip-address: true
-    ip-address: 15.165.34.36
+    ip-address: 3.38.45.89
 
   client:
     register-with-eureka: true
